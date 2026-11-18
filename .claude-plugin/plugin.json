@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "description": "Turn vague prompts into specific, engineered ones. Reads your conversation, your codebase and your installed skills, agents and MCP tools, then offers 2-3 sharpened versions to pick from.",
   "author": {
-    "name": "OWNER",
-    "url": "https://github.com/OWNER"
+    "name": "ardfaiyaz",
+    "url": "https://github.com/ardfaiyaz"
   },
-  "homepage": "https://github.com/OWNER/sharpen",
-  "repository": "https://github.com/OWNER/sharpen",
+  "homepage": "https://github.com/ardfaiyaz/sharpen",
+  "repository": "https://github.com/ardfaiyaz/sharpen",
   "license": "MIT",
   "keywords": [
     "prompt-engineering",

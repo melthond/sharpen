@@ -30,7 +30,7 @@ You pick one, and Claude runs it as if you had typed it.
 ## Install (Claude Code)
 
 ```
-/plugin marketplace add OWNER/sharpen
+/plugin marketplace add ardfaiyaz/sharpen
 /plugin install sharpen@sharpen
 ```
 
