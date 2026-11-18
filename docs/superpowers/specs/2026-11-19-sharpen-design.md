@@ -94,6 +94,8 @@ sharpen/
 
 ### The method (SKILL.md)
 
+*Owner request (2026-11-19): options check the skills, agents/subagents, MCP tools and plugin commands listed in the agent's context and add a `Use:` line naming the one that fits (only ones actually listed).*
+
 *Updated after research (`docs/research/2026-11-19-prompt-architecture.md`):* the clear check is now a three-tier gate: clear → run, fill-in → `Running as: …` without asking, ambiguous → options. Each option is one interpretation, built from the slots for its intent type (Bug, Feature, Refactor, Performance, Question, Review, Explore, Ops, Other). The steps below are refined by that doc.
 
 1. **Clear check.** If the prompt already names what to change and where, and there is one sensible reading given the conversation, say "Clear prompt, running as typed." and proceed.
