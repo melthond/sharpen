@@ -44,11 +44,26 @@ The options use your conversation, your code (real paths only), and the skills, 
 | `/sharpen:sharpen-prompt <prompt>` | Writes the engineered prompt and **hands it back without running it**. Say "for ChatGPT" or "for a ticket" to get a version that stands on its own. |
 | `/sharpen:sharpen-review` | Coaches your recent prompts in this session: what each one left out, and the sharper version. |
 | `/sharpen:sharpen-audit` | Checks this project for what Sharpen can't see (test commands, conventions, where things live), and suggests what to write down. |
+| `/sharpen:sharpen-handoff` | Turns this conversation into one starting prompt for a fresh session: goal, decisions, what's done, what failed, what's next. Copy it, `/clear`, paste. |
+| `/sharpen:sharpen-split <request>` | Splits a big request into small ordered prompts, grouped into waves that can run in parallel. |
+| `/sharpen:sharpen-save [name]` | Saves a prompt you keep typing as a project slash command, after showing you the file. |
+| `/sharpen:sharpen-interview <feature>` | Asks one question at a time about a fuzzy feature, then writes `SPEC.md`. |
 | `/sharpen:sharpen-help` | This card. |
 
 **Status badge**
 
-A red `[SHARPEN]` badge shows in the status bar while it's on. If you had no status line, `/sharpen on` added one. If you already had one, Sharpen left it alone and offered once to add the badge next to it.
+A red badge shows in the status bar while Sharpen is on, with what it decided about your latest prompt:
+
+| Badge | Meaning |
+|---|---|
+| `[SHARPEN - CLEAR]` | Ran as typed |
+| `[SHARPEN - FILL-IN]` | Ran with one obvious meaning (`Running as: …`) |
+| `[SHARPEN - ASKING]` | Waiting for you to pick an option |
+| `[SHARPEN - SHARPENED]` | You picked an option, and it's running |
+| `[SHARPEN - RAW]` | You used `raw:` |
+| `[SHARPEN]` | Nothing to show yet, or a slash command |
+
+If you had no status line, `/sharpen on` added one. If you already had one, Sharpen left it alone and offered once to add the badge next to it.
 
 **Files**
 

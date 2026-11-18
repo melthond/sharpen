@@ -63,3 +63,60 @@ test('copied script prints a red badge when on and nothing when off', () => {
   fs.writeFileSync(path.join(process.env.SHARPEN_HOME, 'state.json'), '{"on":true}');
   assert.strictEqual(run(), '\x1b[38;5;196m[SHARPEN]\x1b[0m');
 });
+
+// --- verdict in the badge ---------------------------------------------------
+const { verdict } = require('../hooks/sharpen-statusline');
+const user = (content, extra = {}) => ({ type: 'user', message: { role: 'user', content }, ...extra });
+const say = (...blocks) => ({ type: 'assistant', message: { role: 'assistant', content: blocks } });
+const text = (t) => ({ type: 'text', text: t });
+const ask = { type: 'tool_use', id: 'q1', name: 'AskUserQuestion', input: {} };
+const answered = user([{ type: 'tool_result', tool_use_id: 'q1', content: 'picked' }]);
+
+test('verdict: clear, fill-in, asking, sharpened, raw', () => {
+  assert.strictEqual(verdict([user('rename x in a.ts'), say(text('Clear prompt, running as typed.'))]), 'CLEAR');
+  assert.strictEqual(verdict([user('add tests'), say(text('Running as: add tests for parsePin'))]), 'FILL-IN');
+  assert.strictEqual(verdict([user('fix the login thing'), say({ type: 'thinking', thinking: '' }), say(ask)]), 'ASKING');
+  assert.strictEqual(verdict([user('fix it'), say(text('Which did you mean?\n1. …'))]), 'ASKING');
+  assert.strictEqual(verdict([user('fix it'), say(ask), answered, say(text('Fixing the PIN lockout'))]), 'SHARPENED');
+  assert.strictEqual(verdict([user('RAW: make it faster'), say(text('ok'))]), 'RAW');
+});
+
+test('verdict: only the latest prompt counts', () => {
+  const lines = [user('a'), say(text('Clear prompt, running as typed.')), user('b'), say(text('Running as: b'))];
+  assert.strictEqual(verdict(lines), 'FILL-IN');
+});
+
+test('verdict: nothing to show yet, slash commands, other replies', () => {
+  assert.strictEqual(verdict([]), null);
+  assert.strictEqual(verdict([user('fix it')]), null, 'no reply yet');
+  assert.strictEqual(verdict([user('/sharpen on'), say(text('Sharpen is on.'))]), null);
+  assert.strictEqual(verdict([user('<command-name>/sharpen:sharpen-help</command-name>'), say(text('card'))]), null);
+  assert.strictEqual(verdict([user('hi'), say(text('Hello!'))]), null);
+});
+
+test('verdict: ignores tool results and subagent lines when finding the prompt', () => {
+  const lines = [
+    user('fix it'), say(text('Running as: fix the PIN lockout')),
+    user([{ type: 'tool_result', tool_use_id: 't', content: 'x' }]),
+    user('subagent brief', { isSidechain: true }), say(text('Clear prompt, running as typed.')),
+  ];
+  lines[4].isSidechain = true;
+  assert.strictEqual(verdict(lines), 'FILL-IN');
+});
+
+test('verdict: prompt given as text blocks', () => {
+  assert.strictEqual(verdict([user([{ type: 'text', text: 'rename x' }]), say(text('Clear prompt, running as typed.'))]), 'CLEAR');
+});
+
+test('badge shows the verdict read from the transcript', () => {
+  const s = sandbox();
+  ensureStatusline();
+  fs.writeFileSync(path.join(process.env.SHARPEN_HOME, 'state.json'), '{"on":true}');
+  const transcript = path.join(process.env.SHARPEN_HOME, 't.jsonl');
+  fs.writeFileSync(transcript, ['{"type":"summary"}', JSON.stringify(user('add tests')), JSON.stringify(say(text('Running as: add tests'))), ''].join('\n'));
+  const { spawnSync } = require('child_process');
+  const out = spawnSync(process.execPath, [s.copy], { input: JSON.stringify({ transcript_path: transcript }), env: { ...process.env }, encoding: 'utf8' }).stdout;
+  assert.strictEqual(out, '\x1b[38;5;196m[SHARPEN - FILL-IN]\x1b[0m');
+  const bad = spawnSync(process.execPath, [s.copy], { input: '{"transcript_path":"/nope.jsonl"}', env: { ...process.env }, encoding: 'utf8' }).stdout;
+  assert.strictEqual(bad, '\x1b[38;5;196m[SHARPEN]\x1b[0m', 'missing transcript falls back to the plain badge');
+});

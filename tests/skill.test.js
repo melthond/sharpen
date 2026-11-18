@@ -64,3 +64,44 @@ test('sharpen-help lists every command and prefix that exists', () => {
 test('review and audit are read-only reports', () => {
   for (const name of ['sharpen-review', 'sharpen-audit']) assert.ok(body(name).includes('Changes nothing'), name);
 });
+
+for (const name of ['sharpen-handoff', 'sharpen-split', 'sharpen-save', 'sharpen-interview']) {
+  test(`${name}: front matter names it and lists its slash trigger`, () => {
+    assert.match(front(name), new RegExp(`^name: ${name}$`, 'm'));
+    assert.match(front(name), /^description: \S/m);
+    assert.ok(front(name).includes(`/sharpen:${name}`));
+  });
+  test(`${name}: detailed but injectable`, () => {
+    const n = body(name).length;
+    assert.ok(n > 1500 && n < 9000, `length ${n}`);
+  });
+}
+
+test('handoff and split only hand back text', () => {
+  for (const name of ['sharpen-handoff', 'sharpen-split']) {
+    assert.ok(body(name).includes('Do not run'), name);
+    assert.ok(body(name).includes('```'), name);
+  }
+  assert.ok(body('sharpen-split').includes('../sharpen/SKILL.md'), 'split reuses the method');
+});
+
+test('save shows the file and asks before writing', () => {
+  const m = body('sharpen-save');
+  assert.ok(m.includes('AskUserQuestion'));
+  assert.ok(m.includes('Never overwrite'));
+  assert.ok(m.includes('.claude/skills/'));
+});
+
+test('interview asks one question at a time and writes a spec only at the end', () => {
+  const m = body('sharpen-interview');
+  assert.ok(m.includes('one question at a time'));
+  assert.ok(m.includes('SPEC.md'));
+  assert.ok(m.includes('(Recommended)'));
+});
+
+test('help lists the new skills and the badge words', () => {
+  const m = body('sharpen-help');
+  for (const s of ['/sharpen:sharpen-handoff', '/sharpen:sharpen-split', '/sharpen:sharpen-save', '/sharpen:sharpen-interview', 'CLEAR', 'FILL-IN', 'ASKING', 'SHARPENED', 'RAW']) {
+    assert.ok(m.includes(s), `missing: ${s}`);
+  }
+});

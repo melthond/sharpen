@@ -140,20 +140,35 @@ Other slash commands are never touched. `/sharpen:sharpen on` works too.
 
 ## Skills
 
-Sharpen ships with four companion skills. They work whether Sharpen is on or off.
+Sharpen ships with eight companion skills. They work whether Sharpen is on or off.
 
 | Skill | What it does |
 |---|---|
 | **`/sharpen:sharpen-prompt <prompt>`** | Writes the engineered prompt and **hands it back without running it**, in a code block ready to copy. Say "for ChatGPT" or "for a ticket", and you get a version that stands on its own: no repo paths, with the needed context spelled out. |
 | **`/sharpen:sharpen-review`** | Coaches **your** prompting. It looks at your recent prompts in this session, shows what each one left out and what that cost (an extra question, a redo), gives the sharper version, and ends with the one habit that would help most. |
 | **`/sharpen:sharpen-audit`** | Audits the project for what an agent can't see from the code: missing test commands, unwritten conventions, which folder owns what, stale instructions, and installed tools nobody mentions. Ranked, with paste-ready lines for `CLAUDE.md`. Better notes mean sharper options. |
-| **`/sharpen:sharpen-help`** | A quick reference card: the three outcomes, every command, the skills, the badge, and the files. |
+| **`/sharpen:sharpen-handoff`** | Turns the whole conversation into **one starting prompt for a fresh session**: goal, decisions, what's done, what failed and why, what's next, and how to check. Copy it, run `/clear`, paste. The "what failed" part stops the new session repeating dead ends. |
+| **`/sharpen:sharpen-split <request>`** | Splits a big multi-part request into **small, ordered, self-contained prompts**, each with its own finish line. They're grouped into waves you can run in parallel (separate agents or worktrees), and two parts that edit the same files never share a wave. |
+| **`/sharpen:sharpen-save [name]`** | Turns a prompt you keep typing into a **project slash command** (`.claude/skills/<name>/`). The parts that change become arguments. It shows you the file and only writes it after you say yes. It never overwrites. |
+| **`/sharpen:sharpen-interview <feature>`** | For a fuzzy feature: **one question at a time**, with clickable options and a recommended pick, grounded in your code. Then it writes `SPEC.md` with every decision marked as yours or its own call. |
+| **`/sharpen:sharpen-help`** | A quick reference card: the three outcomes, every command, the skills, the badge words, and the files. |
 
-`sharpen-prompt` reads the same method as the toggle (`skills/sharpen/SKILL.md`) instead of keeping its own copy, so there's one source of truth. The review and the audit only report. They change nothing.
+`sharpen-prompt` reads the same method as the toggle (`skills/sharpen/SKILL.md`) instead of keeping its own copy, so there's one source of truth. So does `sharpen-split`. The review and the audit only report. `sharpen-save` and `sharpen-interview` each write one file: `save` only after you approve it, `interview` only at the end, and neither ever overwrites.
 
 ## Status badge
 
-While Sharpen is on, a red **`[SHARPEN]`** badge shows in Claude Code's status bar. It disappears when you turn Sharpen off.
+While Sharpen is on, a red badge shows in Claude Code's status bar with **what Sharpen decided about your latest prompt**:
+
+| Badge | Meaning |
+|---|---|
+| `[SHARPEN - CLEAR]` | Your prompt was clear and ran as typed |
+| `[SHARPEN - FILL-IN]` | It had one obvious meaning and ran with `Running as: …` |
+| `[SHARPEN - ASKING]` | It was ambiguous, and the options are waiting for you |
+| `[SHARPEN - SHARPENED]` | You picked an option, and the engineered prompt is running |
+| `[SHARPEN - RAW]` | You skipped Sharpen with `raw:` |
+| `[SHARPEN]` | Nothing to show yet, or a slash command |
+
+The badge reads the end of the session's own transcript, which Claude Code hands to the status line, and looks for Sharpen's first line. That costs no extra tokens or tool calls, and nothing is stored. It disappears when you turn Sharpen off.
 
 It sets itself up the first time you run `/sharpen on`:
 
@@ -182,14 +197,14 @@ Sharpen is one prompt: [`skills/sharpen/SKILL.md`](skills/sharpen/SKILL.md), abo
 | `hooks/sharpen-session.js` | `SessionStart` hook: loads the method when Sharpen is on |
 | `hooks/sharpen-core.js` | The decision table: pure functions, fully tested |
 | `hooks/sharpen-state.js` | The on/off file |
-| `hooks/sharpen-statusline.js` | The red `[SHARPEN]` badge |
+| `hooks/sharpen-statusline.js` | The red badge, with the verdict read from the transcript |
 | `hooks/sharpen-statusline-setup.js` | Puts the badge in your status bar without overwriting yours |
 
 The hooks never block a prompt. On any error they exit quietly, and if stdin never closes (a known Windows quirk) they give up after 3 seconds.
 
 ## Tested
 
-- **52 automated tests** (`npm test`, Node's built-in runner, zero dependencies): toggles, prefixes, case and whitespace, look-alike commands, corrupt state files, bad hook input, hooks that hang, a status line setup that never overwrites yours, and the companion skills (each names its trigger, stays small enough to load, and the review and audit stay read-only).
+- **70 automated tests** (`npm test`, Node's built-in runner, zero dependencies): toggles, prefixes, case and whitespace, look-alike commands, corrupt state files, bad hook input, hooks that hang, a status line setup that never overwrites yours, and the companion skills (each names its trigger, stays small enough to load, and the review and audit stay read-only).
 - **A live eval** on a real Tauri + React + Firebase codebase: 12 prompts (5 vague, 5 clear, plus `raw:` and `sharpen:`). **12/12 pass** after one tuning round. Clear prompts ran directly. Vague ones got options that named real files and the project's own agents. See [`tests/eval/prompts.md`](tests/eval/prompts.md), and re-run it yourself with [`tests/eval/run.sh`](tests/eval/run.sh).
 
 ## FAQ
