@@ -14,7 +14,11 @@
 
 ---
 
-Every prompt you send an AI agent is plain text, and the agent has to guess what you meant. When it guesses wrong, you lose a turn, or worse, you get the wrong change.
+You know her. The colleague who never starts the wrong thing. You walk over and say "can you fix the login thing?" She doesn't open an editor. She says: *"The PIN lockout from this morning, or the Google sign-in that's been open since Tuesday?"* One question, and the right one. Then she's gone, and it's done.
+
+Sharpen puts her inside your AI agent.
+
+Every prompt you send an agent is plain text, and the agent has to guess what you meant. When it guesses wrong, you lose a turn, or worse, you get the wrong change.
 
 **Sharpen is a toggle.** Turn it on, and before Claude acts on a prompt, it reads that prompt against three things:
 
@@ -31,6 +35,8 @@ Then it does whichever of three things fits:
 | **Ambiguous:** `fix the login thing` | Asks **Which did you mean?**, with 2–3 clickable options. Each option is a fully engineered prompt. **Run as typed** is always available. |
 
 Most prompts go straight through. Sharpen only stops you when a wrong guess would cost you.
+
+**The rule was never "ask more questions."** The rule is: never act on a guess when two guesses lead to different work, and never ask when they don't. The questions are rare because they're needed, not just to look careful.
 
 ## Before / after
 
@@ -118,6 +124,8 @@ Restart Claude Code, then turn it on:
 
 Sharpen is **off by default**, and stays on or off across sessions until you change it.
 
+Only install Sharpen from `ardfaiyaz/sharpen` on GitHub. It's plain JavaScript and Markdown with zero dependencies, and it never ships binaries. A copy that does isn't the real one.
+
 ## Commands
 
 | Command | What it does |
@@ -137,7 +145,7 @@ While Sharpen is on, a red **`[SHARPEN]`** badge shows in Claude Code's status b
 It sets itself up the first time you run `/sharpen on`:
 
 - **No status line yet:** Sharpen adds one to `~/.claude/settings.json` automatically.
-- **You already have one** (for example, Ponytail's): Sharpen **never overwrites it**. Claude offers, once, to chain the badge after yours:
+- **You already have one,** say from another plugin: Sharpen **never overwrites it**. Claude offers, once, to chain the badge after yours:
 
   ```
   your-statusline-command; node "~/.config/sharpen/sharpen-statusline.js"
@@ -191,25 +199,31 @@ Start it with `sharpen:`, and you'll get options even when Sharpen is off.
 **Does it work in Codex, Gemini CLI, Copilot CLI, Cursor…?**
 Not yet. Claude Code comes first. Support for other agents is planned, and will reuse the same `SKILL.md`. Sharpen will only ship to agents that let a plugin run on every prompt, so that `/sharpen off` really turns it off.
 
+**Can it read my mind?**
+No. It reads your conversation, which is the next best thing, and more reliable.
+
 **Why "sharpen"?**
 A blunt prompt still cuts, just not where you meant.
 
-## Develop
+## Where it doesn't work (yet)
+
+- **`claude -p` and other headless runs:** no clickable options there, so they show up as a numbered list.
+- **A brand-new session with nothing said yet:** there's no conversation to read, so the options come from the code alone. They're still concrete, just less sure.
+- **Other agents:** see the FAQ.
+
+## Contributing
+
+Bug fixes are welcome. A change to the method needs an eval that compares no Sharpen, `main` and your branch, because a harmless-looking rewording can make Sharpen ask about clear prompts. Everything is in **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
 ```bash
 git clone https://github.com/ardfaiyaz/sharpen
 cd sharpen
 npm test
+claude --plugin-dir .   # try your checkout without installing it
 ```
 
-Try your local copy without installing it:
-
-```bash
-claude --plugin-dir /path/to/sharpen
-```
-
-The design and plan live in [`docs/superpowers/`](docs/superpowers/). Issues and PRs are welcome. If you change `SKILL.md`, run the eval before and after.
+The design, plan and research live in [`docs/`](docs/).
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE.md) © ardfaiyaz
