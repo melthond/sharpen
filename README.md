@@ -130,24 +130,26 @@ Sharpen is **off by default**, and stays on or off across sessions until you cha
 
 Other slash commands are never touched. `/sharpen:sharpen on` works too.
 
-## Status badge (optional)
+## Status badge
 
-Plugins can't set the status line themselves. To show `[SHARPEN]` while it's on, add this to `~/.claude/settings.json`:
+While Sharpen is on, a red **`[SHARPEN]`** badge shows in Claude Code's status bar. It disappears when you turn Sharpen off.
 
-```json
-"statusLine": {
-  "type": "command",
-  "command": "node ~/.claude/plugins/cache/sharpen/sharpen/<version>/hooks/sharpen-statusline.js"
-}
-```
+It sets itself up the first time you run `/sharpen on`:
 
-Already have a status line? Chain them: `your-statusline; node …/sharpen-statusline.js`.
+- **No status line yet:** Sharpen adds one to `~/.claude/settings.json` automatically.
+- **You already have one** (for example, Ponytail's): Sharpen **never overwrites it**. Claude offers, once, to chain the badge after yours:
+
+  ```
+  your-statusline-command; node "~/.config/sharpen/sharpen-statusline.js"
+  ```
+
+The badge script is copied to `~/.config/sharpen/`, outside the plugin folder that Claude Code replaces on every update, so the badge keeps working across updates.
 
 ## Privacy
 
 - **Nothing leaves your machine.** No API calls, no telemetry, no webhooks. The thinking is done by the agent you're already using.
 - **Your prompts are never logged.** The hooks read the prompt, decide, and exit.
-- **One file is written:** `~/.config/sharpen/state.json`, containing `{ "on": true }` or `false`.
+- **Files written:** `~/.config/sharpen/state.json` (`{ "on": true }` or `false`) and a copy of the badge script. `~/.claude/settings.json` is only edited to add the badge when you have no status line yet.
 
 ## The prompt
 
@@ -159,13 +161,14 @@ Sharpen is one prompt: [`skills/sharpen/SKILL.md`](skills/sharpen/SKILL.md), abo
 | `hooks/sharpen-session.js` | `SessionStart` hook: loads the method when Sharpen is on |
 | `hooks/sharpen-core.js` | The decision table: pure functions, fully tested |
 | `hooks/sharpen-state.js` | The on/off file |
-| `hooks/sharpen-statusline.js` | The `[SHARPEN]` badge |
+| `hooks/sharpen-statusline.js` | The red `[SHARPEN]` badge |
+| `hooks/sharpen-statusline-setup.js` | Puts the badge in your status bar without overwriting yours |
 
 The hooks never block a prompt. On any error they exit quietly, and if stdin never closes (a known Windows quirk) they give up after 3 seconds.
 
 ## Tested
 
-- **30 automated tests** (`npm test`, Node's built-in runner, zero dependencies): toggles, prefixes, case and whitespace, look-alike commands, corrupt state files, bad hook input, and hooks that hang.
+- **40 automated tests** (`npm test`, Node's built-in runner, zero dependencies): toggles, prefixes, case and whitespace, look-alike commands, corrupt state files, bad hook input, hooks that hang, and a status line setup that never overwrites yours.
 - **A live eval** on a real Tauri + React + Firebase codebase: 12 prompts (5 vague, 5 clear, plus `raw:` and `sharpen:`). **12/12 pass** after one tuning round. Clear prompts ran directly. Vague ones got options that named real files and the project's own agents. See [`tests/eval/prompts.md`](tests/eval/prompts.md), and re-run it yourself with [`tests/eval/run.sh`](tests/eval/run.sh).
 
 ## FAQ

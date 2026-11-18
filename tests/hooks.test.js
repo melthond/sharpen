@@ -5,13 +5,16 @@ const os = require('os');
 const path = require('path');
 const { spawn, spawnSync } = require('child_process');
 const { ON_NOTE, NUDGE, loadMethod } = require('../hooks/sharpen-core');
+const { STATUSLINE_NUDGE } = require('../hooks/sharpen-statusline-setup');
 
 const ROOT = path.join(__dirname, '..');
 const hook = (name) => path.join(ROOT, 'hooks', name);
 const home = () => fs.mkdtempSync(path.join(os.tmpdir(), 'sharpen-hook-'));
 const setOn = (dir) => fs.writeFileSync(path.join(dir, 'state.json'), '{"on":true}');
+// CLAUDE_CONFIG_DIR is always a temp dir so tests can never touch the real ~/.claude/settings.json
+const env = (dir) => ({ ...process.env, SHARPEN_HOME: dir, CLAUDE_CONFIG_DIR: path.join(dir, 'claude') });
 const run = (name, input, dir) =>
-  spawnSync(process.execPath, [hook(name)], { input, env: { ...process.env, SHARPEN_HOME: dir }, encoding: 'utf8' });
+  spawnSync(process.execPath, [hook(name)], { input, env: env(dir), encoding: 'utf8' });
 
 test('prompt hook toggles on and emits context', () => {
   const dir = home();
@@ -45,7 +48,7 @@ test('bad input', () => {
 });
 
 test('exits cleanly when stdin stays open', async () => {
-  const child = spawn(process.execPath, [hook('sharpen-prompt.js')], { env: { ...process.env, SHARPEN_HOME: home() } });
+  const child = spawn(process.execPath, [hook('sharpen-prompt.js')], { env: env(home()) });
   const code = await new Promise((resolve, reject) => {
     const t = setTimeout(() => { child.kill(); reject(new Error('hook hung')); }, 4000);
     child.on('exit', (c) => { clearTimeout(t); resolve(c); });
@@ -66,7 +69,7 @@ test('statusline', () => {
   const dir = home();
   assert.strictEqual(run('sharpen-statusline.js', '', dir).stdout, '');
   setOn(dir);
-  assert.strictEqual(run('sharpen-statusline.js', '', dir).stdout, '[SHARPEN]');
+  assert.strictEqual(run('sharpen-statusline.js', '', dir).stdout, '\x1b[38;5;196m[SHARPEN]\x1b[0m');
 });
 
 test('hooks.json is valid', () => {
@@ -86,4 +89,34 @@ test('manifests are valid', () => {
   assert.ok(fs.existsSync(path.join(ROOT, 'hooks', 'hooks.json')));
   assert.strictEqual(read('.claude-plugin/marketplace.json').plugins[0].name, 'sharpen');
   assert.ok(fs.readFileSync(path.join(ROOT, 'commands', 'sharpen.md'), 'utf8').includes('$ARGUMENTS'));
+});
+
+test('/sharpen on puts the badge in an empty status bar', () => {
+  const dir = home();
+  run('sharpen-prompt.js', '{"prompt":"/sharpen on"}', dir);
+  const settings = JSON.parse(fs.readFileSync(path.join(dir, 'claude', 'settings.json'), 'utf8'));
+  assert.match(settings.statusLine.command, /sharpen-statusline.js/);
+});
+
+test('/sharpen on with an existing status line asks instead of overwriting', () => {
+  const dir = home();
+  fs.mkdirSync(path.join(dir, 'claude'));
+  fs.writeFileSync(path.join(dir, 'claude', 'settings.json'), '{"statusLine":{"type":"command","command":"mine"}}');
+  const ctx = JSON.parse(run('sharpen-prompt.js', '{"prompt":"/sharpen on"}', dir).stdout).hookSpecificOutput.additionalContext;
+  assert.ok(ctx.includes(STATUSLINE_NUDGE));
+  assert.strictEqual(JSON.parse(fs.readFileSync(path.join(dir, 'claude', 'settings.json'), 'utf8')).statusLine.command, 'mine');
+});
+
+test('session start sets up the badge when on', () => {
+  const dir = home();
+  setOn(dir);
+  run('sharpen-session.js', '{}', dir);
+  assert.ok(fs.existsSync(path.join(dir, 'claude', 'settings.json')));
+});
+
+test('plain prompts never touch settings', () => {
+  const dir = home();
+  setOn(dir);
+  run('sharpen-prompt.js', '{"prompt":"fix it"}', dir);
+  assert.ok(!fs.existsSync(path.join(dir, 'claude', 'settings.json')));
 });
