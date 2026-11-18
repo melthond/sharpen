@@ -1,0 +1,14 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "sharpen",
+  "description": "Turn vague prompts into specific, engineered ones.",
+  "owner": { "name": "OWNER", "url": "https://github.com/OWNER" },
+  "plugins": [
+    {
+      "name": "sharpen",
+      "description": "Offers 2-4 sharpened versions of a vague prompt, built from your conversation, codebase and installed tools.",
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}
