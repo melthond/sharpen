@@ -1,6 +1,6 @@
 ---
 name: sharpen
-description: Turns a vague prompt into 2-4 specific, engineered prompts built from the conversation, the codebase, and the skills, agents and MCP tools available here. Use when Sharpen is on or the prompt starts with "sharpen:".
+description: Turns a vague prompt into 2-3 specific, engineered prompts built from the conversation, the codebase, and the skills, agents and MCP tools available here. Use when Sharpen is on or the prompt starts with "sharpen:".
 ---
 
 # Sharpen
@@ -24,9 +24,9 @@ If every reading leads to the same action, it is not ambiguous. Open-ended explo
 - Then do at most 3 quick searches or reads to find the real files and names. No long exploration before asking.
 - Check the capabilities listed in your context: **skills**, **agents/subagents**, **MCP** tools, and plugin slash commands. Note any that fit this request. Use only ones that are actually listed; never invent one.
 
-## 3. Build 2–4 options
+## 3. Build 2–3 options
 
-Write 2–4 options, one per interpretation, most likely first, plus `Run as typed`. Don't add a "Something else" option, because the user can always type their own. Each option is a different action, not a rewording. Classify the intent and fill that type's slots:
+Write 2–3 options, one per interpretation, most likely first, plus `Run as typed`, for 4 choices at most. Don't add a "Something else" option, because the user can always type their own. Each option is a different action, not a rewording. Classify the intent and fill that type's slots:
 
 | Intent | Slots |
 |---|---|

@@ -18,7 +18,7 @@ function loadMethod(file) {
 
 function decide(prompt, state, method) {
   const p = String(prompt || '').trim();
-  const cmd = p.match(/^\/sharpen(?:\s+(\S+))?\s*$/i);
+  const cmd = p.match(/^\/sharpen(?::sharpen)?(?:\s+(\S+))?\s*$/i); // also the namespaced /sharpen:sharpen form
   if (cmd) {
     const arg = (cmd[1] || '').toLowerCase();
     if (arg === 'on') return { context: `${ON_NOTE}\n\n${method}`, newState: { on: true } };

@@ -1,11 +1,17 @@
 {
   "name": "sharpen",
   "version": "0.1.0",
-  "description": "Turn vague prompts into specific, engineered ones. Reads your conversation, your codebase and your installed skills, agents and MCP tools, then offers 2-4 sharpened versions to pick from.",
-  "author": { "name": "OWNER", "url": "https://github.com/OWNER" },
+  "description": "Turn vague prompts into specific, engineered ones. Reads your conversation, your codebase and your installed skills, agents and MCP tools, then offers 2-3 sharpened versions to pick from.",
+  "author": {
+    "name": "OWNER",
+    "url": "https://github.com/OWNER"
+  },
   "homepage": "https://github.com/OWNER/sharpen",
   "repository": "https://github.com/OWNER/sharpen",
   "license": "MIT",
-  "keywords": ["prompt-engineering", "clarification", "productivity"],
-  "hooks": "./hooks/hooks.json"
+  "keywords": [
+    "prompt-engineering",
+    "clarification",
+    "productivity"
+  ]
 }

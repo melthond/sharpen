@@ -70,3 +70,10 @@ test('loadMethod strips front matter', () => {
   assert.strictEqual(c.loadMethod(path.join(__dirname, 'fixtures', 'skill.md')), 'Body line');
   assert.strictEqual(c.loadMethod(path.join(__dirname, 'fixtures', 'plain.md')), 'Plain body');
 });
+
+test('namespaced command toggles', () => {
+  assert.deepStrictEqual(c.decide('/sharpen:sharpen on', OFF, M).newState, { on: true });
+  assert.deepStrictEqual(c.decide('/sharpen:sharpen off', ON, M), { context: c.OFF_NOTE, newState: { on: false } });
+  assert.deepStrictEqual(c.decide('/sharpen:sharpen', ON, M), { context: c.STATUS_ON, newState: null });
+  assert.deepStrictEqual(c.decide('/sharpen:other on', ON, M), none);
+});

@@ -82,7 +82,8 @@ test('manifests are valid', () => {
   const read = (p) => JSON.parse(fs.readFileSync(path.join(ROOT, p), 'utf8'));
   const plugin = read('.claude-plugin/plugin.json');
   assert.strictEqual(plugin.name, 'sharpen');
-  assert.ok(fs.existsSync(path.join(ROOT, plugin.hooks)), 'plugin.hooks points to a file');
+  assert.strictEqual(plugin.hooks, undefined, 'hooks/hooks.json is auto-loaded; listing it again risks a duplicate load');
+  assert.ok(fs.existsSync(path.join(ROOT, 'hooks', 'hooks.json')));
   assert.strictEqual(read('.claude-plugin/marketplace.json').plugins[0].name, 'sharpen');
   assert.ok(fs.readFileSync(path.join(ROOT, 'commands', 'sharpen.md'), 'utf8').includes('$ARGUMENTS'));
 });

@@ -8,7 +8,7 @@ Turn Sharpen on, and before Claude acts on a prompt it reads the prompt against 
 |---|---|
 | Already clear: `rename getUser to fetchUser in src/api.ts` | Runs it. `Clear prompt, running as typed.` |
 | Vague, but only one sensible meaning: `now add tests for it` | Runs it, and first says what it understood: `Running as: add unit tests for parsePin in src/pin.ts…` |
-| Ambiguous: `fix the login thing` | Shows 2–4 clickable options, each a fully engineered prompt, plus **Run as typed** |
+| Ambiguous: `fix the login thing` | Shows 2–3 clickable options, each a fully engineered prompt, plus **Run as typed** |
 
 ### Example
 

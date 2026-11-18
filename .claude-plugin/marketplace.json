@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "sharpen",
-      "description": "Offers 2-4 sharpened versions of a vague prompt, built from your conversation, codebase and installed tools.",
+      "description": "Offers 2-3 sharpened versions of a vague prompt, built from your conversation, codebase and installed tools.",
       "source": "./",
       "category": "productivity"
     }

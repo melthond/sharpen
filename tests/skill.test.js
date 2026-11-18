@@ -21,3 +21,9 @@ test('method covers the gate, options, capabilities and intents', () => {
 test('method stays small enough to inject', () => {
   assert.ok(loadMethod(METHOD_FILE).length < 6000, `length ${loadMethod(METHOD_FILE).length}`);
 });
+
+test('options fit AskUserQuestion (max 4 choices incl. Run as typed)', () => {
+  const m = loadMethod(METHOD_FILE);
+  assert.ok(m.includes('2–3 options'), 'caps interpretations at 3');
+  assert.ok(!/2–4 options/.test(m), 'no 2–4 options wording left');
+});
