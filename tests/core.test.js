@@ -4,24 +4,27 @@ const path = require('path');
 const c = require('../hooks/sharpen-core');
 
 const M = 'METHOD';
-const ON = { on: true };
-const OFF = { on: false };
+const ON = { on: true, mode: 'full' };
+const OFF = { on: false, mode: 'full' };
+const ON_LITE = { on: true, mode: 'lite' };
 const none = { context: null, newState: null };
 
 test('on toggles', () => {
   const r = c.decide('/sharpen on', OFF, M);
-  assert.deepStrictEqual(r.newState, { on: true });
+  assert.deepStrictEqual(r.newState, { on: true, mode: 'full' });
   assert.ok(r.context.startsWith(c.ON_NOTE));
   assert.ok(r.context.endsWith(M));
 });
 
 test('off toggles', () => {
-  assert.deepStrictEqual(c.decide('/sharpen off', ON, M), { context: c.OFF_NOTE, newState: { on: false } });
+  assert.deepStrictEqual(c.decide('/sharpen off', ON_LITE, M), { context: c.OFF_NOTE, newState: { on: false, mode: 'lite' } });
 });
 
 test('status', () => {
-  assert.deepStrictEqual(c.decide('/sharpen', ON, M), { context: c.STATUS_ON, newState: null });
+  assert.ok(c.decide('/sharpen', ON, M).context.startsWith(c.STATUS_ON));
+  assert.ok(c.decide('/sharpen', ON_LITE, M).context.includes('lite'));
   assert.deepStrictEqual(c.decide('/sharpen', OFF, M), { context: c.STATUS_OFF, newState: null });
+  assert.strictEqual(c.decide('/sharpen', ON, M).newState, null);
 });
 
 test('unknown arg', () => {
@@ -29,7 +32,7 @@ test('unknown arg', () => {
 });
 
 test('case and whitespace', () => {
-  assert.deepStrictEqual(c.decide('  /SHARPEN On  ', OFF, M).newState, { on: true });
+  assert.deepStrictEqual(c.decide('  /SHARPEN On  ', OFF, M).newState, { on: true, mode: 'full' });
   for (const p of ['Sharpen: fix it', 'SHARPEN:fix']) {
     assert.ok(c.decide(p, ON, M).context.startsWith(c.FORCE_NOTE), p);
   }
@@ -58,11 +61,12 @@ test('off does nothing', () => {
 });
 
 test('on nudges plain prompts', () => {
-  assert.deepStrictEqual(c.decide('fix the login thing', ON, M), { context: c.NUDGE, newState: null });
+  assert.deepStrictEqual(c.decide('fix the login thing', ON, M), { context: c.NUDGE_FULL, newState: null });
+  assert.deepStrictEqual(c.decide('fix the login thing', ON_LITE, M), { context: c.NUDGE, newState: null });
 });
 
 test('empty prompt', () => {
-  assert.strictEqual(c.decide('', ON, M).context, c.NUDGE);
+  assert.strictEqual(c.decide('', ON, M).context, c.NUDGE_FULL);
   assert.deepStrictEqual(c.decide('', OFF, M), none);
 });
 
@@ -72,9 +76,9 @@ test('loadMethod strips front matter', () => {
 });
 
 test('namespaced command toggles', () => {
-  assert.deepStrictEqual(c.decide('/sharpen:sharpen on', OFF, M).newState, { on: true });
-  assert.deepStrictEqual(c.decide('/sharpen:sharpen off', ON, M), { context: c.OFF_NOTE, newState: { on: false } });
-  assert.deepStrictEqual(c.decide('/sharpen:sharpen', ON, M), { context: c.STATUS_ON, newState: null });
+  assert.deepStrictEqual(c.decide('/sharpen:sharpen on', OFF, M).newState, { on: true, mode: 'full' });
+  assert.deepStrictEqual(c.decide('/sharpen:sharpen off', ON, M), { context: c.OFF_NOTE, newState: { on: false, mode: 'full' } });
+  assert.ok(c.decide('/sharpen:sharpen', ON, M).context.startsWith(c.STATUS_ON));
   assert.deepStrictEqual(c.decide('/sharpen:other on', ON, M), none);
 });
 
@@ -82,4 +86,19 @@ test('companion skill commands are not toggles', () => {
   for (const p of ['/sharpen:sharpen-prompt fix it', '/sharpen:sharpen-help', '/sharpen-review']) {
     assert.deepStrictEqual(c.decide(p, ON, M), none, p);
   }
+});
+
+test('modes: switch, keep, and reject unknown', () => {
+  assert.deepStrictEqual(c.decide('/sharpen lite', OFF, M).newState, { on: true, mode: 'lite' });
+  assert.deepStrictEqual(c.decide('/sharpen full', ON_LITE, M).newState, { on: true, mode: 'full' });
+  assert.deepStrictEqual(c.decide('/sharpen on lite', OFF, M).newState, { on: true, mode: 'lite' });
+  assert.deepStrictEqual(c.decide('/sharpen on', { on: false, mode: 'lite' }, M).newState, { on: true, mode: 'lite' }, 'on keeps the saved mode');
+  assert.ok(c.decide('/sharpen lite', OFF, M).context.includes('Mode: lite'));
+  assert.ok(c.decide('/sharpen on', OFF, M).context.includes('Mode: full'));
+  assert.deepStrictEqual(c.decide('/sharpen on loud', OFF, M), { context: c.USAGE, newState: null });
+  assert.deepStrictEqual(c.decide('/sharpen on full now', OFF, M), { context: null, newState: null }, 'three words is not a toggle');
+});
+
+test('full-mode nudge spells out the required first line', () => {
+  for (const s of ['Sharpened prompt (clear):', 'Sharpened prompt (fill-in):', 'quote block']) assert.ok(c.NUDGE_FULL.includes(s), s);
 });

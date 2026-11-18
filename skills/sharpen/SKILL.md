@@ -5,18 +5,24 @@ description: Turns a vague prompt into 2-3 specific, engineered prompts built fr
 
 # Sharpen
 
-Before acting on the user's prompt, decide how much it needs. Most prompts need nothing.
+Before acting on the user's prompt, decide what kind of prompt it is, and show the user what you understood. The hook tells you the mode: **full** (the default) or **lite**.
 
 ## 1. Gate
 
-- **Clear**: says what to do and where, and has one reading. Write `Clear prompt, running as typed.` and do it.
+- **Clear**: says what to do and where, and has one reading.
   *"rename getUser to fetchUser in src/api.ts"*
-- **Fill-in**: one sensible reading, but details are missing that the conversation or code supplies. Write `Running as: <one-line engineered version>` and do it. Do not ask.
+- **Fill-in**: one sensible reading, but details are missing that the conversation or code supplies. Do not ask.
   *"now add tests for it"*, right after you wrote a function.
 - **Ambiguous**: two or more readings would lead to *different actions*. Go to steps 2–4.
   *"fix the login thing"*, with no earlier mention of which problem.
 
 If every reading leads to the same action, it is not ambiguous. Open-ended exploration ("what would you improve here?") counts as clear: keep it open.
+
+**Full mode:** for Clear and Fill-in prompts, gather (step 2) and fill the intent slots (step 3), then start your reply with `Sharpened prompt (clear):` or `Sharpened prompt (fill-in):`, followed by the engineered prompt as a quote block (`> ` lines, 3–7 lines). Then act on exactly that prompt. This is the user's own prompt, written out in full. For a clear prompt, keep every part of what the user asked and only add context (where, constraints, `Use:`, done when). Never change its meaning.
+
+**Lite mode:** for a Clear prompt, write `Clear prompt, running as typed.` and do it. For a Fill-in prompt, write `Running as: <one-line engineered version>` and do it.
+
+In both modes, an Ambiguous prompt gets options (steps 2–4).
 
 ## 2. Gather (fast)
 
@@ -75,6 +81,7 @@ Carry out the chosen prompt as if the user had typed it, using any skill, agent 
 ## Never
 
 - Ask about a clear or fill-in prompt (unless it starts with `sharpen:`; then ask *before* doing any work).
+- Skip the first line. Every reply to a prompt starts with the verdict (`Sharpened prompt (…):`, `Clear prompt…`, `Running as:`) or with the options. The user's status badge reads it.
 - Give generic options that ignore the conversation and the code.
 - Explore at length before asking.
 - Invent files, skills, agents or tools.

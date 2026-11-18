@@ -7,21 +7,23 @@ description: >
   use sharpen", "what can sharpen do", "sharpen commands".
 ---
 
-Show the reference card below. Before showing it, read `~/.config/sharpen/state.json` and fill in the status line: `on` when the file says `"on": true`, otherwise `off` (a missing or unreadable file means off). Change nothing else, add no commentary before the card, and answer any follow-up question from this card.
+Show the reference card below. Before showing it, read `~/.config/sharpen/state.json` and fill in the status line: `on` when the file says `"on": true`, otherwise `off` (a missing or unreadable file means off), and the mode from `"mode"` (`full` when missing). Change nothing else, add no commentary before the card, and answer any follow-up question from this card.
 
 If the user asked about one thing ("how do I turn it off?"), answer that in one or two lines, quoting the row from the card, instead of showing the whole card.
 
 ---
 
-**Sharpen**: turns a vague prompt into the one you meant. Right now it's **<on|off>**.
+**Sharpen**: turns a vague prompt into the one you meant. Right now it's **<on|off>**, in **<full|lite>** mode.
 
 **What it does with each prompt (while on)**
 
-| Your prompt | What happens |
-|---|---|
-| Already clear: says what and where | `Clear prompt, running as typed.` Then it runs. |
-| Vague, one sensible meaning | `Running as: <what it understood>`. Then it runs. Press Esc to correct it. |
-| Ambiguous: readings lead to different work | **Which did you mean?** 2–3 options plus **Run as typed**. Each option is a full engineered prompt. Its preview shows every line. |
+| Your prompt | Full mode (default) | Lite mode |
+|---|---|---|
+| Already clear: says what and where | Shows `Sharpened prompt (clear):` with your prompt written out in full, then runs that | `Clear prompt, running as typed.` Then it runs. |
+| Vague, one sensible meaning | Shows `Sharpened prompt (fill-in):` with the engineered prompt, then runs that | `Running as: <what it understood>`. Then it runs. |
+| Ambiguous: readings lead to different work | **Which did you mean?** 2–3 options plus **Run as typed**. Each option is a full engineered prompt. | Same |
+
+Press Esc at any point if what it understood is wrong.
 
 The options use your conversation, your code (real paths only), and the skills, agents and MCP tools you have installed. They're named on a `Use:` line.
 
@@ -29,9 +31,11 @@ The options use your conversation, your code (real paths only), and the skills, 
 
 | Type | What it does |
 |---|---|
-| `/sharpen on` | Turn it on. Remembered across sessions. |
+| `/sharpen on` | Turn it on, in the mode you used last (full the first time). Remembered across sessions. |
+| `/sharpen full` | Turn it on in full mode: every prompt shows its engineered version. |
+| `/sharpen lite` | Turn it on in lite mode: one-line verdicts, options only when ambiguous. |
 | `/sharpen off` | Turn it off. |
-| `/sharpen` | Show whether it's on. |
+| `/sharpen` | Show whether it's on, and the mode. |
 | `raw: <prompt>` | Skip Sharpen for this one prompt. |
 | `sharpen: <prompt>` | Always get options for this prompt, even if it's clear or Sharpen is off. |
 

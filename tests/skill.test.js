@@ -105,3 +105,13 @@ test('help lists the new skills and the badge words', () => {
     assert.ok(m.includes(s), `missing: ${s}`);
   }
 });
+
+test('method documents full and lite modes', () => {
+  const m = loadMethod(METHOD_FILE);
+  for (const s of ['Full mode', 'Lite mode', 'Sharpened prompt (clear):', 'Sharpened prompt (fill-in):']) assert.ok(m.includes(s), s);
+});
+
+test('help documents the modes', () => {
+  const m = body('sharpen-help');
+  for (const s of ['/sharpen full', '/sharpen lite']) assert.ok(m.includes(s), s);
+});

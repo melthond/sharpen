@@ -4,7 +4,7 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const { spawn, spawnSync } = require('child_process');
-const { ON_NOTE, NUDGE, loadMethod } = require('../hooks/sharpen-core');
+const { ON_NOTE, NUDGE_FULL, loadMethod } = require('../hooks/sharpen-core');
 const { STATUSLINE_NUDGE } = require('../hooks/sharpen-statusline-setup');
 
 const ROOT = path.join(__dirname, '..');
@@ -44,7 +44,7 @@ test('bad input', () => {
   setOn(dir);
   const r = run('sharpen-prompt.js', '{}', dir);
   assert.strictEqual(r.status, 0);
-  assert.strictEqual(JSON.parse(r.stdout).hookSpecificOutput.additionalContext, NUDGE);
+  assert.strictEqual(JSON.parse(r.stdout).hookSpecificOutput.additionalContext, NUDGE_FULL);
 });
 
 test('exits cleanly when stdin stays open', async () => {

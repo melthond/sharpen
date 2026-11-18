@@ -120,3 +120,8 @@ test('badge shows the verdict read from the transcript', () => {
   const bad = spawnSync(process.execPath, [s.copy], { input: '{"transcript_path":"/nope.jsonl"}', env: { ...process.env }, encoding: 'utf8' }).stdout;
   assert.strictEqual(bad, '\x1b[38;5;196m[SHARPEN]\x1b[0m', 'missing transcript falls back to the plain badge');
 });
+
+test('verdict: full-mode lines', () => {
+  assert.strictEqual(verdict([user('rename x'), say(text('Sharpened prompt (clear):\n> Rename x in a.ts'))]), 'CLEAR');
+  assert.strictEqual(verdict([user('add tests'), say(text('Sharpened prompt (fill-in):\n> Add tests'))]), 'FILL-IN');
+});
