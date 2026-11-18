@@ -3,7 +3,7 @@ const fs = require('fs');
 
 const NUDGE = 'SHARPEN is on. Before acting on this prompt, run the Sharpen step (clear check first; offer options only if the prompt is unclear).';
 const RAW_NOTE = 'SHARPEN: the user prefixed this prompt with raw:. Ignore the prefix and run the rest exactly as typed. Do not run the Sharpen step.';
-const FORCE_NOTE = 'SHARPEN: the user prefixed this prompt with sharpen:. Ignore the prefix, skip the clear check, and always offer options for the rest of the prompt using the method below.';
+const FORCE_NOTE = 'SHARPEN: the user prefixed this prompt with sharpen:. Ignore the prefix and skip the clear check. Do not answer or do any work yet: first offer options for the rest of the prompt using the method below, and act only after the user picks one.';
 const ON_NOTE = 'SHARPEN ON. Confirm in one short line. From now on, follow this method on every prompt:';
 const OFF_NOTE = 'SHARPEN OFF. Confirm in one short line. Stop running the Sharpen step; act on prompts as typed.';
 const STATUS_ON = 'SHARPEN is on. Report that in one short line.';

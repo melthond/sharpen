@@ -26,7 +26,7 @@ If every reading leads to the same action, it is not ambiguous. Open-ended explo
 
 ## 3. Build 2–4 options
 
-Write one option per interpretation, most likely first. Each option is a different action, not a rewording. Classify the intent and fill that type's slots:
+Write 2–4 options, one per interpretation, most likely first, plus `Run as typed`. Don't add a "Something else" option, because the user can always type their own. Each option is a different action, not a rewording. Classify the intent and fill that type's slots:
 
 | Intent | Slots |
 |---|---|
@@ -74,7 +74,7 @@ Carry out the chosen prompt as if the user had typed it, using any skill, agent 
 
 ## Never
 
-- Ask about a clear or fill-in prompt (unless it starts with `sharpen:`).
+- Ask about a clear or fill-in prompt (unless it starts with `sharpen:`; then ask *before* doing any work).
 - Give generic options that ignore the conversation and the code.
 - Explore at length before asking.
 - Invent files, skills, agents or tools.
