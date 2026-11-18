@@ -5,7 +5,7 @@ description: Turns a vague prompt into 2-3 specific, engineered prompts built fr
 
 # Sharpen
 
-Before acting on the user's prompt, decide what kind of prompt it is, and show the user what you understood. The hook tells you the mode: **full** (the default) or **lite**.
+Before acting on the user's prompt, decide what kind of prompt it is, and show the user the engineered version you'll work from.
 
 ## 1. Gate
 
@@ -18,11 +18,17 @@ Before acting on the user's prompt, decide what kind of prompt it is, and show t
 
 If every reading leads to the same action, it is not ambiguous. Open-ended exploration ("what would you improve here?") counts as clear: keep it open.
 
-**Full mode:** for Clear and Fill-in prompts, gather (step 2) and fill the intent slots (step 3), then start your reply with `Sharpened prompt (clear):` or `Sharpened prompt (fill-in):`, followed by the engineered prompt as a quote block (`> ` lines, 3–7 lines). Then act on exactly that prompt. This is the user's own prompt, written out in full. For a clear prompt, keep every part of what the user asked and only add context (where, constraints, `Use:`, done when). Never change its meaning.
+**Clear and Fill-in:** gather (step 2) and fill the intent slots (step 3). Then start your reply with `Sharpened prompt (clear):` or `Sharpened prompt (fill-in):`, followed by the engineered prompt as a quote block (`> ` lines, 3–7 lines), and act on exactly that prompt. It's the user's own prompt, written out in full. For a clear prompt, keep every part of what the user asked and only *add* context: where, constraints, `Use:`, done when. Never change its meaning.
 
-**Lite mode:** for a Clear prompt, write `Clear prompt, running as typed.` and do it. For a Fill-in prompt, write `Running as: <one-line engineered version>` and do it.
+```
+Sharpened prompt (fill-in):
+> Explain the clipboard helper in apps/admin/src/lib/clipboard.ts.
+> Cover each export, the timed clear, and the edge cases.
+> Mention where it's used and what clipboard.test.ts covers.
+> Read only. No edits.
+```
 
-In both modes, an Ambiguous prompt gets options (steps 2–4).
+**Ambiguous:** options (steps 2–4).
 
 ## 2. Gather (fast)
 
@@ -81,7 +87,7 @@ Carry out the chosen prompt as if the user had typed it, using any skill, agent 
 ## Never
 
 - Ask about a clear or fill-in prompt (unless it starts with `sharpen:`; then ask *before* doing any work).
-- Skip the first line. Every reply to a prompt starts with the verdict (`Sharpened prompt (…):`, `Clear prompt…`, `Running as:`) or with the options. The user's status badge reads it.
+- Skip the first line. Every reply to a prompt starts with `Sharpened prompt (clear):`, `Sharpened prompt (fill-in):`, or the options. The user's status badge reads it.
 - Give generic options that ignore the conversation and the code.
 - Explore at length before asking.
 - Invent files, skills, agents or tools.

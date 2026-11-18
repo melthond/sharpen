@@ -38,8 +38,8 @@ function verdict(lines) {
       if (b.type === 'tool_use' && b.name === 'AskUserQuestion') { if (!asked) asked = b.id || true; continue; }
       if (b.type !== 'text' || asked) continue;
       const t = b.text.trim();
-      if (t.startsWith('Clear prompt, running as typed') || /^Sharpened prompt \(clear\)/i.test(t)) return 'CLEAR';
-      if (t.startsWith('Running as:') || /^Sharpened prompt \(fill-in\)/i.test(t)) return 'FILL-IN';
+      if (/^Sharpened prompt \(clear\)/i.test(t)) return 'CLEAR';
+      if (/^Sharpened prompt \(fill-in\)/i.test(t)) return 'FILL-IN';
       if (/which did you mean/i.test(t)) return 'ASKING';
       return null; // replied without a Sharpen verdict
     }

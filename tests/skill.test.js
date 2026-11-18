@@ -12,7 +12,7 @@ test('front matter names the skill and describes it', () => {
 
 test('method covers the gate, options, capabilities and intents', () => {
   const m = loadMethod(METHOD_FILE);
-  for (const s of ['Clear prompt, running as typed.', 'Running as:', 'AskUserQuestion', 'Run as typed', 'Use:', 'skills', 'agents', 'MCP',
+  for (const s of ['Sharpened prompt (clear):', 'Sharpened prompt (fill-in):', 'AskUserQuestion', 'Run as typed', 'Use:', 'skills', 'agents', 'MCP',
     'Bug', 'Feature', 'Refactor', 'Performance', 'Question', 'Review', 'Explore', 'Ops']) {
     assert.ok(m.includes(s), `missing: ${s}`);
   }
@@ -56,7 +56,7 @@ test('sharpen-prompt reuses the method instead of copying it, and never runs the
 
 test('sharpen-help lists every command and prefix that exists', () => {
   const m = body('sharpen-help');
-  for (const s of ['/sharpen on', '/sharpen off', 'raw:', 'sharpen:', '/sharpen:sharpen-prompt', '/sharpen:sharpen-review', '/sharpen:sharpen-audit', 'Clear prompt, running as typed.', 'Running as:']) {
+  for (const s of ['/sharpen on', '/sharpen off', 'raw:', 'sharpen:', '/sharpen:sharpen-prompt', '/sharpen:sharpen-review', '/sharpen:sharpen-audit', 'Sharpened prompt (clear):', 'Sharpened prompt (fill-in):']) {
     assert.ok(m.includes(s), `missing: ${s}`);
   }
 });
@@ -106,12 +106,9 @@ test('help lists the new skills and the badge words', () => {
   }
 });
 
-test('method documents full and lite modes', () => {
-  const m = loadMethod(METHOD_FILE);
-  for (const s of ['Full mode', 'Lite mode', 'Sharpened prompt (clear):', 'Sharpened prompt (fill-in):']) assert.ok(m.includes(s), s);
-});
-
-test('help documents the modes', () => {
-  const m = body('sharpen-help');
-  for (const s of ['/sharpen full', '/sharpen lite']) assert.ok(m.includes(s), s);
+test('one behavior: no modes or old one-line verdicts left in the user-facing skills', () => {
+  for (const name of ['sharpen', 'sharpen-help']) {
+    const m = name === 'sharpen' ? loadMethod(METHOD_FILE) : body(name);
+    for (const s of ['Lite mode', 'Full mode', '/sharpen lite', '/sharpen full', 'Clear prompt, running as typed', 'Running as:']) assert.ok(!m.includes(s), name + ' still has: ' + s);
+  }
 });

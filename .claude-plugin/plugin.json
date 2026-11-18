@@ -1,6 +1,6 @@
 {
   "name": "sharpen",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Turn vague prompts into specific, engineered ones. Reads your conversation, your codebase and your installed skills, agents and MCP tools, then offers 2-3 sharpened versions to pick from.",
   "author": {
     "name": "ardfaiyaz",

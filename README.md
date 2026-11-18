@@ -50,8 +50,6 @@ That's a real run on a real codebase. Every prompt gets one of three treatments:
 
 Claude Code doesn't let a plugin swap the message you sent, so Sharpen does the next best thing. The very first thing in Claude's reply is the engineered prompt, and everything after it follows that prompt. You always see what it understood, and you can press Esc the moment it's wrong.
 
-Prefer it quieter? **Lite mode** (`/sharpen lite`) runs clear prompts as typed, gives vague ones a single `Running as:` line, and only stops you when a wrong guess would cost you.
-
 **The rule was never "ask more questions."** The rule is: never act on a guess when two guesses lead to different work, and never ask when they don't. The questions are rare because they're needed, not just to look careful.
 
 ## Before / after
@@ -91,7 +89,7 @@ your prompt ──► gate ──┬── clear ─────► gather ─�
                        └── ambiguous ─► gather ──► 2–3 options ──► you pick ──────► run it
 ```
 
-**1. Gate.** Sharpen decides what kind of prompt it is. It only *asks* when two readings would lead to **different actions**. If every reading ends in the same edit, it writes out the engineered prompt and goes. In lite mode, a clear prompt skips the rewrite completely.
+**1. Gate.** Sharpen decides what kind of prompt it is. It only *asks* when two readings would lead to **different actions**. If every reading ends in the same edit, it writes out the engineered prompt and goes.
 
 **2. Gather, fast.** It checks the conversation first, then does at most a few quick searches of the codebase. It never goes on a long exploration before asking.
 
@@ -116,7 +114,7 @@ your prompt ──► gate ──┬── clear ─────► gather ─�
 
 It's based on research, not vibes. The full notes are in [`docs/research/2026-11-19-prompt-architecture.md`](docs/research/2026-11-19-prompt-architecture.md).
 
-- **Rewriting prompts that are already clear can make results *worse*.** That's why a clear prompt is only ever added to, never reworded, and why lite mode skips the rewrite completely.
+- **Rewriting prompts that are already clear can make results *worse*.** That's why a clear prompt is only ever added to, never reworded.
 - **Models notice ambiguity but guess anyway, unless they're told to stop and check.** That's why there's a hook on every prompt.
 - **Good clarifying questions offer distinct interpretations, not rewordings.** That's why there's one option per meaning.
 - **Specific prompts name the file, the symptom and what "done" looks like** (Claude Code best practices). That's why options are built from slots for each intent.
@@ -146,11 +144,9 @@ Only install Sharpen from `ardfaiyaz/sharpen` on GitHub. It's plain JavaScript a
 
 | Command | What it does |
 |---|---|
-| `/sharpen on` | Turn Sharpen on, in the mode you used last (full the first time). Remembered across sessions. |
-| `/sharpen full` | Full mode (default): every prompt shows its engineered version before Claude acts. |
-| `/sharpen lite` | Lite mode: clear prompts run as typed, vague ones get a `Running as:` line, and you only get options when a prompt is ambiguous. |
+| `/sharpen on` | Turn Sharpen on. Every prompt shows its engineered version before Claude acts. Remembered across sessions. |
 | `/sharpen off` | Turn it off. |
-| `/sharpen` | Show whether it's on, and the mode. |
+| `/sharpen` | Show whether it's on. |
 | `raw: <prompt>` | Skip Sharpen for this one prompt. |
 | `sharpen: <prompt>` | Always get options for this prompt, even when it's clear or Sharpen is off. |
 
@@ -179,8 +175,8 @@ While Sharpen is on, a red badge shows in Claude Code's status bar with **what S
 
 | Badge | Meaning |
 |---|---|
-| `[SHARPEN - CLEAR]` | Your prompt was clear and ran as typed |
-| `[SHARPEN - FILL-IN]` | It had one obvious meaning and ran with `Running as: …` |
+| `[SHARPEN - CLEAR]` | Your prompt was clear: it showed `Sharpened prompt (clear):` and ran that |
+| `[SHARPEN - FILL-IN]` | It had one obvious meaning: it showed `Sharpened prompt (fill-in):` and ran that |
 | `[SHARPEN - ASKING]` | It was ambiguous, and the options are waiting for you |
 | `[SHARPEN - SHARPENED]` | You picked an option, and the engineered prompt is running |
 | `[SHARPEN - RAW]` | You skipped Sharpen with `raw:` |
@@ -222,19 +218,19 @@ The hooks never block a prompt. On any error they exit quietly, and if stdin nev
 
 ## Tested
 
-- **76 automated tests** (`npm test`, Node's built-in runner, zero dependencies): toggles, prefixes, case and whitespace, look-alike commands, corrupt state files, bad hook input, hooks that hang, a status line setup that never overwrites yours, and the companion skills (each names its trigger, stays small enough to load, and the review and audit stay read-only).
+- **74 automated tests** (`npm test`, Node's built-in runner, zero dependencies): toggles, prefixes, case and whitespace, look-alike commands, corrupt state files, bad hook input, hooks that hang, a status line setup that never overwrites yours, and the companion skills (each names its trigger, stays small enough to load, and the review and audit stay read-only).
 - **A live eval** on a real Tauri + React + Firebase codebase: 12 prompts (5 vague, 5 clear, plus `raw:` and `sharpen:`). **12/12 pass** after one tuning round. Clear prompts ran directly. Vague ones got options that named real files and the project's own agents. See [`tests/eval/prompts.md`](tests/eval/prompts.md), and re-run it yourself with [`tests/eval/run.sh`](tests/eval/run.sh).
 
 ## FAQ
 
 **Won't this slow me down?**
-It only stops to ask when your prompt is truly ambiguous, which is exactly when a wrong guess would slow you down more. Every other prompt runs straight away. Full mode adds a few lines at the top of each reply, so you can see what it understood.
+It only stops to ask when your prompt is truly ambiguous, which is exactly when a wrong guess would slow you down more. Every other prompt runs straight away, with a few lines at the top of the reply showing what it understood.
 
 **Does it cost extra tokens?**
-A little. The method (~5 KB) is loaded once per session, plus one short line per prompt. Full mode adds the 3–7 line engineered prompt to each reply. Lite mode (`/sharpen lite`) skips that for clear prompts. When it does ask, it saves you the turn a wrong guess would have cost.
+A little. The method (~5 KB) is loaded once per session, plus one short line per prompt. Each reply starts with the 3–7 line engineered prompt. When it does ask, it saves you the turn a wrong guess would have cost.
 
 **Doesn't rewriting a clear prompt make it worse?**
-It can, when the rewrite changes what you asked for. That's why, for a clear prompt, full mode keeps every part of your request and only *adds* context: where, constraints, how to check. If you'd rather have no rewrite at all, use `/sharpen lite`.
+It can, when the rewrite changes what you asked for. That's why, for a clear prompt, Sharpen keeps every part of your request and only *adds* context: where, constraints, how to check. To skip it for one prompt, start it with `raw:`.
 
 **What if none of the options is right?**
 Pick **Run as typed**, or type your own answer. Claude Code always offers a free-text choice.
