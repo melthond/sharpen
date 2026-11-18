@@ -138,6 +138,19 @@ Only install Sharpen from `ardfaiyaz/sharpen` on GitHub. It's plain JavaScript a
 
 Other slash commands are never touched. `/sharpen:sharpen on` works too.
 
+## Skills
+
+Sharpen ships with four companion skills. They work whether Sharpen is on or off.
+
+| Skill | What it does |
+|---|---|
+| **`/sharpen:sharpen-prompt <prompt>`** | Writes the engineered prompt and **hands it back without running it**, in a code block ready to copy. Say "for ChatGPT" or "for a ticket", and you get a version that stands on its own: no repo paths, with the needed context spelled out. |
+| **`/sharpen:sharpen-review`** | Coaches **your** prompting. It looks at your recent prompts in this session, shows what each one left out and what that cost (an extra question, a redo), gives the sharper version, and ends with the one habit that would help most. |
+| **`/sharpen:sharpen-audit`** | Audits the project for what an agent can't see from the code: missing test commands, unwritten conventions, which folder owns what, stale instructions, and installed tools nobody mentions. Ranked, with paste-ready lines for `CLAUDE.md`. Better notes mean sharper options. |
+| **`/sharpen:sharpen-help`** | A quick reference card: the three outcomes, every command, the skills, the badge, and the files. |
+
+`sharpen-prompt` reads the same method as the toggle (`skills/sharpen/SKILL.md`) instead of keeping its own copy, so there's one source of truth. The review and the audit only report. They change nothing.
+
 ## Status badge
 
 While Sharpen is on, a red **`[SHARPEN]`** badge shows in Claude Code's status bar. It disappears when you turn Sharpen off.
@@ -161,7 +174,7 @@ The badge script is copied to `~/.config/sharpen/`, outside the plugin folder th
 
 ## The prompt
 
-Sharpen is one prompt: [`skills/sharpen/SKILL.md`](skills/sharpen/SKILL.md), about 4 KB. Everything else in this repo exists to load it at the right moment:
+Sharpen is one prompt: [`skills/sharpen/SKILL.md`](skills/sharpen/SKILL.md), about 4 KB. The companion skills sit next to it in [`skills/`](skills/). Everything else in this repo exists to load the method at the right moment:
 
 | File | Job |
 |---|---|
@@ -176,7 +189,7 @@ The hooks never block a prompt. On any error they exit quietly, and if stdin nev
 
 ## Tested
 
-- **40 automated tests** (`npm test`, Node's built-in runner, zero dependencies): toggles, prefixes, case and whitespace, look-alike commands, corrupt state files, bad hook input, hooks that hang, and a status line setup that never overwrites yours.
+- **52 automated tests** (`npm test`, Node's built-in runner, zero dependencies): toggles, prefixes, case and whitespace, look-alike commands, corrupt state files, bad hook input, hooks that hang, a status line setup that never overwrites yours, and the companion skills (each names its trigger, stays small enough to load, and the review and audit stay read-only).
 - **A live eval** on a real Tauri + React + Firebase codebase: 12 prompts (5 vague, 5 clear, plus `raw:` and `sharpen:`). **12/12 pass** after one tuning round. Clear prompts ran directly. Vague ones got options that named real files and the project's own agents. See [`tests/eval/prompts.md`](tests/eval/prompts.md), and re-run it yourself with [`tests/eval/run.sh`](tests/eval/run.sh).
 
 ## FAQ

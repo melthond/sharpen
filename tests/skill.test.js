@@ -27,3 +27,40 @@ test('options fit AskUserQuestion (max 4 choices incl. Run as typed)', () => {
   assert.ok(m.includes('2–3 options'), 'caps interpretations at 3');
   assert.ok(!/2–4 options/.test(m), 'no 2–4 options wording left');
 });
+
+// --- companion skills -------------------------------------------------------
+const path = require('path');
+const SKILLS = path.join(__dirname, '..', 'skills');
+const read = (name) => fs.readFileSync(path.join(SKILLS, name, 'SKILL.md'), 'utf8');
+const front = (name) => read(name).match(/^---\r?\n([\s\S]*?)\r?\n---/)[1];
+const body = (name) => loadMethod(path.join(SKILLS, name, 'SKILL.md'));
+
+for (const name of ['sharpen-prompt', 'sharpen-help', 'sharpen-review', 'sharpen-audit']) {
+  test(`${name}: front matter names it and lists its slash trigger`, () => {
+    assert.match(front(name), new RegExp(`^name: ${name}$`, 'm'));
+    assert.match(front(name), /^description: \S/m);
+    assert.ok(front(name).includes(`/sharpen:${name}`), 'description names /sharpen:<skill>');
+  });
+  test(`${name}: detailed but injectable`, () => {
+    const n = body(name).length;
+    assert.ok(n > 1500 && n < 9000, `length ${n}`);
+  });
+}
+
+test('sharpen-prompt reuses the method instead of copying it, and never runs the prompt', () => {
+  const m = body('sharpen-prompt');
+  assert.ok(m.includes('../sharpen/SKILL.md'), 'points at the single source of truth');
+  assert.ok(m.includes('Do not run'), 'output only');
+  assert.ok(m.includes('```'), 'gives copyable text');
+});
+
+test('sharpen-help lists every command and prefix that exists', () => {
+  const m = body('sharpen-help');
+  for (const s of ['/sharpen on', '/sharpen off', 'raw:', 'sharpen:', '/sharpen:sharpen-prompt', '/sharpen:sharpen-review', '/sharpen:sharpen-audit', 'Clear prompt, running as typed.', 'Running as:']) {
+    assert.ok(m.includes(s), `missing: ${s}`);
+  }
+});
+
+test('review and audit are read-only reports', () => {
+  for (const name of ['sharpen-review', 'sharpen-audit']) assert.ok(body(name).includes('Changes nothing'), name);
+});

@@ -77,3 +77,9 @@ test('namespaced command toggles', () => {
   assert.deepStrictEqual(c.decide('/sharpen:sharpen', ON, M), { context: c.STATUS_ON, newState: null });
   assert.deepStrictEqual(c.decide('/sharpen:other on', ON, M), none);
 });
+
+test('companion skill commands are not toggles', () => {
+  for (const p of ['/sharpen:sharpen-prompt fix it', '/sharpen:sharpen-help', '/sharpen-review']) {
+    assert.deepStrictEqual(c.decide(p, ON, M), none, p);
+  }
+});
