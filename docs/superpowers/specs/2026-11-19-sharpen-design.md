@@ -6,7 +6,7 @@
 
 Developers type plain, often vague prompts into coding agents ("fix the login thing", "make it faster"). The agent guesses what they meant and sometimes guesses wrong, which wastes a turn or produces the wrong change.
 
-Sharpen is a toggle, like Ponytail. While it is on, before the agent acts on a plain prompt it:
+Sharpen is a toggle. While it is on, before the agent acts on a plain prompt it:
 
 1. reads the prompt against the **past conversation** and the **project's codebase**,
 2. offers 2–4 **engineered versions** of the prompt as choices ("did you mean…"), each specific (names files, earlier decisions, the goal, what "done" looks like),
@@ -43,8 +43,8 @@ It is meant to be published so **other developers** can install it from plugin m
 
 - **Claude Code hooks cannot modify the user's prompt.** A `UserPromptSubmit` hook can only add context or block the prompt. So the hook injects an instruction ("run the sharpen step on this prompt"), and the model does the interpretation.
 - **Clickable choices depend on the host.** Claude Code has `AskUserQuestion` (options with previews). Agents without a question tool get a numbered text list and the user replies with a number.
-- Hooks run on Windows, macOS, and Linux. Use Node (as Ponytail does) and not bash-only scripts.
-- Plugins cannot set the status line themselves. Ship a statusline script and document how to enable it (Ponytail's approach).
+- Hooks run on Windows, macOS, and Linux. Use Node, not bash-only scripts.
+- Plugins cannot set the status line themselves. Ship a statusline script and document how to enable it.
 
 ## Approaches considered
 
@@ -58,7 +58,7 @@ The owner picked 1, with the requirement that it also ships to other AIs that ha
 
 ### One shared core, thin per-platform wrappers
 
-Follow Ponytail's layout: a single source of truth for the method, plus a small manifest per platform.
+Layout: a single source of truth for the method, plus a small manifest per platform.
 
 ```
 sharpen/
@@ -112,7 +112,7 @@ sharpen/
 
 - **Phase 1 — Claude Code:** plugin, own marketplace (`marketplace.json` in the repo). Install: `/plugin marketplace add <owner>/sharpen` then `/plugin install sharpen@sharpen`.
 - **Phase 2 — other marketplaces**, reusing `SKILL.md` unchanged:
-  - **OpenAI Codex:** `.codex-plugin/plugin.json`. It shares the hook format with Claude Code (Ponytail does this).
+  - **OpenAI Codex:** `.codex-plugin/plugin.json`. It shares the hook format with Claude Code.
   - **Gemini CLI:** `gemini-extension.json` + `commands/sharpen.toml` + context file.
   - **GitHub Copilot CLI:** `.github/plugin/plugin.json`.
   - Hosts without a question tool use the numbered-list fallback.

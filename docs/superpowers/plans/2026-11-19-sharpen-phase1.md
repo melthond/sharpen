@@ -130,7 +130,7 @@ Decision table (`p` = `prompt.trim()`, matched case-insensitively):
 - `sharpen-prompt.js`: input → `decide(input.prompt ?? '', readState(), loadMethod(METHOD_FILE))` → `writeState(newState)` if not null → `emit('UserPromptSubmit', context)`. The whole body is in try/catch, and the exit code is always 0.
 - `sharpen-session.js`: if `readState().on`, `emit('SessionStart', "SHARPEN is on. Follow this method on every prompt:\n\n" + method)`. Same try/catch rule.
 - `sharpen-statusline.js`: prints `[SHARPEN]` (no newline) when on, and nothing when off.
-- `hooks/hooks.json` registers SessionStart (matcher `startup|resume|clear|compact`) and UserPromptSubmit. Each command uses Ponytail's Windows-safe form: `node -e "require(require('path').join(process.env.CLAUDE_PLUGIN_ROOT.split(String.fromCharCode(92)).join('/'), 'hooks/sharpen-prompt.js'))"`, with `timeout: 5`.
+- `hooks/hooks.json` registers SessionStart (matcher `startup|resume|clear|compact`) and UserPromptSubmit. Each command uses a Windows-safe form: `node -e "require(require('path').join(process.env.CLAUDE_PLUGIN_ROOT.split(String.fromCharCode(92)).join('/'), 'hooks/sharpen-prompt.js'))"`, with `timeout: 5`.
 
 - [ ] **Step 1: Write the failing tests.** Spawn with `child_process.spawnSync(process.execPath, [script], { input, env: {...process.env, SHARPEN_HOME: tmp} })`. Until Task 4 exists, create `skills/sharpen/SKILL.md` as a stub with the single line `STUB`.
   - `prompt hook toggles on and emits context` → input `{"prompt":"/sharpen on"}` → status 0, JSON stdout with `hookSpecificOutput.hookEventName === 'UserPromptSubmit'` and `additionalContext` starting with `ON_NOTE`. `state.json` now has `on: true`.
