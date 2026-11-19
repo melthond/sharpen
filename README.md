@@ -11,6 +11,7 @@
 <p align="center">
   <img src="https://img.shields.io/github/stars/ardfaiyaz/sharpen?style=flat-square&color=111111&label=stars" alt="Stars">
   <img src="https://img.shields.io/github/v/release/ardfaiyaz/sharpen?style=flat-square&color=111111&label=release" alt="Release">
+  <a href="https://github.com/ardfaiyaz/sharpen/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/ardfaiyaz/sharpen/test.yml?branch=main&style=flat-square&label=tests" alt="Tests"></a>
   <img src="https://img.shields.io/badge/works%20with-Claude%20Code-111111?style=flat-square" alt="Works with Claude Code">
   <img src="https://img.shields.io/badge/dependencies-0-111111?style=flat-square" alt="Zero dependencies">
   <img src="https://img.shields.io/badge/telemetry-none-111111?style=flat-square" alt="No telemetry">
