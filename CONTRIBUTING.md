@@ -62,7 +62,7 @@ claude plugin validate .     # the plugin and marketplace manifests
 
 ## New agents (Codex, Gemini CLI, Copilot CLI, …)
 
-Open an issue first. Sharpen ships to an agent only if that agent can run a hook on every prompt, so that `/sharpen off` really turns it off. Each new agent should reuse `skills/sharpen/SKILL.md` unchanged, and add only a thin manifest and adapter.
+Open an issue first. Sharpen ships to an agent only if that agent can run a hook on every prompt, so that `/sharpen off` really turns it off. Each new agent should reuse `skills/sharpen/SKILL.md` unchanged, and add only a thin manifest and adapter. When it ships, add real screenshots of its cards to `assets/screenshots/<agent>/`, and give it a dropdown in the README's "Sharpen in action" section, next to Claude Code.
 
 ## Development
 

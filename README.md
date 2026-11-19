@@ -36,7 +36,7 @@ Sharpen puts her inside your AI agent.
 - **Eight companion skills:** sharpen a prompt for another AI, hand off to a fresh session, split a big task, coach your prompting, and more.
 - **Zero dependencies, nothing leaves your machine.** No API calls and no telemetry.
 
-**Contents:** [Install](#install) · [Before / after](#before--after) · [How it works](#how-it-works) · [Review card](#the-review-card) · [Skills](#skills) · [Commands](#commands) · [Status badge](#status-badge) · [Numbers](#numbers) · [Privacy](#privacy) · [Updating](#updating) · [Troubleshooting](#troubleshooting) · [FAQ](#faq) · [Contributing](#contributing)
+**Contents:** [Install](#install) · [Before / after](#before--after) · [Sharpen in action](#sharpen-in-action) · [How it works](#how-it-works) · [Review card](#the-review-card) · [Skills](#skills) · [Commands](#commands) · [Status badge](#status-badge) · [Numbers](#numbers) · [Privacy](#privacy) · [Updating](#updating) · [Troubleshooting](#troubleshooting) · [FAQ](#faq) · [Contributing](#contributing)
 
 ## Install
 
@@ -87,6 +87,38 @@ Sharpened prompt (fill-in):
 
 One click, and the agent works on *that*.
 
+## Sharpen in action
+
+Real screenshots of Sharpen in each agent it supports, taken in a small demo app. Each agent gets its own dropdown.
+
+<details open>
+<summary><b>Claude Code</b></summary>
+
+<br>
+
+<p align="center">
+  <img src="assets/screenshots/claude-code/send-card.png" width="880" alt="A real Sharpen review card in Claude Code for the prompt fix the failing tests. It asks Send this sharpened prompt, with Send it (Recommended) and Run my original. The preview names both failing tests, the root cause in src/auth/pin.js and src/auth/session.js with the exact code, says to fix the source only and leave the menu alone, and lists Tools, Hooks and Check: npm test passes, all 5 tests green.">
+</p>
+
+<p align="center"><sub>One sensible reading: <code>fix the failing tests</code> becomes this card. One click on <b>Send it</b>, and Claude works on exactly that prompt.</sub></p>
+
+<p align="center">
+  <img src="assets/screenshots/claude-code/which-did-you-mean.png" width="880" alt="A real Sharpen card in Claude Code. The prompt was fix the login thing. Sharpen found two login bugs and asks Which did you mean, with Fix both login bugs, Fix staff PIN lockout, Fix member session expiry, and Run as typed. The preview shows the engineered prompt: symptoms with file names, a reproduce step with failing tests first, the fix, a Tools line with three skills, a Hooks line, and Check: npm test passes.">
+</p>
+
+<p align="center"><sub>Two readings: <code>fix the login thing</code> in an app with two login bugs, so Sharpen asks which one.</sub></p>
+
+Install:
+
+```
+/plugin marketplace add ardfaiyaz/sharpen
+/plugin install sharpen@sharpen
+```
+
+</details>
+
+Coming next: Codex, Gemini CLI and GitHub Copilot CLI. Each gets a dropdown here once Sharpen runs in it.
+
 ## How it works
 
 <p align="center">
@@ -131,17 +163,7 @@ Before showing the prompt, Sharpen checks that your meaning is unchanged, there'
 
 ## The review card
 
-<p align="center">
-  <img src="assets/screenshots/send-card.png" width="880" alt="A real Sharpen review card in Claude Code for the prompt fix the failing tests. It asks Send this sharpened prompt, with Send it (Recommended) and Run my original. The preview names both failing tests, the root cause in src/auth/pin.js and src/auth/session.js with the exact code, says to fix the source only and leave the menu alone, and lists Tools, Hooks and Check: npm test passes, all 5 tests green.">
-</p>
-
-<p align="center"><sub>One sensible reading: <code>fix the failing tests</code> becomes this card. One click on <b>Send it</b>, and Claude works on exactly that prompt.</sub></p>
-
-<p align="center">
-  <img src="assets/screenshots/which-did-you-mean.png" width="880" alt="A real Sharpen card in Claude Code. The prompt was fix the login thing. Sharpen found two login bugs and asks Which did you mean, with Fix both login bugs, Fix staff PIN lockout, Fix member session expiry, and Run as typed. The preview shows the engineered prompt: symptoms with file names, a reproduce step with failing tests first, the fix, a Tools line with three skills, a Hooks line, and Check: npm test passes.">
-</p>
-
-<p align="center"><sub>Two readings: <code>fix the login thing</code> in an app with two login bugs, so Sharpen asks which one.</sub></p>
+See it running: [Sharpen in action](#sharpen-in-action).
 
 | You choose | What happens |
 |---|---|
