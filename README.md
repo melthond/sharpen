@@ -17,13 +17,6 @@
   <img src="assets/hero.svg" width="880" alt="You type 'fix the login thing'. Sharpen reads your conversation, code, tools and hooks, and shows the engineered prompt on a review card with Send it and Run my original. It is also copied to your clipboard.">
 </p>
 
-<p align="center">
-  <strong>Every plain prompt becomes the prompt you meant.</strong><br>
-  <strong>Your conversation · your code · your skills, agents, MCP servers and hooks: all in the prompt.</strong><br>
-  <strong>And nothing runs until you press Send.</strong><br>
-  <sub>12 of 12 test prompts passed in live runs on a real Tauri + React + Firebase codebase, plus spot checks on every release since. 90 automated tests, zero dependencies, nothing leaves your machine. <a href="#numbers">Details</a>.</sub>
-</p>
-
 ---
 
 You know her. The colleague who never starts the wrong thing. You walk over and say "can you fix the login thing?" She doesn't open an editor. She says: *"The PIN lockout from this morning, or the Google sign-in that's been open since Tuesday?"* One question, and the right one. Then she writes it down properly, with the file, the test and the tools to use, and hands it back for you to sign off.
