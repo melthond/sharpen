@@ -359,6 +359,6 @@ The diagrams use the hand-drawn xkcd Script font, which has its own license: see
 
 ## Star History
 
-<a href="https://www.star-history.com/#ardfaiyaz/sharpen&Date">
-  <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ardfaiyaz/sharpen&type=Date" />
+<a href="https://www.star-history.com/ardfaiyaz/sharpen#history">
+  <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=ardfaiyaz/sharpen&type=Date" />
 </a>
