@@ -164,7 +164,7 @@ Coming next: Codex, Gemini CLI and GitHub Copilot CLI. Each gets a dropdown here
 
 For anything that edits code or runs commands, it writes a full brief, the way a professional prompt engineer would: **starting state, target state, where it may work and what it must not touch, "only make the changes this asks for", what to stop and ask about first, and the evidence to report**. A value only you can decide, like a price or a limit, becomes a visible blank, `[ASK: …]`, instead of a guess.
 
-Before showing the prompt, Sharpen scans it for common prompt mistakes (vague verbs, no finish line, bundled tasks, requests for hidden reasoning, pasted credentials) and checks that your meaning is unchanged, the scope is stated, every name is real, and there's no filler. The deeper material lives in three reference files it reads only when a prompt needs them: [anti-patterns](skills/sharpen/references/anti-patterns.md), [brief shapes](skills/sharpen/references/briefs.md) and [target profiles](skills/sharpen/references/targets.md) for other tools.
+Before showing the prompt, Sharpen scans it for common prompt mistakes (vague verbs, no finish line, bundled tasks, requests for hidden reasoning, pasted credentials) and checks that your meaning is unchanged, the scope is stated, every name is real, and there's no filler. The deeper material lives in five reference files it reads only when a prompt needs them: [anti-patterns](skills/sharpen/references/anti-patterns.md) (52 named mistakes), [brief shapes](skills/sharpen/references/briefs.md) (long runs, gated chains, decisions, machine-read output), [techniques](skills/sharpen/references/techniques.md) (escalation, decomposition, examples, verification, grounding), [prompts inside a product](skills/sharpen/references/llm-features.md) (system prompts, templates, untrusted input, tools) and [target profiles](skills/sharpen/references/targets.md) for other tools and model families. They draw on the [Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide) by DAIR.AI and the Anthropic, OpenAI and Google prompting guides.
 
 **4. Review card, then run.** Nothing runs until you answer the card.
 
@@ -234,7 +234,7 @@ Sharpen was tested on a real Tauri + React + Firebase codebase, with editing blo
 | Vague (`make it faster`, `clean this up`, `it's broken again`…) | 5 | 5/5 got options naming real files and the project's own agents |
 | `raw:` and `sharpen:` prefixes | 2 | 2/2 after one tuning round |
 
-That full set ran on the first release. Later releases were spot-checked live on the same codebase. Those runs showed `Tools:` and `Hooks:` lines drawn from the real setup, and Claude waiting for the card instead of editing. There are also 98 automated tests. The full set, and how to re-run it: [`tests/eval/prompts.md`](tests/eval/prompts.md).
+That full set ran on the first release. Later releases were spot-checked live on the same codebase. Those runs showed `Tools:` and `Hooks:` lines drawn from the real setup, and Claude waiting for the card instead of editing. There are also 104 automated tests. The full set, and how to re-run it: [`tests/eval/prompts.md`](tests/eval/prompts.md).
 
 ## Privacy
 

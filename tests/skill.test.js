@@ -157,3 +157,50 @@ test('sharpen-prompt routes other tools through the target profiles', () => {
 test('help lists the decompile skill', () => {
   assert.ok(body('sharpen-help').includes('/sharpen:sharpen-decompile'));
 });
+
+// --- techniques and product prompts (v1.8) ----------------------------------
+const ref = (f) => fs.readFileSync(path.join(REFS, f), 'utf8');
+
+test('method points to the technique and product-prompt references, and refuses safety bypasses', () => {
+  const m = loadMethod(METHOD_FILE);
+  for (const s of ['references/techniques.md', 'references/llm-features.md', 'relative dates', 'act-or-propose', 'safety rules']) {
+    assert.ok(m.includes(s), 'missing: ' + s);
+  }
+});
+
+test('techniques.md covers the core techniques from the guides', () => {
+  const t = ref('techniques.md');
+  for (const s of ['Escalation ladder', 'gate between steps', 'quotes', 'Visible steps', 'Compute', 'Independent candidates', 'rubric',
+    'each label about equally', 'fallback', 'Today:', 'Code beats docs', 'Mind the middle', 'Give the reason', 'No contradictions', 'DAIR.AI']) {
+    assert.ok(t.includes(s), 'techniques missing: ' + s);
+  }
+  assert.ok(!/Midjourney|Stable Diffusion|Sora/.test(t), 'image/video tools are out of scope');
+});
+
+test('llm-features.md covers product prompts: structure, untrusted input, tools, evals', () => {
+  const t = ref('llm-features.md');
+  for (const s of ['System and user', '{user_input}', 'structured-output', 'Untrusted input', 'injection test inputs',
+    'fallback label', 'Tools and MCP', 'when to use it', 'safety boilerplate', 'eval']) {
+    assert.ok(t.includes(s), 'llm-features missing: ' + s);
+  }
+});
+
+test('anti-patterns scope the chain-of-thought rule and cover the new failure modes', () => {
+  const a = ref('anti-patterns.md');
+  assert.ok((a.match(/^\| \d+ /gm) || []).length >= 50, 'anti-pattern table should have 50+ rows');
+  assert.match(a, /^\| 27 .*non-reasoning/m, '#27 must not ban visible steps for non-reasoning models');
+  for (const s of ['Test gaming', 'Untrusted text', 'Relative time', 'Silent skipping', 'Private data sent outward']) assert.ok(a.includes(s), 'missing: ' + s);
+});
+
+test('briefs and targets carry the new shapes and model-family advice', () => {
+  const b = ref('briefs.md');
+  for (const s of ['Long or unattended run', 'Chain with gates', 'Decision', 'Machine-read output', 'If it fails:', 'not in sources']) assert.ok(b.includes(s), 'briefs missing: ' + s);
+  const t = ref('targets.md');
+  for (const s of ['Base / completion models', 'chat template', 'never special tokens from memory', 'structured-output']) assert.ok(t.includes(s), 'targets missing: ' + s);
+});
+
+test('companion skills use the new references and keep outward prompts private', () => {
+  assert.ok(body('sharpen-decompile').includes('references/techniques.md'));
+  assert.ok(body('sharpen-decompile').includes('references/llm-features.md'));
+  assert.ok(body('sharpen-prompt').includes('customer data'));
+});

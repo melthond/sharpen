@@ -39,6 +39,7 @@ If the target isn't stated, assume this agent and say so in the header line.
 - Then do at most 3 quick searches or reads to find the real files, functions and test commands.
 - Check the skills, agents, subagents and MCP tools listed in your context, and note any that fit (this agent only).
 - Never invent a path, a function or a tool. If you can't find something, write `(not found)` in its slot. The user can fill it in, and a wrong guess pasted into another AI does more harm than a gap.
+- A prompt for another AI, a ticket or a person leaves this agent. Leave out credentials, customer data, internal URLs and private prompts; describe them generically ("a customer record") and say what you left out.
 
 ## 4. Build it
 

@@ -30,6 +30,8 @@ Read `../sharpen/references/anti-patterns.md` and check the prompt against it. N
 
 Also check the structure against `../sharpen/references/briefs.md`. Is this the right shape for the task? Are the goal and the hard limits near the top?
 
+Then check the technique against `../sharpen/references/techniques.md`. If the prompt has already failed, name the next rung of the escalation ladder (examples, steps, a chain, a tool) rather than rewording it. If the prompt goes inside a product (a system prompt, a template, a classifier, tool definitions), check it against `../sharpen/references/llm-features.md` too: the system/user split, delimited untrusted input, a fallback output, and a small eval as its check.
+
 ## 3. Output
 
 **Break down:**

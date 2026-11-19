@@ -26,6 +26,7 @@ This is the only Sharpen skill that writes a file, so it **shows the file and as
    - several positional arguments: `$1`, `$2`, …, with each one explained in `argument-hint`.
 3. **Keep the parts that never change** literal: the real test command, the folder conventions, "don't touch migrations".
 4. Say what to do when an argument is missing, so the skill never guesses: "If no file is given, use the files changed since the last commit."
+5. Saved prompts are fragile: small edits or a model change can shift what they do. In the closing message, suggest trying the skill on one or two real targets after it's written, and again after a model change.
 
 ## 3. Pick the name and place
 
