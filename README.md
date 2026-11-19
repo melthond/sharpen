@@ -132,10 +132,16 @@ Before showing the prompt, Sharpen checks that your meaning is unchanged, there'
 ## The review card
 
 <p align="center">
+  <img src="assets/screenshots/send-card.png" width="880" alt="A real Sharpen review card in Claude Code for the prompt fix the failing tests. It asks Send this sharpened prompt, with Send it (Recommended) and Run my original. The preview names both failing tests, the root cause in src/auth/pin.js and src/auth/session.js with the exact code, says to fix the source only and leave the menu alone, and lists Tools, Hooks and Check: npm test passes, all 5 tests green.">
+</p>
+
+<p align="center"><sub>One sensible reading: <code>fix the failing tests</code> becomes this card. One click on <b>Send it</b>, and Claude works on exactly that prompt.</sub></p>
+
+<p align="center">
   <img src="assets/screenshots/which-did-you-mean.png" width="880" alt="A real Sharpen card in Claude Code. The prompt was fix the login thing. Sharpen found two login bugs and asks Which did you mean, with Fix both login bugs, Fix staff PIN lockout, Fix member session expiry, and Run as typed. The preview shows the engineered prompt: symptoms with file names, a reproduce step with failing tests first, the fix, a Tools line with three skills, a Hooks line, and Check: npm test passes.">
 </p>
 
-<p align="center"><sub>A real card: <code>fix the login thing</code> in a small demo app with two login bugs.</sub></p>
+<p align="center"><sub>Two readings: <code>fix the login thing</code> in an app with two login bugs, so Sharpen asks which one.</sub></p>
 
 | You choose | What happens |
 |---|---|
