@@ -38,7 +38,7 @@ Sharpen puts her inside your AI agent.
 - **Built from your real setup.** It uses your conversation, your code, and the skills, agents, MCP servers and hooks you have installed. Hooks are read for Claude, which can't see them otherwise.
 - **Nothing runs until you send it.** A review card offers **Send it**, **Run my original**, or your changes, and the prompt is also copied to your clipboard.
 - **It asks only when it must.** "Which did you mean?" appears only when two readings would lead to different work.
-- **Eight companion skills:** sharpen a prompt for another AI, hand off to a fresh session, split a big task, coach your prompting, and more.
+- **Nine companion skills:** sharpen a prompt for another AI, hand off to a fresh session, split a big task, coach your prompting, and more.
 - **Zero dependencies, nothing leaves your machine.** No API calls and no telemetry.
 
 **Contents:** [Install](#install) · [Before / after](#before--after) · [Sharpen in action](#sharpen-in-action) · [How it works](#how-it-works) · [Review card](#the-review-card) · [Skills](#skills) · [Commands](#commands) · [Status badge](#status-badge) · [Numbers](#numbers) · [Privacy](#privacy) · [Updating](#updating) · [Troubleshooting](#troubleshooting) · [FAQ](#faq) · [Contributing](#contributing)
@@ -162,7 +162,9 @@ Coming next: Codex, Gemini CLI and GitHub Copilot CLI. Each gets a dropdown here
 
 </details>
 
-Before showing the prompt, Sharpen checks that your meaning is unchanged, there's a finish line, the scope is stated, every name is real, and there's no filler. Anything it couldn't find says `(not found)`.
+For anything that edits code or runs commands, it writes a full brief, the way a professional prompt engineer would: **starting state, target state, where it may work and what it must not touch, "only make the changes this asks for", what to stop and ask about first, and the evidence to report**. A value only you can decide, like a price or a limit, becomes a visible blank, `[ASK: …]`, instead of a guess.
+
+Before showing the prompt, Sharpen scans it for common prompt mistakes (vague verbs, no finish line, bundled tasks, requests for hidden reasoning, pasted credentials) and checks that your meaning is unchanged, the scope is stated, every name is real, and there's no filler. The deeper material lives in three reference files it reads only when a prompt needs them: [anti-patterns](skills/sharpen/references/anti-patterns.md), [brief shapes](skills/sharpen/references/briefs.md) and [target profiles](skills/sharpen/references/targets.md) for other tools.
 
 **4. Review card, then run.** Nothing runs until you answer the card.
 
@@ -181,7 +183,7 @@ Why a card and not your prompt swapped in place? Claude Code doesn't allow that.
 
 ## Skills
 
-Eight companion skills. They work whether Sharpen is on or off.
+Nine companion skills. They work whether Sharpen is on or off.
 
 | Skill | What it does |
 |---|---|
@@ -192,6 +194,7 @@ Eight companion skills. They work whether Sharpen is on or off.
 | `/sharpen:sharpen-split <request>` | Splits a big request into **small, ordered prompts**, grouped into waves you can run in parallel. |
 | `/sharpen:sharpen-save [name]` | Turns a prompt you keep typing into a **project slash command**. Shows you the file first; never overwrites. |
 | `/sharpen:sharpen-interview <feature>` | Asks about a fuzzy feature **one question at a time**, then writes `SPEC.md`. |
+| `/sharpen:sharpen-decompile <prompt>` | Takes a prompt you already have and **breaks it down, adapts it for another tool, simplifies it, or splits it**, with each weakness named. |
 | `/sharpen:sharpen-help` | A quick reference card. |
 
 ## Commands
@@ -231,7 +234,7 @@ Sharpen was tested on a real Tauri + React + Firebase codebase, with editing blo
 | Vague (`make it faster`, `clean this up`, `it's broken again`…) | 5 | 5/5 got options naming real files and the project's own agents |
 | `raw:` and `sharpen:` prefixes | 2 | 2/2 after one tuning round |
 
-That full set ran on the first release. Later releases were spot-checked live on the same codebase. Those runs showed `Tools:` and `Hooks:` lines drawn from the real setup, and Claude waiting for the card instead of editing. There are also 92 automated tests. The full set, and how to re-run it: [`tests/eval/prompts.md`](tests/eval/prompts.md).
+That full set ran on the first release. Later releases were spot-checked live on the same codebase. Those runs showed `Tools:` and `Hooks:` lines drawn from the real setup, and Claude waiting for the card instead of editing. There are also 98 automated tests. The full set, and how to re-run it: [`tests/eval/prompts.md`](tests/eval/prompts.md).
 
 ## Privacy
 

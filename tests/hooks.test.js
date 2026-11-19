@@ -140,3 +140,13 @@ test('hooks.json registers the clipboard copy only before AskUserQuestion', () =
   assert.strictEqual(entry.matcher, 'AskUserQuestion');
   assert.ok(entry.hooks[0].command.includes('hooks/sharpen-clipboard.js'));
 });
+
+test('session start and /sharpen on tell Claude where the reference files are', () => {
+  const dir = home();
+  setOn(dir);
+  const refs = path.join(ROOT, 'skills', 'sharpen', 'references');
+  const session = JSON.parse(run('sharpen-session.js', JSON.stringify({ cwd: dir }), dir).stdout).hookSpecificOutput.additionalContext;
+  assert.ok(session.includes(refs), 'session context names the references folder');
+  const on = JSON.parse(run('sharpen-prompt.js', JSON.stringify({ prompt: '/sharpen on', cwd: dir }), dir).stdout).hookSpecificOutput.additionalContext;
+  assert.ok(on.includes(refs), '/sharpen on names the references folder');
+});

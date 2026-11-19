@@ -2,7 +2,7 @@
 // sharpen — UserPromptSubmit: handle /sharpen toggles and nudge the model on plain prompts
 const { readState, writeState } = require('./sharpen-state');
 const { decide, loadMethod } = require('./sharpen-core');
-const { METHOD_FILE, readStdinJson, emit } = require('./sharpen-io');
+const { METHOD_FILE, REFS_NOTE, readStdinJson, emit } = require('./sharpen-io');
 const { ensureStatusline } = require('./sharpen-statusline-setup');
 const { setupNote } = require('./sharpen-env');
 const fs = require('fs');
@@ -24,10 +24,9 @@ readStdinJson()
       let { context, newState } = decide(input.prompt ?? '', readState(), loadMethod(METHOD_FILE), lastSharpened());
       if (newState) writeState(newState);
       if (newState && newState.on) {
+        context = `${context}\n\n${REFS_NOTE}`;
         const setup = setupNote(input.cwd);
-        if (setup) context = `${context}
-
-${setup}`;
+        if (setup) context = `${context}\n\n${setup}`;
         context = withStatusline(context);
       }
       emit('UserPromptSubmit', context);

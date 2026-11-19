@@ -8,7 +8,7 @@ Thanks for helping. This page covers what gets merged and what a PR needs to inc
 
 ## Changes to the method need an eval
 
-The method is what every Sharpen user loads into every session. That means [`skills/sharpen/SKILL.md`](skills/sharpen/SKILL.md), and any text the hooks inject: the constants in [`hooks/sharpen-core.js`](hooks/sharpen-core.js) and the status line nudge in [`hooks/sharpen-statusline-setup.js`](hooks/sharpen-statusline-setup.js).
+The method is what every Sharpen user loads into every session. That means [`skills/sharpen/SKILL.md`](skills/sharpen/SKILL.md), its reference files in [`skills/sharpen/references/`](skills/sharpen/references/), and any text the hooks inject: the constants in [`hooks/sharpen-core.js`](hooks/sharpen-core.js) and the status line nudge in [`hooks/sharpen-statusline-setup.js`](hooks/sharpen-statusline-setup.js).
 
 A change to wording that looks harmless can make Sharpen ask about clear prompts, or miss ambiguous ones. So a method change is only merged when the PR shows an eval with three arms. Each arm uses the same prompts, the same project and the same model:
 

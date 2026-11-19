@@ -2,6 +2,8 @@
 const path = require('path');
 
 const METHOD_FILE = path.join(__dirname, '..', 'skills', 'sharpen', 'SKILL.md');
+// The method points to these by relative name; the hooks give Claude the absolute folder.
+const REFS_NOTE = `Sharpen reference files ("references/…" in the method), read only when the method points to one: ${path.join(__dirname, '..', 'skills', 'sharpen', 'references')}`;
 
 // Resolves null on bad JSON or when stdin never closes (seen on Windows), so a hook can't hang a prompt.
 function readStdinJson(timeoutMs = 3000) {
@@ -24,4 +26,4 @@ function emit(event, context) {
   process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: event, additionalContext: context } }));
 }
 
-module.exports = { METHOD_FILE, readStdinJson, emit };
+module.exports = { METHOD_FILE, REFS_NOTE, readStdinJson, emit };

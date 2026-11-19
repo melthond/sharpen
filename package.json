@@ -1,6 +1,6 @@
 {
   "name": "sharpen",
-  "version": "1.6.2",
+  "version": "1.7.0",
   "private": true,
   "description": "You type “fix the login thing.” It knows which one.",
   "license": "MIT",

@@ -28,3 +28,15 @@ Run each prompt with `tests/eval/run.sh` from inside a real project (round 1 use
 **Not yet checked live:** the fill-in tier (`Sharpened prompt (fill-in):`) on a prompt that only the conversation resolves needs a real session with history, and `AskUserQuestion` buttons and previews need an interactive session.
 
 **Since 0.6.0:** the verdict lines are `Sharpened prompt (clear):` and `Sharpened prompt (fill-in):`, each followed by the engineered prompt. The round 1 results above used the earlier one-line verdicts.
+
+## Round 2 (v1.7.0): the prompt-engineering pass
+
+Same 3 prompts on the `sharpen-demo` project, before and after the change, with the same model and run.sh:
+
+| Prompt | Before (v1.6.2) | After (v1.7.0) |
+|---|---|---|
+| `fix the failing tests` | fill-in: files, Decided, Tools, Hooks, check | adds starting/target state, ordered steps, scope lock, "don't weaken assertions", stop-and-ask on the security-sensitive limit, before/after evidence |
+| `make the cart better` | ambiguous: 3 options | ambiguous: 2 options, each with starting/target state and a scope lock |
+| `add oat milk` | fill-in, but **invented** a 60¢ price | fill-in with `[ASK: …]` blanks for the price and the drinks, flagged above the card |
+
+No regressions: the same verdicts, real files, Tools and Hooks lines. Cost per prompt unchanged (~$0.40).

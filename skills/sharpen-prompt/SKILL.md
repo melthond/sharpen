@@ -28,7 +28,7 @@ The same request needs a different prompt depending on who reads it:
 | Target | How to write it |
 |---|---|
 | **This agent** (default) | Real paths, real skill and agent names, a `Tools:` plan and any `Hooks:` that apply, and the check to run. |
-| **Another AI** (the user says ChatGPT, Gemini, Cursor, "another chat"…) | Self-contained. That AI can't see this repo, so include the context it needs in plain words: stack, the relevant code (short excerpts if needed), and constraints. No `Tools:` or `Hooks:` lines, because that AI has none of these tools. |
+| **Another AI or agent** (the user says ChatGPT, Gemini, Cursor, Codex, Copilot, "another chat"…) | Read that tool's profile in `../sharpen/references/targets.md` and follow it. A chat model can't see this repo, so include the context it needs in plain words: stack, the relevant code (short excerpts if needed), and constraints. No `Tools:` or `Hooks:` lines, because that AI has none of these tools. |
 | **A person** (ticket, issue, message to a teammate) | Title + what's wrong or wanted + where + how to tell it's done. No agent instructions. |
 
 If the target isn't stated, assume this agent and say so in the header line.

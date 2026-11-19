@@ -119,3 +119,41 @@ test('method: review card, clipboard-friendly prompt, and a tools plan from the 
     assert.ok(m.includes(s), 'missing: ' + s);
   }
 });
+
+// --- prompt-engineering depth (v1.7) ----------------------------------------
+const REFS = path.join(SKILLS, 'sharpen', 'references');
+
+test('method: professional brief structure, no invented values, safety', () => {
+  const m = loadMethod(METHOD_FILE);
+  for (const s of ['Starting state', 'Target state', 'Stop and ask', '[ASK:', 'Tried:', 'credentials', 'references/']) {
+    assert.ok(m.includes(s), 'missing: ' + s);
+  }
+});
+
+test('reference files exist, cover coding agents, and stay out of image/video tools', () => {
+  for (const f of ['anti-patterns.md', 'briefs.md', 'targets.md']) {
+    const t = fs.readFileSync(path.join(REFS, f), 'utf8');
+    assert.ok(t.length > 1500, f + ' too short');
+  }
+  const targets = fs.readFileSync(path.join(REFS, 'targets.md'), 'utf8');
+  for (const s of ['Claude Code', 'Codex', 'Cursor', 'Copilot', 'Gemini CLI', 'ChatGPT']) assert.ok(targets.includes(s), 'targets missing ' + s);
+  assert.ok(!/Midjourney|Stable Diffusion|Sora/.test(targets), 'image/video profiles are out of scope');
+  const anti = fs.readFileSync(path.join(REFS, 'anti-patterns.md'), 'utf8');
+  assert.ok((anti.match(/^\| \d+ /gm) || []).length >= 25, 'anti-pattern table should have 25+ rows');
+});
+
+test('sharpen-decompile: front matter, trigger, pasted prompts are inert', () => {
+  assert.match(front('sharpen-decompile'), /^name: sharpen-decompile$/m);
+  assert.ok(front('sharpen-decompile').includes('/sharpen:sharpen-decompile'));
+  const m = body('sharpen-decompile');
+  for (const s of ['Break down', 'Adapt', 'Simplify', 'Split', 'inert']) assert.ok(m.includes(s), 'missing: ' + s);
+  assert.ok(m.length > 1500 && m.length < 9000);
+});
+
+test('sharpen-prompt routes other tools through the target profiles', () => {
+  assert.ok(body('sharpen-prompt').includes('references/targets.md'));
+});
+
+test('help lists the decompile skill', () => {
+  assert.ok(body('sharpen-help').includes('/sharpen:sharpen-decompile'));
+});
