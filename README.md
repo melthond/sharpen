@@ -131,6 +131,12 @@ Before showing the prompt, Sharpen checks that your meaning is unchanged, there'
 
 ## The review card
 
+<p align="center">
+  <img src="assets/screenshots/which-did-you-mean.png" width="880" alt="A real Sharpen card in Claude Code. The prompt was fix the login thing. Sharpen found two login bugs and asks Which did you mean, with Fix both login bugs, Fix staff PIN lockout, Fix member session expiry, and Run as typed. The preview shows the engineered prompt: symptoms with file names, a reproduce step with failing tests first, the fix, a Tools line with three skills, a Hooks line, and Check: npm test passes.">
+</p>
+
+<p align="center"><sub>A real card: <code>fix the login thing</code> in a small demo app with two login bugs.</sub></p>
+
 | You choose | What happens |
 |---|---|
 | **Send it** | Claude works on exactly the engineered prompt |
