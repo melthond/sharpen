@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/logo.svg" width="220" alt="Sharpen: a kid with spiky white hair, a red blindfold whose tails stream back, and a knowing half-smile">
+</p>
+
 <h1 align="center">Sharpen</h1>
 
 <p align="center">
