@@ -2,7 +2,7 @@
   "name": "sharpen",
   "version": "1.6.2",
   "private": true,
-  "description": "Turn vague prompts into specific ones using your conversation and codebase.",
+  "description": "You type “fix the login thing.” It knows which one.",
   "license": "MIT",
   "scripts": {
     "test": "node --test tests/"

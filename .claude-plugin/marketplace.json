@@ -1,12 +1,15 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "sharpen",
-  "description": "Turn vague prompts into specific, engineered ones.",
-  "owner": { "name": "ardfaiyaz", "url": "https://github.com/ardfaiyaz" },
+  "description": "You type “fix the login thing.” It knows which one.",
+  "owner": {
+    "name": "ardfaiyaz",
+    "url": "https://github.com/ardfaiyaz"
+  },
   "plugins": [
     {
       "name": "sharpen",
-      "description": "Offers 2-3 sharpened versions of a vague prompt, built from your conversation, codebase and installed tools.",
+      "description": "You type “fix the login thing.” It knows which one.",
       "source": "./",
       "category": "productivity"
     }
