@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 420" role="img" aria-label="Four inputs feed the engineered prompt: the conversation gives Decided, the codebase gives Where and Done when, your installed tools give Tools, and your hooks give Hooks. The prompt goes to a review card: Send it runs the engineered prompt, Run my original runs what you typed, and your changes produce an updated card. The prompt is also copied to the clipboard for Ctrl+V editing.">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#9aa3b2"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="880" height="420" rx="16" fill="#14161b"/>
+
+  <!-- inputs -->
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    <rect x="32" y="40" width="204" height="60" rx="10" fill="#1f232b" stroke="#3a404c"/>
+    <text x="48" y="66" font-size="14" font-weight="600" fill="#e6e8eb">Conversation</text>
+    <text x="48" y="86" font-size="12" fill="#9aa3b2">decisions, errors, files</text>
+
+    <rect x="32" y="116" width="204" height="60" rx="10" fill="#1f232b" stroke="#3a404c"/>
+    <text x="48" y="142" font-size="14" font-weight="600" fill="#e6e8eb">Codebase</text>
+    <text x="48" y="162" font-size="12" fill="#9aa3b2">real paths, check commands</text>
+
+    <rect x="32" y="192" width="204" height="60" rx="10" fill="#1f232b" stroke="#3a404c"/>
+    <text x="48" y="218" font-size="14" font-weight="600" fill="#e6e8eb">Your tools</text>
+    <text x="48" y="238" font-size="12" fill="#9aa3b2">skills · agents · MCP · plugins</text>
+
+    <rect x="32" y="268" width="204" height="60" rx="10" fill="#1f232b" stroke="#3a404c"/>
+    <text x="48" y="294" font-size="14" font-weight="600" fill="#e6e8eb">Your hooks</text>
+    <text x="48" y="314" font-size="12" fill="#9aa3b2">read from settings + plugins</text>
+  </g>
+
+  <!-- input arrows, labeled with the line each one fills -->
+  <g stroke="#9aa3b2" stroke-width="1.6" fill="none" marker-end="url(#arrow)">
+    <line x1="236" y1="70" x2="330" y2="104"/>
+    <line x1="236" y1="146" x2="330" y2="150"/>
+    <line x1="236" y1="222" x2="330" y2="196"/>
+    <line x1="236" y1="298" x2="330" y2="242"/>
+  </g>
+  <g font-family="Consolas, Menlo, monospace" font-size="11.5" fill="#9aa3b2">
+    <text x="252" y="76">Decided:</text>
+    <text x="252" y="140">Where:</text>
+    <text x="252" y="200">Tools:</text>
+    <text x="252" y="262">Hooks:</text>
+  </g>
+
+  <!-- engineered prompt -->
+  <rect x="332" y="40" width="236" height="288" rx="12" fill="#1f232b" stroke="#ff5a5a" stroke-width="1.5"/>
+  <text x="450" y="70" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#ff6b6b">Engineered prompt</text>
+  <g font-family="Consolas, Menlo, monospace" font-size="12.5" fill="#d7dae0">
+    <text x="352" y="104">Goal</text>
+    <text x="352" y="128">Where:</text>
+    <text x="352" y="152">Decided:</text>
+    <text x="352" y="176">Tools:</text>
+    <text x="352" y="200">Hooks:</text>
+    <text x="352" y="224">Done when:</text>
+  </g>
+  <text x="352" y="262" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" fill="#9aa3b2">checked: meaning kept,</text>
+  <text x="352" y="280" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" fill="#9aa3b2">real names only, no filler</text>
+
+  <!-- review card outcomes -->
+  <line x1="568" y1="160" x2="606" y2="160" stroke="#9aa3b2" stroke-width="1.6"/>
+  <text x="587" y="150" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" fill="#9aa3b2">card</text>
+  <g stroke="#9aa3b2" stroke-width="1.6" fill="none" marker-end="url(#arrow)">
+    <polyline points="606,160 620,160 620,70 650,70"/>
+    <polyline points="606,160 650,160"/>
+    <polyline points="606,160 620,160 620,250 650,250"/>
+  </g>
+  <g font-family="Segoe UI, Helvetica, Arial, sans-serif">
+    <rect x="652" y="40" width="196" height="60" rx="10" fill="#e5484d"/>
+    <text x="668" y="66" font-size="14" font-weight="600" fill="#ffffff">Send it</text>
+    <text x="668" y="86" font-size="12" fill="#ffe3e3">runs the engineered prompt</text>
+
+    <rect x="652" y="130" width="196" height="60" rx="10" fill="#1f232b" stroke="#5a6170"/>
+    <text x="668" y="156" font-size="14" font-weight="600" fill="#e6e8eb">Run my original</text>
+    <text x="668" y="176" font-size="12" fill="#9aa3b2">runs what you typed</text>
+
+    <rect x="652" y="220" width="196" height="60" rx="10" fill="#1f232b" stroke="#5a6170"/>
+    <text x="668" y="246" font-size="14" font-weight="600" fill="#e6e8eb">Your changes</text>
+    <text x="668" y="266" font-size="12" fill="#9aa3b2">"make it 3 attempts"</text>
+  </g>
+  <!-- changes loop back into the prompt -->
+  <polyline points="750,280 750,304 568,304" fill="none" stroke="#9aa3b2" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#arrow)"/>
+  <text x="660" y="320" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" fill="#9aa3b2">updated card</text>
+
+  <!-- clipboard -->
+  <line x1="450" y1="328" x2="450" y2="352" stroke="#9aa3b2" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <rect x="332" y="356" width="236" height="44" rx="10" fill="none" stroke="#5a6170" stroke-dasharray="5 4"/>
+  <text x="450" y="383" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12.5" fill="#d7dae0">copied to clipboard: Ctrl+V, edit, send</text>
+</svg>
