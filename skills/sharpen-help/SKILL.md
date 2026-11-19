@@ -19,13 +19,18 @@ If the user asked about one thing ("how do I turn it off?"), answer that in one 
 
 | Your prompt | What happens |
 |---|---|
-| Already clear: says what and where | Shows `Sharpened prompt (clear):`. Your request stays intact, with context added (where, constraints, how to check). Then it runs that. |
-| Vague, one sensible meaning | Shows `Sharpened prompt (fill-in):`, the full version built from your conversation and code. Then it runs that. |
-| Ambiguous: readings lead to different work | **Which did you mean?** 2–3 options plus **Run as typed**. Each option is a full engineered prompt. |
+| Already clear: says what and where | `Sharpened prompt (clear):` keeps your request intact and adds context (where, constraints, tools, how to check). Then the review card. |
+| Vague, one sensible meaning | `Sharpened prompt (fill-in):`, the full version built from your conversation and code. Then the review card. |
+| Ambiguous: readings lead to different work | **Which did you mean?** 2–3 options plus **Run as typed**. Each option is a full engineered prompt; picking one sends it. |
 
-Press Esc at any point if what it understood is wrong.
+**The review card:** nothing runs until you answer it.
+- **Send it:** Claude works on exactly the engineered prompt.
+- **Run my original:** Claude works on what you typed.
+- **Type your changes:** you get an updated card.
 
-The options use your conversation, your code (real paths only), and the skills, agents and MCP tools you have installed. They're named on a `Use:` line.
+The engineered prompt is also **on your clipboard**. Press Esc, paste it with Ctrl+V (⌘V on a Mac), edit it and send it. A pasted prompt isn't sharpened again.
+
+Every prompt is built from your conversation (`Decided:`), your code (real paths only), the skills, agents and MCP tools you have installed (`Tools:`), and the hooks that will run during the work (`Hooks:`).
 
 **Commands**
 
@@ -58,10 +63,11 @@ A red badge shows in the status bar while Sharpen is on, with what it decided ab
 
 | Badge | Meaning |
 |---|---|
-| `[SHARPEN - CLEAR]` | Your prompt was clear: it showed `Sharpened prompt (clear):` and ran that |
-| `[SHARPEN - FILL-IN]` | It had one obvious meaning: it showed `Sharpened prompt (fill-in):` and ran that |
-| `[SHARPEN - ASKING]` | Waiting for you to pick an option |
-| `[SHARPEN - SHARPENED]` | You picked an option, and it's running |
+| `[SHARPEN - CLEAR - READY]` | Clear prompt; the review card is waiting for you |
+| `[SHARPEN - FILL-IN - READY]` | One obvious meaning; the review card is waiting |
+| `[SHARPEN - AMBIGUOUS - READY]` | Several meanings; the options are waiting |
+| `[SHARPEN - … - SENT]` | You answered the card, and the prompt is running |
+| `[SHARPEN - SENT]` | You pasted a sharpened prompt back and sent it |
 | `[SHARPEN - RAW]` | You used `raw:` |
 | `[SHARPEN]` | Nothing to show yet, or a slash command |
 

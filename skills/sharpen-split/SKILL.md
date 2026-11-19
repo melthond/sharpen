@@ -13,7 +13,7 @@ Turn one big request into a short sequence of prompts that each do one job well.
 
 Big mixed prompts fail differently from vague ones. The agent does the easy part well, rushes the rest, and finishes having checked only some of it. Small prompts with their own finish line don't.
 
-The method lives in `../sharpen/SKILL.md`, relative to this skill's base directory. Read it first. Every prompt you write here follows its intent slots, its `Use:` line and its never-rules.
+The method lives in `../sharpen/SKILL.md`, relative to this skill's base directory. Read it first. Every prompt you write here follows its intent slots, its `Tools:` and `Hooks:` lines and its never-rules.
 
 ## 1. Find the request
 
@@ -45,7 +45,7 @@ Each prompt must stand alone, as if pasted into a fresh session:
 - **Where:** real paths;
 - **Needs:** what an earlier part produced, and where to find it;
 - **Don't touch:** the files that other parts in the same wave own;
-- `Use:` when an installed skill or agent fits;
+- `Tools:` when an installed skill, agent or MCP tool fits, and `Hooks:` when a hook changes how to do this part;
 - **Done when:** one check (a test, a command or a visible result).
 
 ## 5. Output
@@ -63,7 +63,7 @@ Part 1 of 3 in making admin lockout configurable.
 Add an integer column `max_attempts` (default 5) to the admins table.
 Where: db/migrations/ (new file), db/schema.ts
 Don't touch: apps/admin/ (part 2 owns it)
-Use: supabase-postgres-best-practices skill
+Tools: supabase-postgres-best-practices skill
 Done when: npm run db:migrate succeeds on a fresh database and db:test passes.
 ```
 

@@ -18,7 +18,8 @@ function promptText(line) {
   return t || null;
 }
 
-// Map Sharpen's first move after the latest prompt to a badge word.
+// Badge for the latest prompt: its kind (CLEAR, FILL-IN, AMBIGUOUS) plus READY while the review
+// card waits for the user, SENT once they answered it; RAW for raw:, SENT for a pasted sharpened prompt.
 function verdict(lines) {
   let i = lines.length - 1;
   while (i >= 0 && promptText(lines[i]) === null) i--;
@@ -27,24 +28,29 @@ function verdict(lines) {
   if (prompt.startsWith('/') || prompt.includes('<command-name>')) return null;
   if (/^raw:/i.test(prompt)) return 'RAW';
 
+  let kind = null;
   let asked = null;
+  let seenText = false;
   for (const line of lines.slice(i + 1)) {
     if (line.isSidechain) continue;
     const blocks = line.message && Array.isArray(line.message.content) ? line.message.content : [];
-    if (line.type === 'user' && asked && blocks.some((b) => b && b.type === 'tool_result' && b.tool_use_id === asked)) return 'SHARPENED';
+    if (line.type === 'user' && asked && blocks.some((b) => b && b.type === 'tool_result' && b.tool_use_id === asked)) return `${kind || 'AMBIGUOUS'} - SENT`;
     if (line.type !== 'assistant') continue;
     for (const b of blocks) {
       if (!b) continue;
       if (b.type === 'tool_use' && b.name === 'AskUserQuestion') { if (!asked) asked = b.id || true; continue; }
-      if (b.type !== 'text' || asked) continue;
+      if (b.type !== 'text' || seenText || asked) continue;
+      seenText = true; // only the first text of the reply carries the verdict
       const t = b.text.trim();
-      if (/^Sharpened prompt \(clear\)/i.test(t)) return 'CLEAR';
-      if (/^Sharpened prompt \(fill-in\)/i.test(t)) return 'FILL-IN';
-      if (/which did you mean/i.test(t)) return 'ASKING';
-      return null; // replied without a Sharpen verdict
+      if (/^Sending sharpened prompt/i.test(t)) return 'SENT';
+      if (/^Sharpened prompt \(clear\)/i.test(t)) kind = 'CLEAR';
+      else if (/^Sharpened prompt \(fill-in\)/i.test(t)) kind = 'FILL-IN';
+      else if (/which did you mean/i.test(t)) return 'AMBIGUOUS - READY'; // numbered-list fallback
+      else return null; // replied without a Sharpen verdict
     }
   }
-  return asked ? 'ASKING' : null;
+  if (asked) return `${kind || 'AMBIGUOUS'} - READY`;
+  return kind;
 }
 
 function readTail(file) {

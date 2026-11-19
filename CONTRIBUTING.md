@@ -43,7 +43,7 @@ These come from the research behind Sharpen ([`docs/research/`](docs/research/))
 - **Ask only when readings lead to different actions.** Rewordings are not options.
 - **2–3 options plus `Run as typed`.** Claude Code's question tool allows at most 4 choices.
 - **Real names only.** Never invent files, skills, agents or tools.
-- **Keep it short.** The method is injected into context. The test suite fails if it reaches 6000 characters.
+- **Keep it short.** The method is injected into context. The test suite fails if it reaches 8000 characters.
 
 ## Everything else
 

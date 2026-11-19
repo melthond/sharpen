@@ -12,7 +12,7 @@ description: >
 Rewrite the user's prompt into the prompt they *meant* to write, then hand it back.
 **Do not run it.** No edits, no commands, no work on the task itself. The output is text the user will copy.
 
-The method lives in one place: `../sharpen/SKILL.md`, relative to this skill's base directory. Read it first for the gate, the intent slots, the `Use:` line and the never-rules. This skill only changes what happens at the end: you hand the result back instead of running it.
+The method lives in one place: `../sharpen/SKILL.md`, relative to this skill's base directory. Read it first for the gate, the intent slots, the `Tools:` and `Hooks:` lines, and the never-rules. This skill only changes what happens at the end: you hand the result back instead of running it.
 
 ## 1. Find the prompt
 
@@ -27,8 +27,8 @@ The same request needs a different prompt depending on who reads it:
 
 | Target | How to write it |
 |---|---|
-| **This agent** (default) | Real paths, real skill and agent names, a `Use:` line where one fits, and the check to run. |
-| **Another AI** (the user says ChatGPT, Gemini, Cursor, "another chat"…) | Self-contained. That AI can't see this repo, so include the context it needs in plain words: stack, the relevant code (short excerpts if needed), and constraints. No `Use:` lines, because that AI has none of these tools. |
+| **This agent** (default) | Real paths, real skill and agent names, a `Tools:` plan and any `Hooks:` that apply, and the check to run. |
+| **Another AI** (the user says ChatGPT, Gemini, Cursor, "another chat"…) | Self-contained. That AI can't see this repo, so include the context it needs in plain words: stack, the relevant code (short excerpts if needed), and constraints. No `Tools:` or `Hooks:` lines, because that AI has none of these tools. |
 | **A person** (ticket, issue, message to a teammate) | Title + what's wrong or wanted + where + how to tell it's done. No agent instructions. |
 
 If the target isn't stated, assume this agent and say so in the header line.
@@ -67,7 +67,7 @@ Fix the PIN lockout bug in the admin app.
 Symptom: the account locks after 1 wrong PIN; it should lock after 5.
 Where: apps/admin/auth/pin.ts (attempt counter), apps/admin/auth/pin.test.ts
 Reproduce: add a failing test that enters 4 wrong PINs and expects no lockout.
-Use: systematic-debugging skill
+Tools: systematic-debugging skill
 Done when: npm test -- pin passes, including the new test.
 ```
 
@@ -93,7 +93,7 @@ What I added: the stack, the expected behaviour, where to paste the code, the te
 
 - Run, edit or start the task. This skill only writes text.
 - Leave out the finish line ("Done when", "Check").
-- Put `Use:` lines or repo paths into a prompt meant for an AI or a person who can't use them.
+- Put `Tools:` or `Hooks:` lines, or repo paths, into a prompt meant for an AI or a person who can't use them.
 - Invent files, functions, skills, agents or tools.
 - Send the prompt or the code anywhere outside this agent.
 

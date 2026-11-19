@@ -20,7 +20,7 @@ This is the only Sharpen skill that writes a file, so it **shows the file and as
 
 ## 2. Sharpen and generalize it
 
-1. Sharpen it with the method in `../sharpen/SKILL.md` (intent slots, `Use:` line, finish line). Run its gate silently. A saved skill always gets the full engineered version.
+1. Sharpen it with the method in `../sharpen/SKILL.md` (intent slots, `Tools:` and `Hooks:` lines, finish line). Run its gate silently. A saved skill always gets the full engineered version.
 2. **Find the parts that change** between uses (the file, the feature, the test name) and turn each into an argument:
    - one free-form argument: `$ARGUMENTS`;
    - several positional arguments: `$1`, `$2`, …, with each one explained in `argument-hint`.

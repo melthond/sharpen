@@ -120,3 +120,23 @@ test('plain prompts never touch settings', () => {
   run('sharpen-prompt.js', '{"prompt":"fix it"}', dir);
   assert.ok(!fs.existsSync(path.join(dir, 'claude', 'settings.json')));
 });
+
+test('session start and /sharpen on include the setup summary', () => {
+  const dir = home();
+  fs.mkdirSync(path.join(dir, 'claude'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'claude', 'settings.json'), JSON.stringify({ statusLine: { type: 'command', command: 'x sharpen-statusline' }, hooks: { Stop: [{ hooks: [{ type: 'command', command: 'node require-tests.js' }] }] } }));
+  setOn(dir);
+  const session = JSON.parse(run('sharpen-session.js', JSON.stringify({ cwd: dir }), dir).stdout).hookSpecificOutput.additionalContext;
+  assert.match(session, /Stop: require-tests\.js \(user\)/);
+  const on = JSON.parse(run('sharpen-prompt.js', JSON.stringify({ prompt: '/sharpen on', cwd: dir }), dir).stdout).hookSpecificOutput.additionalContext;
+  assert.match(on, /Stop: require-tests\.js \(user\)/);
+  const plain = JSON.parse(run('sharpen-prompt.js', JSON.stringify({ prompt: 'fix it', cwd: dir }), dir).stdout).hookSpecificOutput.additionalContext;
+  assert.ok(!plain.includes('require-tests'), 'not repeated on every prompt');
+});
+
+test('hooks.json registers the clipboard copy only before AskUserQuestion', () => {
+  const { hooks } = JSON.parse(fs.readFileSync(hook('hooks.json'), 'utf8'));
+  const entry = hooks.PreToolUse[0];
+  assert.strictEqual(entry.matcher, 'AskUserQuestion');
+  assert.ok(entry.hooks[0].command.includes('hooks/sharpen-clipboard.js'));
+});

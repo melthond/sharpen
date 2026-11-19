@@ -76,10 +76,21 @@ test('verdict: clear, fill-in, asking, sharpened, raw', () => {
   assert.strictEqual(verdict([user('rename x in a.ts'), say(text('Sharpened prompt (clear):\n> Rename x in a.ts'))]), 'CLEAR');
   assert.strictEqual(verdict([user('add tests'), say(text('Sharpened prompt (fill-in):\n> Add tests for parsePin'))]), 'FILL-IN');
   assert.strictEqual(verdict([user('add tests'), say(text('Running as: add tests'))]), null, 'old one-line verdicts are gone');
-  assert.strictEqual(verdict([user('fix the login thing'), say({ type: 'thinking', thinking: '' }), say(ask)]), 'ASKING');
-  assert.strictEqual(verdict([user('fix it'), say(text('Which did you mean?\n1. …'))]), 'ASKING');
-  assert.strictEqual(verdict([user('fix it'), say(ask), answered, say(text('Fixing the PIN lockout'))]), 'SHARPENED');
+  assert.strictEqual(verdict([user('fix the login thing'), say({ type: 'thinking', thinking: '' }), say(ask)]), 'AMBIGUOUS - READY');
+  assert.strictEqual(verdict([user('fix it'), say(text('Which did you mean?\n1. …'))]), 'AMBIGUOUS - READY');
+  assert.strictEqual(verdict([user('fix it'), say(ask), answered, say(text('Fixing the PIN lockout'))]), 'AMBIGUOUS - SENT');
   assert.strictEqual(verdict([user('RAW: make it faster'), say(text('ok'))]), 'RAW');
+});
+
+test('verdict: review card waits as READY, then SENT once answered', () => {
+  const head = say(text('Sharpened prompt (fill-in):'));
+  assert.strictEqual(verdict([user('explain the helper'), head, say(ask)]), 'FILL-IN - READY');
+  assert.strictEqual(verdict([user('explain the helper'), head, say(ask), answered, say(text('Explaining…'))]), 'FILL-IN - SENT');
+  assert.strictEqual(verdict([user('rename x'), say(text('Sharpened prompt (clear):')), say(ask)]), 'CLEAR - READY');
+});
+
+test('verdict: a pasted sharpened prompt shows SENT', () => {
+  assert.strictEqual(verdict([user('Fix the PIN lockout in pin.ts'), say(text('Sending sharpened prompt. Fixing…'))]), 'SENT');
 });
 
 test('verdict: only the latest prompt counts', () => {

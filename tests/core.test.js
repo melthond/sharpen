@@ -91,5 +91,15 @@ test('there are no modes: full and lite are not commands', () => {
 });
 
 test('nudge spells out the required first line', () => {
-  for (const s of ['Sharpened prompt (clear):', 'Sharpened prompt (fill-in):', 'quote block', 'options']) assert.ok(c.NUDGE.includes(s), s);
+  for (const s of ['Sharpened prompt (clear):', 'Sharpened prompt (fill-in):', 'code block', 'Send this sharpened prompt?', 'Which did you mean?', 'Do not start the work']) assert.ok(c.NUDGE.includes(s), s);
+});
+
+test('a pasted sharpened prompt runs without being sharpened again', () => {
+  const last = 'Fix the PIN lockout in apps/admin/auth/pin.ts.\nDone when: npm test -- pin passes';
+  assert.deepStrictEqual(c.decide(last, ON, M, last), { context: c.PASTED_NOTE, newState: null }, 'pasted as is');
+  assert.deepStrictEqual(c.decide('Fix the PIN lockout in apps/admin/auth/pin.ts.\nDone when: it locks after 3', ON, M, last), { context: c.PASTED_NOTE, newState: null }, 'edited after the first line');
+  assert.deepStrictEqual(c.decide('  fix the PIN lockout in   apps/admin/auth/pin.ts. ', ON, M, last), { context: c.PASTED_NOTE, newState: null }, 'case and spacing');
+  assert.deepStrictEqual(c.decide('fix the login thing', ON, M, last), { context: c.NUDGE, newState: null }, 'a new prompt');
+  assert.deepStrictEqual(c.decide('Fix it.', ON, M, 'Fix it.'), { context: c.NUDGE, newState: null }, 'too short to be sure');
+  assert.deepStrictEqual(c.decide(last, OFF, M, last), none, 'off');
 });

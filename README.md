@@ -20,37 +20,46 @@ Sharpen puts her inside your AI agent.
 
 Every prompt you send an agent is plain text, and the agent has to guess what you meant. When it guesses wrong, you lose a turn, or worse, you get the wrong change.
 
-**Sharpen is a toggle.** Turn it on, and before Claude acts on a prompt, it reads that prompt against three things:
+**Sharpen is a toggle.** Turn it on, and every prompt you send is read against four things before any work starts:
 
-1. **Your conversation so far:** the files, decisions and errors you've already discussed.
-2. **Your codebase:** the real file paths and function names.
-3. **Your setup:** the skills, agents, subagents, MCP tools and plugin commands you have installed.
+1. **Your conversation so far:** files, decisions and errors you've already discussed. Earlier decisions are carried forward on a `Decided:` line.
+2. **Your codebase:** the real file paths, function names and check commands.
+3. **Your tools:** the skills, agents, subagents, MCP servers and plugin commands you have installed. They're named in a `Tools:` plan, in the order to use them.
+4. **Your hooks:** the hooks that run automatically, from your settings and plugins. Claude can't see these on its own, so Sharpen reads them for it. Any that will affect the work go on a `Hooks:` line.
 
-Then **you see the engineered prompt**, and Claude works from that, not from the plain one you typed:
+Then Sharpen hands you the engineered prompt on a **review card**, and nothing runs until you send it:
 
 ```
-> explain the clipboard helper
+> fix the clipboard so it clears after 30 seconds
 
 Sharpened prompt (fill-in):
-> Explain the clipboard helper in the admin app, apps/admin/src/lib/clipboard.ts.
-> Cover each export, the timed clear, the edge cases, and why it was built this way.
-> Mention where it's used (generate.tsx, renewals.tsx) and what clipboard.test.ts covers.
-> Read only. No edits.
+  Change the clipboard clear for copied keys from 60 to 30 seconds.
+  Where: apps/admin/src/lib/clipboard.ts:2 (HOLD_MS = 60_000 → 30_000)
+  Also update: generate.tsx:181 (hint text), clipboard.test.ts, PRD FR-19
+  Keep: the "leave it alone if something else was copied" rule
+  Tools: systematic-debugging skill → tauri-v2 skill
+  Hooks: dead-code-check runs after every edit
+  Check: npx vitest run apps/admin/src/lib/clipboard.test.ts passes
 
-[Claude now answers exactly that]
+  Send this sharpened prompt?
+  ❯ Send it (Recommended)       ← one click, and Claude works on exactly this
+    Run my original
+    [type your changes]         ← e.g. "make it 15 seconds", and you get an updated card
 ```
 
-That's a real run on a real codebase. Every prompt gets one of three treatments:
+**It's also on your clipboard.** The moment the card appears, Sharpen copies the engineered prompt. To edit it word by word, press Esc, paste it with **Ctrl+V** (⌘V on a Mac), change anything, and press Enter. Sharpen recognizes the pasted prompt, so it won't sharpen it again.
+
+That example is a real run on a real codebase. Every prompt gets one of three treatments:
 
 | Your prompt | What Sharpen does |
 |---|---|
-| **Already clear:** `rename getUser to fetchUser in src/api.ts` | Shows `Sharpened prompt (clear):`. Your request is kept intact, with only context added (where, constraints, how to check). Then it runs. |
-| **Vague, but only one sensible meaning:** `now add tests for it` | Shows `Sharpened prompt (fill-in):`, the full version built from your conversation and code. Then it runs. |
-| **Ambiguous:** `fix the login thing` | Asks **Which did you mean?**, with 2–3 clickable options. Each option is a fully engineered prompt. **Run as typed** is always available. |
+| **Already clear:** `rename getUser to fetchUser in src/api.ts` | `Sharpened prompt (clear):` keeps your request intact, adds only context (where, constraints, tools, how to check), then shows the card. |
+| **Vague, but only one sensible meaning:** `now add tests for it` | `Sharpened prompt (fill-in):` is the full version built from your conversation and code, then the card. |
+| **Ambiguous:** `fix the login thing` | **Which did you mean?** 2–3 clickable options, each a fully engineered prompt in its preview, plus **Run as typed**. Picking one sends it. |
 
-Claude Code doesn't let a plugin swap the message you sent, so Sharpen does the next best thing. The very first thing in Claude's reply is the engineered prompt, and everything after it follows that prompt. You always see what it understood, and you can press Esc the moment it's wrong.
+**Why a card, and not your prompt replaced in place?** Claude Code doesn't let a plugin rewrite your message, fill the input box, or send a message as you. Its hook docs say so. The card plus the clipboard is the closest you can get. You always see the engineered prompt first, and you decide whether it runs.
 
-**The rule was never "ask more questions."** The rule is: never act on a guess when two guesses lead to different work, and never ask when they don't. The questions are rare because they're needed, not just to look careful.
+**The rule was never "ask more questions."** The rule is: never act on a guess when two guesses lead to different work, and show the engineered prompt before anything runs. Most prompts take one click.
 
 ## Before / after
 
@@ -84,16 +93,17 @@ Pick one, and Claude runs it as if you had typed all of that yourself.
 ## How it works
 
 ```
-your prompt ──► gate ──┬── clear ─────► gather ──► "Sharpened prompt (clear)" ────► run it
-                       ├── fill-in ───► gather ──► "Sharpened prompt (fill-in)" ──► run it
-                       └── ambiguous ─► gather ──► 2–3 options ──► you pick ──────► run it
+your prompt ──► gate ──┬── clear ─────► gather ──► engineer ──► review card ──┐
+                       ├── fill-in ───► gather ──► engineer ──► review card ──┼──► you send ──► it runs
+                       └── ambiguous ─► gather ──► 2–3 options ───────────────┘
+                                                        (copied to your clipboard)
 ```
 
-**1. Gate.** Sharpen decides what kind of prompt it is. It only *asks* when two readings would lead to **different actions**. If every reading ends in the same edit, it writes out the engineered prompt and goes.
+**1. Gate.** Sharpen decides what kind of prompt it is. It only *asks* when two readings would lead to **different actions**. If every reading ends in the same edit, it writes the one engineered prompt.
 
-**2. Gather, fast.** It checks the conversation first, then does at most a few quick searches of the codebase. It never goes on a long exploration before asking.
+**2. Gather, fast.** It checks the conversation first, then does at most a few quick searches of the codebase (a few more, or an `Explore` agent, when a prompt is ambiguous and nothing solid turned up). Then it checks your setup: listed skills, agents, MCP tools and plugin commands, plus a summary of your hooks and enabled plugins that Sharpen builds at session start.
 
-**3. Build options for the kind of request.** Each option is a different *interpretation*, not the same idea reworded. Sharpen classifies the intent and fills in what that kind of request needs:
+**3. Engineer it for the kind of request.** Sharpen classifies the intent and fills in what that kind of request needs. When a prompt is ambiguous, each option is a different *interpretation*, not the same idea reworded:
 
 | Intent | What the engineered prompt spells out |
 |---|---|
@@ -106,9 +116,17 @@ your prompt ──► gate ──┬── clear ─────► gather ─�
 | **Explore** | Keep it open · No edits · Scope |
 | **Ops** (git, deploy, config) | Exact action · Target · Ask before anything irreversible |
 
-**4. Use what you have installed.** When one of your installed skills, agents or MCP tools fits, the option names it with a `Use:` line, for example `Use: performance-engineer agent` or `Use: Supabase MCP to read the auth logs`. Sharpen only suggests what is actually installed. It never invents tools, files or paths; if it couldn't find something, the option says `(not found)`.
+**4. Fit it to your setup.** Three lines tie the prompt to *your* environment:
 
-**5. Ask, then run.** In Claude Code the options appear as clickable choices, and each choice's preview shows the full engineered prompt. Sharpen never asks twice about the same request.
+| Line | What it carries | Example |
+|---|---|---|
+| `Decided:` | Earlier decisions from the conversation that still bind | `Decided: keep the counter in pin.ts, no new dependency` |
+| `Tools:` | A short plan of which installed tools to use and in what order. It prefers your project's own agents and skills | `Tools: Explore agent to find every caller → systematic-debugging skill → test-automator agent` |
+| `Hooks:` | Hooks that will run during the work and change how to do it. They're constraints, never called | `Hooks: dead-code-check runs after every edit, so remove unused code as you go` |
+
+Sharpen only names tools and hooks that actually exist in your setup. It never invents files, paths, tools or hooks; if it couldn't find something, the prompt says `(not found)`. Before showing the prompt it checks it: your meaning is unchanged, there's a finish line, the scope is stated, and there's no filler.
+
+**5. Review card, then run.** The engineered prompt appears on a clickable card (**Send it**, **Run my original**, or type your changes) and on your clipboard. Nothing runs until you answer. Sharpen never sharpens the same request twice, including a prompt you pasted back.
 
 ### Why this design
 
@@ -175,10 +193,11 @@ While Sharpen is on, a red badge shows in Claude Code's status bar with **what S
 
 | Badge | Meaning |
 |---|---|
-| `[SHARPEN - CLEAR]` | Your prompt was clear: it showed `Sharpened prompt (clear):` and ran that |
-| `[SHARPEN - FILL-IN]` | It had one obvious meaning: it showed `Sharpened prompt (fill-in):` and ran that |
-| `[SHARPEN - ASKING]` | It was ambiguous, and the options are waiting for you |
-| `[SHARPEN - SHARPENED]` | You picked an option, and the engineered prompt is running |
+| `[SHARPEN - CLEAR - READY]` | Your prompt was clear; the review card is waiting for you |
+| `[SHARPEN - FILL-IN - READY]` | It had one obvious meaning; the review card is waiting |
+| `[SHARPEN - AMBIGUOUS - READY]` | It had several meanings; the options are waiting |
+| `[SHARPEN - … - SENT]` | You answered the card, and the prompt is running |
+| `[SHARPEN - SENT]` | You pasted a sharpened prompt back and sent it |
 | `[SHARPEN - RAW]` | You skipped Sharpen with `raw:` |
 | `[SHARPEN]` | Nothing to show yet, or a slash command |
 
@@ -199,11 +218,13 @@ The badge script is copied to `~/.config/sharpen/`, outside the plugin folder th
 
 - **Nothing leaves your machine.** No API calls, no telemetry, no webhooks. The thinking is done by the agent you're already using.
 - **Your prompts are never logged.** The hooks read the prompt, decide, and exit.
-- **Files written:** `~/.config/sharpen/state.json` (`{ "on": true }` or `false`) and a copy of the badge script. `~/.claude/settings.json` is only edited to add the badge when you have no status line yet.
+- **Your settings are read, not changed.** To summarize your hooks, Sharpen reads your `settings.json` files and the hook files of your enabled plugins. It only keeps each hook's event and script *name*, never its arguments, which can hold tokens. The summary goes into Claude's context and nowhere else.
+- **Your clipboard is used.** When a review card appears, the engineered prompt replaces what's on your clipboard.
+- **Files written:** `~/.config/sharpen/state.json` (`{ "on": true }` or `false`), `last-sharpened.txt` (the last engineered prompt, so a pasted copy isn't sharpened twice), and a copy of the badge script. `~/.claude/settings.json` is only edited to add the badge when you have no status line yet.
 
 ## The prompt
 
-Sharpen is one prompt: [`skills/sharpen/SKILL.md`](skills/sharpen/SKILL.md), about 4 KB. The companion skills sit next to it in [`skills/`](skills/). Everything else in this repo exists to load the method at the right moment:
+Sharpen is one prompt: [`skills/sharpen/SKILL.md`](skills/sharpen/SKILL.md), about 6 KB. The companion skills sit next to it in [`skills/`](skills/). Everything else in this repo exists to load the method at the right moment:
 
 | File | Job |
 |---|---|
@@ -213,21 +234,26 @@ Sharpen is one prompt: [`skills/sharpen/SKILL.md`](skills/sharpen/SKILL.md), abo
 | `hooks/sharpen-state.js` | The on/off file |
 | `hooks/sharpen-statusline.js` | The red badge, with the verdict read from the transcript |
 | `hooks/sharpen-statusline-setup.js` | Puts the badge in your status bar without overwriting yours |
+| `hooks/sharpen-env.js` | The setup summary: your hooks (names only) and enabled plugins, for Claude to see |
+| `hooks/sharpen-clipboard.js` | `PreToolUse` hook on the review card: copies the engineered prompt to your clipboard |
 
 The hooks never block a prompt. On any error they exit quietly, and if stdin never closes (a known Windows quirk) they give up after 3 seconds.
 
 ## Tested
 
-- **74 automated tests** (`npm test`, Node's built-in runner, zero dependencies): toggles, prefixes, case and whitespace, look-alike commands, corrupt state files, bad hook input, hooks that hang, a status line setup that never overwrites yours, and the companion skills (each names its trigger, stays small enough to load, and the review and audit stay read-only).
+- **90 automated tests** (`npm test`, Node's built-in runner, zero dependencies): toggles, prefixes, case and whitespace, look-alike commands, corrupt state files, bad hook input, hooks that hang, a status line setup that never overwrites yours, and the companion skills (each names its trigger, stays small enough to load, and the review and audit stay read-only).
 - **A live eval** on a real Tauri + React + Firebase codebase: 12 prompts (5 vague, 5 clear, plus `raw:` and `sharpen:`). **12/12 pass** after one tuning round. Clear prompts ran directly. Vague ones got options that named real files and the project's own agents. See [`tests/eval/prompts.md`](tests/eval/prompts.md), and re-run it yourself with [`tests/eval/run.sh`](tests/eval/run.sh).
 
 ## FAQ
 
 **Won't this slow me down?**
-It only stops to ask when your prompt is truly ambiguous, which is exactly when a wrong guess would slow you down more. Every other prompt runs straight away, with a few lines at the top of the reply showing what it understood.
+By one click per prompt: **Send it**. In exchange, you see exactly what will run before it runs, and a wrong guess costs you one look instead of a wrong change. For a prompt you're sure about, start it with `raw:` and it runs as typed.
+
+**Can it put the engineered prompt straight into my input box, or send it for me?**
+Not in Claude Code today. Its hook docs say a plugin can't replace your prompt, fill the input box, or send a message as you. So Sharpen shows the prompt on a card with **Send it**, and copies it to your clipboard so you can paste and edit it. That's as close as Claude Code allows.
 
 **Does it cost extra tokens?**
-A little. The method (~5 KB) is loaded once per session, plus one short line per prompt. Each reply starts with the 3–7 line engineered prompt. When it does ask, it saves you the turn a wrong guess would have cost.
+A little. The method (~6 KB) and your setup summary are loaded once per session, plus one short line per prompt. Each reply starts with the engineered prompt. In return, the work starts from a prompt with the right files, tools and finish line, which usually saves the turn a vague prompt would have cost.
 
 **Doesn't rewriting a clear prompt make it worse?**
 It can, when the rewrite changes what you asked for. That's why, for a clear prompt, Sharpen keeps every part of your request and only *adds* context: where, constraints, how to check. To skip it for one prompt, start it with `raw:`.

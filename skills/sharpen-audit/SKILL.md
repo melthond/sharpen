@@ -29,7 +29,7 @@ Check in this order, most costly first:
 3. **Where things live.** In a monorepo or a big app: which folder owns what ("auth is in `apps/admin/src-tauri/src/commands/auth.rs`"). Without this, "the login thing" has too many candidates.
 4. **Unwritten rules.** Conventions the code follows but no file states: the house component library, error handling style, naming, "migrations are never edited", files that must not be touched.
 5. **Mismatches.** Instructions that disagree with the code: a script named in the README that doesn't exist in `package.json`, a renamed folder, a stale command. A wrong instruction is worse than none.
-6. **Tools that fit.** Installed skills, agents or MCP servers that match this stack but aren't mentioned anywhere, so they never get suggested in a `Use:` line. Also project agents or skills that reference something that no longer exists.
+6. **Tools that fit.** Installed skills, agents or MCP servers that match this stack but aren't mentioned anywhere, so they never get suggested in a `Tools:` plan. Also project agents or skills that reference something that no longer exists.
 7. **Bloat.** An instruction file so long, or so full of general advice, that the project-specific lines get lost. Every line costs context in every session.
 
 ## 3. Check before you report

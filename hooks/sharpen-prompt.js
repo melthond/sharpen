@@ -4,6 +4,12 @@ const { readState, writeState } = require('./sharpen-state');
 const { decide, loadMethod } = require('./sharpen-core');
 const { METHOD_FILE, readStdinJson, emit } = require('./sharpen-io');
 const { ensureStatusline } = require('./sharpen-statusline-setup');
+const { setupNote } = require('./sharpen-env');
+const fs = require('fs');
+const path = require('path');
+const { stateDir } = require('./sharpen-state');
+
+const lastSharpened = () => { try { return fs.readFileSync(path.join(stateDir(), 'last-sharpened.txt'), 'utf8'); } catch { return null; } };
 
 const withStatusline = (context) => {
   try {
@@ -15,9 +21,15 @@ const withStatusline = (context) => {
 readStdinJson()
   .then((input) => {
     if (input && typeof input === 'object') {
-      let { context, newState } = decide(input.prompt ?? '', readState(), loadMethod(METHOD_FILE));
+      let { context, newState } = decide(input.prompt ?? '', readState(), loadMethod(METHOD_FILE), lastSharpened());
       if (newState) writeState(newState);
-      if (newState && newState.on) context = withStatusline(context);
+      if (newState && newState.on) {
+        const setup = setupNote(input.cwd);
+        if (setup) context = `${context}
+
+${setup}`;
+        context = withStatusline(context);
+      }
       emit('UserPromptSubmit', context);
     }
   })

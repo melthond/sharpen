@@ -1,44 +1,29 @@
 ---
 name: sharpen
-description: Turns a vague prompt into 2-3 specific, engineered prompts built from the conversation, the codebase, and the skills, agents and MCP tools available here. Use when Sharpen is on or the prompt starts with "sharpen:".
+description: Turns the user's plain prompt into an engineered one, built from the conversation, the codebase, and the skills, agents, MCP tools, plugins and hooks of this setup, and shows it on a review card to send. Use when Sharpen is on or the prompt starts with "sharpen:".
 ---
 
 # Sharpen
 
-Before acting on the user's prompt, decide what kind of prompt it is, and show the user the engineered version you'll work from.
+Turn the user's prompt into the prompt they meant, show it on a **review card**, and only work once they send it. **Do not start the work before they answer.** The engineered prompt is theirs to check, edit or send.
 
 ## 1. Gate
 
-- **Clear**: says what to do and where, and has one reading.
-  *"rename getUser to fetchUser in src/api.ts"*
-- **Fill-in**: one sensible reading, but details are missing that the conversation or code supplies. Do not ask.
-  *"now add tests for it"*, right after you wrote a function.
-- **Ambiguous**: two or more readings would lead to *different actions*. Go to steps 2–4.
-  *"fix the login thing"*, with no earlier mention of which problem.
+- **Clear**: says what to do and where, and has one reading. *"rename getUser to fetchUser in src/api.ts"*
+- **Fill-in**: one sensible reading, but details are missing that the conversation or code supplies. *"now add tests for it"*, right after you wrote a function.
+- **Ambiguous**: two or more readings would lead to *different actions*. *"fix the login thing"*, with two open login problems.
 
-If every reading leads to the same action, it is not ambiguous. Open-ended exploration ("what would you improve here?") counts as clear: keep it open.
-
-**Clear and Fill-in:** gather (step 2) and fill the intent slots (step 3). Then start your reply with `Sharpened prompt (clear):` or `Sharpened prompt (fill-in):`, followed by the engineered prompt as a quote block (`> ` lines, 3–7 lines), and act on exactly that prompt. It's the user's own prompt, written out in full. For a clear prompt, keep every part of what the user asked and only *add* context: where, constraints, `Use:`, done when. Never change its meaning.
-
-```
-Sharpened prompt (fill-in):
-> Explain the clipboard helper in apps/admin/src/lib/clipboard.ts.
-> Cover each export, the timed clear, and the edge cases.
-> Mention where it's used and what clipboard.test.ts covers.
-> Read only. No edits.
-```
-
-**Ambiguous:** options (steps 2–4).
+If every reading leads to the same action, it isn't ambiguous. Open-ended exploration ("what would you improve here?") is clear: keep it open.
 
 ## 2. Gather (fast)
 
-- Use the conversation first: files, decisions, errors and preferences already mentioned.
-- Then do at most 3 quick searches or reads to find the real files and names. No long exploration before asking.
-- Check the capabilities listed in your context: **skills**, **agents/subagents**, **MCP** tools, and plugin slash commands. Note any that fit this request. Use only ones that are actually listed; never invent one.
+- **Conversation first:** files, errors, decisions and preferences already mentioned. Decisions the user made are binding.
+- **Code:** at most 3 quick searches or reads to find the real files, names and check commands. For an ambiguous prompt whose first searches found nothing solid, up to 6, or one `Explore` agent if it's listed. Never a long tour.
+- **Setup:** the skills, agents/subagents, MCP tools and plugin slash commands listed in your context, plus the `Setup Sharpen found` block (hooks that run automatically, and enabled plugins). Note which fit this request. Use only names that are actually listed; never invent one.
 
-## 3. Build 2–3 options
+## 3. Engineer the prompt
 
-Write 2–3 options, one per interpretation, most likely first, plus `Run as typed`, for 4 choices at most. Don't add a "Something else" option, because the user can always type their own. Each option is a different action, not a rewording. Classify the intent and fill that type's slots:
+Classify the intent, and fill that type's slots:
 
 | Intent | Slots |
 |---|---|
@@ -52,43 +37,48 @@ Write 2–3 options, one per interpretation, most likely first, plus `Run as typ
 | Ops (git, deploy, config) | Exact action · Target · Ask before anything irreversible |
 | Other | Goal · Where · Constraints · Done when |
 
-Add a `Use:` line to any option where a listed skill, agent or MCP tool fits, naming it exactly as listed. For example: `Use: systematic-debugging skill`, `Use: Explore agent to find every caller`, `Use: Supabase MCP to read the auth logs`. Leave the line out when nothing fits.
+Then add the lines that make it fit *this* setup and *this* conversation. `Tools:` is required whenever any listed skill, agent or MCP tool fits the work, which it usually does. `Hooks:` is required whenever the setup block lists a hook that will run during this work (edits, tool calls, the end of the turn):
 
-Rules for every option:
-- Plain labelled lines, 3–7 in total, context first and the action last.
-- Use real paths and names from step 2. If something wasn't found, say `(not found)`. Never guess a path.
-- Carry over constraints the user already stated in the conversation.
-- For a large feature with many open decisions, add the option `Interview me first`: ask questions one at a time, then write a spec before building.
+- `Decided:` earlier decisions that still bind ("keep the counter in pin.ts", "no new dependency"). They're the part a fresh read forgets.
+- `Tools:` a short plan of which listed tools to use and in what order, at most 3, each with its job: `Tools: Explore agent to find every caller → systematic-debugging skill → test-automator agent for the regression test`. Prefer the project's own agents and skills over generic ones, and an MCP tool when the work needs live data (logs, a database, an issue tracker).
+- `Hooks:` hooks from the setup block that will run during this work and change how to do it: `Hooks: dead-code-check runs after every edit, so remove unused code as you go`. Hooks are never called. They are constraints.
 
-Example, for "fix the login thing" after a conversation about PIN lockout:
+Before showing it, check: it keeps everything the user asked for (for a clear prompt, only *add* context, never change the meaning), it has a finish line (`Done when:` or `Check:`), the scope is stated, every name is real, and no line is filler. Write `(not found)` rather than guess a path. Plain labelled lines, 4–10 in total, context first and the action last.
+
+## 4. Show the review card
+
+**Clear and Fill-in:** start your reply with `Sharpened prompt (clear):` or `Sharpened prompt (fill-in):`, then the engineered prompt in one fenced code block, then call `AskUserQuestion` once:
+- question: `Send this sharpened prompt?`, header: `Sharpen`
+- option 1: `Send it (Recommended)`, description `Run exactly this prompt`, preview = the engineered prompt, as plain text without the code fence
+- option 2: `Run my original`, description `Run what you typed, unchanged`, preview = the user's original prompt
+
+Sharpen copies option 1's preview to the user's clipboard when the card appears. To edit it word by word, they can press Esc, paste it with Ctrl+V, change it and send it.
+
 ```
-Fix PIN lockout
-Symptom: lockout after 1 wrong PIN instead of 5
-Where: apps/admin/auth/pin.ts
-Reproduce: failing test in pin.test.ts
-Use: systematic-debugging skill
-Check: npm test -- pin
-```
-```
-Investigate login only
-Goal: find why admin login fails
-Read-only: trace the login flow, report the likely cause, no edits
+Sharpened prompt (fill-in):
+Explain the clipboard helper in apps/admin/src/lib/clipboard.ts.
+Cover each export, the timed clear, and the edge cases.
+Mention where it's used (generate.tsx, renewals.tsx) and what clipboard.test.ts covers.
+Read only. No edits.
+Done when: every export is explained, with file:line references.
 ```
 
-## 4. Ask
+**Ambiguous:** call `AskUserQuestion` once with the question `Which did you mean?`, and 2–3 options, one per interpretation, most likely first. Each option has its label = the meaning (5 words or fewer), description = one line, preview = its full engineered prompt (steps 3 rules). The last option is always `Run as typed`, for 4 choices at most. Each option is a different action, not a rewording. For a large feature with many open decisions, one option can be `Interview me first`: ask questions one at a time, then write a spec before building.
 
-- **Claude Code:** call `AskUserQuestion` once, with the question "Which did you mean?". For each option: label = the meaning (5 words or fewer), description = one line, preview = the full engineered prompt. Always include `Run as typed` as the last option.
-- **Hosts without a question tool:** a numbered list, the same options plus `Run as typed`. The user replies with a number.
+**Hosts without a question tool:** show the prompt or the numbered options, and wait for the user to reply `send`, a number, or their changes.
 
-## 5. Run
+## 5. After they answer
 
-Carry out the chosen prompt as if the user had typed it, using any skill, agent or tool it names. Don't sharpen again for the same request, including the user's reply that picks an option.
+- `Send it`, or an option: carry out that engineered prompt exactly as written, using the tools it names.
+- `Run my original` or `Run as typed`: carry out what they typed, unchanged.
+- Their own text (changes): apply the changes to the engineered prompt, and show the updated card once more.
+- Don't sharpen again for the same request, including the user's answer to the card.
 
 ## Never
 
-- Ask about a clear or fill-in prompt (unless it starts with `sharpen:`; then ask *before* doing any work).
-- Skip the first line. Every reply to a prompt starts with `Sharpened prompt (clear):`, `Sharpened prompt (fill-in):`, or the options. The user's status badge reads it.
-- Give generic options that ignore the conversation and the code.
-- Explore at length before asking.
-- Invent files, skills, agents or tools.
+- Start the work before the user answers the card. The card *is* the step.
+- Skip the first line or the card. Every reply to a prompt starts with `Sharpened prompt (clear):`, `Sharpened prompt (fill-in):`, or the `Which did you mean?` card. The user's status badge reads it.
+- Change the meaning of a clear prompt. Only add to it.
+- Give generic prompts that ignore the conversation, the code or the setup.
+- Invent files, skills, agents, MCP tools or hooks, or call a hook.
 - Send the prompt or the code anywhere outside this agent.
