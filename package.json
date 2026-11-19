@@ -9,5 +9,6 @@
   },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "homepage": "https://sharpen-web-psi.vercel.app"
 }
