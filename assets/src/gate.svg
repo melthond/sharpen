@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 250" role="img" aria-label="The gate sorts each prompt three ways. Clear: Sharpen only adds context. Fill-in: it fills the gaps from the conversation and code. Ambiguous: it asks which you meant, with 2 to 3 options plus Run as typed.">
+  <!--DEFS-->
+  <rect x="6" y="6" width="868" height="238" rx="14" class="card"/>
+
+  <rect x="32" y="96" width="148" height="58" rx="8" class="box"/>
+  <text x="106" y="131" text-anchor="middle" class="body">your prompt</text>
+  <line x1="182" y1="125" x2="228" y2="125" class="arrow"/>
+
+  <rect x="232" y="96" width="150" height="58" rx="8" class="box accent-stroke"/>
+  <text x="307" y="122" text-anchor="middle" class="title accent">Gate</text>
+  <text x="307" y="143" text-anchor="middle" class="note">how many readings?</text>
+
+  <polyline points="382,125 398,125 398,58 420,58" class="arrow"/>
+  <polyline points="382,125 420,125" class="arrow"/>
+  <polyline points="382,125 398,125 398,192 420,192" class="arrow"/>
+
+  <rect x="424" y="28" width="424" height="60" rx="8" class="box"/>
+  <text x="442" y="54" class="title">Clear: one reading</text>
+  <text x="442" y="76" class="note">keeps your words, only adds where, tools, check</text>
+  <rect x="424" y="95" width="424" height="60" rx="8" class="box"/>
+  <text x="442" y="121" class="title">Fill-in: one sensible reading</text>
+  <text x="442" y="143" class="note">fills the gaps from the conversation and the code</text>
+  <rect x="424" y="162" width="424" height="60" rx="8" class="box"/>
+  <text x="442" y="188" class="title">Ambiguous: different work</text>
+  <text x="442" y="210" class="note">"Which did you mean?" 2-3 options + Run as typed</text>
+</svg>

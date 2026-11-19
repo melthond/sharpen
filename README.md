@@ -248,6 +248,8 @@ The design, plan and research live in [`docs/`](docs/).
 
 [MIT](LICENSE.md). Sharp, short, and yours to use.
 
+The diagrams use the hand-drawn xkcd Script font, which has its own license: see [`assets/fonts/LICENSE.md`](assets/fonts/LICENSE.md).
+
 ## Star History
 
 <a href="https://www.star-history.com/#ardfaiyaz/sharpen&Date">

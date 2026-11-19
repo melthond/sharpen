@@ -1,6 +1,6 @@
 {
   "name": "sharpen",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "private": true,
   "description": "Turn vague prompts into specific ones using your conversation and codebase.",
   "license": "MIT",

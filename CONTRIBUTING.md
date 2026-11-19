@@ -66,6 +66,8 @@ Open an issue first. Sharpen ships to an agent only if that agent can run a hook
 
 ## Development
 
+The README diagrams are built from `assets/src/*.svg` by `node scripts/build-diagrams.js`, which embeds the hand-drawn font and the wobble filter. Edit the source, then rebuild. The test suite fails if a built diagram is out of date.
+
 ```bash
 git clone https://github.com/ardfaiyaz/sharpen
 cd sharpen

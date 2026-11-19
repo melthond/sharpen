@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 440" role="img" aria-label="Four inputs feed the engineered prompt: the conversation gives Decided, the codebase gives Where, your installed tools give Tools, and your hooks give Hooks. The prompt goes to a review card: Send it runs the engineered prompt, Run my original runs what you typed, and your changes produce an updated card. It is also copied to the clipboard.">
+  <!--DEFS-->
+  <rect x="6" y="6" width="868" height="428" rx="14" class="card"/>
+
+  <rect x="32" y="36" width="206" height="64" rx="8" class="box"/>
+  <text x="48" y="62" class="title">Conversation</text>
+  <text x="48" y="86" class="note">decisions, errors, files</text>
+  <rect x="32" y="116" width="206" height="64" rx="8" class="box"/>
+  <text x="48" y="142" class="title">Codebase</text>
+  <text x="48" y="166" class="note">real paths, checks</text>
+  <rect x="32" y="196" width="206" height="64" rx="8" class="box"/>
+  <text x="48" y="222" class="title">Your tools</text>
+  <text x="48" y="246" class="note">skills, agents, MCP</text>
+  <rect x="32" y="276" width="206" height="64" rx="8" class="box"/>
+  <text x="48" y="302" class="title">Your hooks</text>
+  <text x="48" y="326" class="note">from settings + plugins</text>
+
+  <line x1="240" y1="68" x2="330" y2="104" class="arrow"/>
+  <line x1="240" y1="148" x2="330" y2="152" class="arrow"/>
+  <line x1="240" y1="228" x2="330" y2="200" class="arrow"/>
+  <line x1="240" y1="308" x2="330" y2="248" class="arrow"/>
+  <text x="256" y="72" class="note">Decided</text>
+  <text x="256" y="140" class="note">Where</text>
+  <text x="256" y="206" class="note">Tools</text>
+  <text x="256" y="268" class="note">Hooks</text>
+
+  <rect x="334" y="36" width="234" height="304" rx="10" class="box accent-stroke"/>
+  <text x="451" y="68" text-anchor="middle" class="title accent">Engineered prompt</text>
+  <text x="356" y="104" class="body">Goal</text>
+  <text x="356" y="130" class="body">Where:</text>
+  <text x="356" y="156" class="body">Decided:</text>
+  <text x="356" y="182" class="body">Tools:</text>
+  <text x="356" y="208" class="body">Hooks:</text>
+  <text x="356" y="234" class="body">Done when:</text>
+  <text x="356" y="280" class="note">checked: meaning kept,</text>
+  <text x="356" y="302" class="note">real names, no filler</text>
+
+  <line x1="570" y1="168" x2="606" y2="168" class="line"/>
+  <text x="588" y="156" text-anchor="middle" class="note">card</text>
+  <polyline points="606,168 622,168 622,70 650,70" class="arrow"/>
+  <polyline points="606,168 650,168" class="arrow"/>
+  <polyline points="606,168 622,168 622,266 650,266" class="arrow"/>
+
+  <rect x="654" y="36" width="194" height="66" rx="8" class="button"/>
+  <text x="670" y="64" class="title on-accent">Send it</text>
+  <text x="670" y="88" class="note on-accent">runs the engineered one</text>
+  <rect x="654" y="134" width="194" height="66" rx="8" class="box"/>
+  <text x="670" y="162" class="title">Run my original</text>
+  <text x="670" y="186" class="note">runs what you typed</text>
+  <rect x="654" y="232" width="194" height="66" rx="8" class="box"/>
+  <text x="670" y="260" class="title">Your changes</text>
+  <text x="670" y="284" class="note">"make it 3 attempts"</text>
+
+  <polyline points="750,298 750,322 570,322" class="arrow dashed"/>
+  <text x="660" y="340" text-anchor="middle" class="note">updated card</text>
+
+  <line x1="451" y1="342" x2="451" y2="368" class="arrow"/>
+  <rect x="314" y="372" width="274" height="44" rx="8" class="box dashed"/>
+  <text x="451" y="400" text-anchor="middle" class="body">on your clipboard: Ctrl+V, edit</text>
+</svg>

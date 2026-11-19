@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 330" role="img" aria-label="You type 'fix the login thing'. Sharpen reads your conversation, code, tools and hooks, and shows the engineered prompt on a review card with Send it and Run my original. It is also copied to your clipboard.">
+  <!--DEFS-->
+  <rect x="6" y="6" width="868" height="318" rx="14" class="card"/>
+
+  <text x="40" y="128" class="note">you type</text>
+  <rect x="40" y="140" width="206" height="54" rx="8" class="box"/>
+  <text x="143" y="174" text-anchor="middle" class="body">fix the login thing</text>
+
+  <line x1="262" y1="167" x2="384" y2="167" class="arrow"/>
+  <text x="322" y="150" text-anchor="middle" class="note">sharpen reads</text>
+  <text x="322" y="192" text-anchor="middle" class="note">conversation, code,</text>
+  <text x="322" y="210" text-anchor="middle" class="note">tools, hooks</text>
+
+  <rect x="396" y="30" width="448" height="270" rx="10" class="box accent-stroke"/>
+  <text x="416" y="62" class="title accent">Sharpened prompt (fill-in):</text>
+  <text x="416" y="92" class="body">Fix the PIN lockout in auth/pin.ts</text>
+  <text x="416" y="114" class="body">Symptom: locks after 1 wrong PIN, not 5</text>
+  <text x="416" y="136" class="body">Decided: keep the counter in pin.ts</text>
+  <text x="416" y="158" class="body">Tools: debugging skill → test agent</text>
+  <text x="416" y="180" class="body">Hooks: dead-code-check after each edit</text>
+  <text x="416" y="202" class="body">Done when: npm test -- pin passes</text>
+  <line x1="416" y1="222" x2="824" y2="222" class="rule"/>
+  <rect x="416" y="238" width="118" height="40" rx="8" class="button"/>
+  <text x="475" y="264" text-anchor="middle" class="title on-accent">Send it</text>
+  <rect x="548" y="238" width="160" height="40" rx="8" class="box"/>
+  <text x="628" y="264" text-anchor="middle" class="body">Run my original</text>
+  <text x="824" y="264" text-anchor="end" class="note">+ clipboard</text>
+</svg>
