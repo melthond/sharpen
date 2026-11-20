@@ -321,6 +321,32 @@ test('sharpen-plan: trigger, sizing, approval before writing, no code', () => {
   assert.ok(body('sharpen-help').includes('/sharpen:sharpen-plan'), 'help lists it');
 });
 
+test('sharpen-plan names every file, owns the stack in one place, and sizes bugs and new projects', () => {
+  const m = body('sharpen-plan');
+  for (const s of ['`BUILD.md`', '`PROMPT.md`', '`fix_plan.md`', 'Stack: see plan.md', 'owns the stack *choice*', 'bugfix spec',
+    'in front of whichever', 'no files, no table, no approval question', '[NEEDS CLARIFICATION: <question>]', '[ASK: <value>]', 'at most five questions at a time', 'until they pick']) {
+    assert.ok(m.includes(s), 'plan missing: ' + s);
+  }
+});
+
+test('CREDITS.md credits every source family, and the README links it', () => {
+  const root = path.join(__dirname, '..');
+  const c = fs.readFileSync(path.join(root, 'CREDITS.md'), 'utf8');
+  for (const s of ['dair-ai/Prompt-Engineering-Guide', 'nidhinjs/prompt-master', 'openai/openai-cookbook', 'github/spec-kit', 'BMAD-METHOD', '12-factor-agents',
+    'effective-context-engineering-for-ai-agents', 'writing-tools-for-agents', 'code.claude.com/docs/en/best-practices', 'aistudio.google.com', 'cursor.com', 'kiro.dev',
+    'arxiv.org/abs/2406.06608', 'arxiv.org/abs/2505.13360', 'arxiv.org/abs/2507.11538', 'arxiv.org/abs/2406.10279', 'arxiv.org/abs/2310.11324', 'arxiv.org/abs/2503.13657',
+    'arxiv.org/abs/2510.20270', 'survey.stackoverflow.co', 'metr.org', 'octoverse', 'dora.dev', 'thoughtworks.com/radar', 'simonwillison.net', 'addyosmani.com',
+    'harper.blog', 'ghuntley.com', 'martinfowler.com']) {
+    assert.ok(c.includes(s), 'CREDITS missing: ' + s);
+  }
+  // Every source a reference file links to is credited too (same host or path).
+  const refs = fs.readdirSync(REFS).map((f) => ref(f)).join('\n');
+  const hosts = [...new Set([...refs.matchAll(/\]\((https?:\/\/[^/)]+)/g)].map((m) => m[1]))];
+  for (const h of hosts) assert.ok(c.includes(h), 'CREDITS missing a source host used in the references: ' + h);
+  const readme = fs.readFileSync(path.join(root, 'README.md'), 'utf8');
+  assert.ok(readme.includes('[CREDITS.md](CREDITS.md)') && readme.includes('[Credits](#credits)'));
+});
+
 test('companion skills use the new references and keep outward prompts private', () => {
   assert.ok(body('sharpen-decompile').includes('references/techniques.md'));
   assert.ok(body('sharpen-decompile').includes('references/llm-features.md'));

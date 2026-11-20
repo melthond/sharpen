@@ -45,7 +45,7 @@ Sharpen puts her inside your AI agent.
 - **Ten companion skills:** sharpen a prompt for another AI, hand off to a fresh session, split a big task, plan a project in phases, coach your prompting, and more.
 - **Zero dependencies, nothing leaves your machine.** No API calls and no telemetry.
 
-**Contents:** [Install](#install) · [Before / after](#before--after) · [Sharpen in action](#sharpen-in-action) · [How it works](#how-it-works) · [Review card](#the-review-card) · [Skills](#skills) · [Commands](#commands) · [Status badge](#status-badge) · [Numbers](#numbers) · [Privacy](#privacy) · [Updating](#updating) · [Troubleshooting](#troubleshooting) · [FAQ](#faq) · [Contributing](#contributing)
+**Contents:** [Install](#install) · [Before / after](#before--after) · [Sharpen in action](#sharpen-in-action) · [How it works](#how-it-works) · [Review card](#the-review-card) · [Skills](#skills) · [Commands](#commands) · [Status badge](#status-badge) · [Numbers](#numbers) · [Privacy](#privacy) · [Updating](#updating) · [Troubleshooting](#troubleshooting) · [FAQ](#faq) · [Credits](#credits) · [Contributing](#contributing)
 
 ## Install
 
@@ -339,6 +339,10 @@ No. It reads your conversation, which is the next best thing, and more reliable.
 
 A blunt prompt still cuts, just not where you meant.
 </details>
+
+## Credits
+
+Sharpen's method and reference files are built from published work: the [DAIR.AI Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide), [prompt-master](https://github.com/nidhinjs/prompt-master), the [OpenAI Cookbook](https://github.com/openai/openai-cookbook), [GitHub Spec Kit](https://github.com/github/spec-kit), [12-Factor Agents](https://github.com/humanlayer/12-factor-agents), Anthropic's, OpenAI's and Google's prompting guides, research papers on prompt and agent failures, 2025–2026 developer surveys, and writing by Simon Willison, Addy Osmani, Harper Reed, Geoffrey Huntley and others. **[CREDITS.md](CREDITS.md)** lists every source and what it contributed, and each figure in the references links back to its source.
 
 ## Contributing
 
