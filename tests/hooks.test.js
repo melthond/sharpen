@@ -46,6 +46,15 @@ test('no correction is counted while Sharpen is off or before any card', () => {
   assert.strictEqual(fs.existsSync(path.join(dir, 'stats.json')), false);
 });
 
+test('emit flushes large output before the hook exits (macOS pipes write asynchronously)', () => {
+  // Same shape as the hooks: emit, then process.exit in finally. Before the fix, macOS cut output past ~8 KB.
+  const io = JSON.stringify(path.join(ROOT, 'hooks', 'sharpen-io.js'));
+  const big = 'x'.repeat(300000);
+  const r = spawnSync(process.execPath, ['-e', `Promise.resolve().then(() => require(${io}).emit('SessionStart', 'x'.repeat(300000))).finally(() => process.exit(0))`], { encoding: 'utf8', maxBuffer: 1 << 24 });
+  assert.strictEqual(r.status, 0);
+  assert.strictEqual(JSON.parse(r.stdout).hookSpecificOutput.additionalContext, big);
+});
+
 test('prompt hook silent when off', () => {
   const r = run('sharpen-prompt.js', '{"prompt":"fix it"}', home());
   assert.strictEqual(r.status, 0);
