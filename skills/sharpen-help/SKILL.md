@@ -55,6 +55,7 @@ Every prompt is built from your conversation (`Decided:`), your code (real paths
 | `/sharpen:sharpen-split <request>` | Splits a big request into small ordered prompts, grouped into waves that can run in parallel. |
 | `/sharpen:sharpen-save [name]` | Saves a prompt you keep typing as a project slash command, after showing you the file. |
 | `/sharpen:sharpen-interview <feature>` | Asks one question at a time about a fuzzy feature, then writes `SPEC.md`. |
+| `/sharpen:sharpen-plan <project or feature>` | Builds the phase chain (kickoff, spec, plan, tasks, build prompt), sized to the work, and writes the files only after you approve. |
 | `/sharpen:sharpen-decompile <prompt>` | Breaks down, adapts (for another tool), simplifies or splits a prompt you already have. |
 | `/sharpen:sharpen-help` | This card. |
 

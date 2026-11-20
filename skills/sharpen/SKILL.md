@@ -31,6 +31,8 @@ If every reading leads to the same action, it isn't ambiguous. Open exploration 
 
 **Session checks.** Two failed tries at one fault in `Tried:`: offer `/sharpen:sharpen-handoff` and a fresh session, not a third prompt. New unrelated task: suggest `/clear`. Confirm risky verbs (delete, drop, reset, overwrite, force) and their target on the card. Private data + untrusted content + outward send: flag it and `Stop and ask before:` sending.
 
+**Phase.** If the prompt is a stage of a bigger build (kickoff, spec, plan, tasks, build, long loop, done check, resume), use that phase's shape from `references/phases.md` and end with `Next:` and the next phase. Keep small work small: a bug or tweak gets no phases. A big feature with no spec: offer `Interview me`, `Spec first` or `Build now`. For the whole chain as files: `/sharpen:sharpen-plan`.
+
 **Shape it to the task.** Classify the intent and fill its slots:
 
 | Intent | Slots |

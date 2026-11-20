@@ -19,7 +19,8 @@ test('method covers the gate, options, capabilities and intents', () => {
 });
 
 test('method stays small enough to inject', () => {
-  assert.ok(loadMethod(METHOD_FILE).length < 8000, `length ${loadMethod(METHOD_FILE).length}`);
+  // The full method is injected only on /sharpen on and the sharpen: prefix; plain prompts get the short nudge.
+  assert.ok(loadMethod(METHOD_FILE).length < 8500, `length ${loadMethod(METHOD_FILE).length}`);
 });
 
 test('options fit AskUserQuestion (max 4 choices incl. Run as typed)', () => {
@@ -292,6 +293,32 @@ test('sharpen-audit prunes as well as adds', () => {
 test('sharpen-handoff points to files and commits instead of summarising code', () => {
   const m = body('sharpen-handoff');
   for (const s of ['commits', 'symbols', '4 of 45']) assert.ok(m.includes(s), 'handoff missing: ' + s);
+});
+
+// --- prompt phases (spec-driven workflows) ---
+test('phases.md covers every phase with signals, sizing and sources', () => {
+  const t = ref('phases.md');
+  for (const s of ['Size the process to the work', 'Kickoff', 'Interview', 'Spec (what and why)', 'Clarify', 'Plan (how)', 'Tasks', 'Build (one task)',
+    'Long loop', 'Bugfix spec', 'Review', 'Done check', 'Resume', 'master prompt', 'THE SYSTEM SHALL', '[NEEDS CLARIFICATION', 'Always', 'Ask first', 'Never',
+    '16 acceptance criteria', 'spec-kit', 'kiro.dev', 'harper.blog', 'ghuntley.com']) {
+    assert.ok(t.includes(s), 'phases missing: ' + s);
+  }
+});
+
+test('method routes phased prompts and keeps small work small', () => {
+  const m = loadMethod(METHOD_FILE);
+  for (const s of ['references/phases.md', 'Next:', 'Keep small work small', 'Interview me', 'Spec first', 'Build now', '/sharpen:sharpen-plan']) assert.ok(m.includes(s), 'missing: ' + s);
+});
+
+test('sharpen-plan: trigger, sizing, approval before writing, no code', () => {
+  assert.match(front('sharpen-plan'), /^name: sharpen-plan$/m);
+  assert.ok(front('sharpen-plan').includes('/sharpen:sharpen-plan'));
+  const m = body('sharpen-plan');
+  assert.ok(m.length > 1500 && m.length < 9000, 'length ' + m.length);
+  for (const s of ['../sharpen/references/phases.md', 'Size it first', 'AskUserQuestion', 'Write them (Recommended)', 'Never overwrite', 'Do not run the build', '/sharpen:sharpen-interview', 'Next:']) {
+    assert.ok(m.includes(s), 'plan missing: ' + s);
+  }
+  assert.ok(body('sharpen-help').includes('/sharpen:sharpen-plan'), 'help lists it');
 });
 
 test('companion skills use the new references and keep outward prompts private', () => {

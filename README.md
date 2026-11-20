@@ -42,7 +42,7 @@ Sharpen puts her inside your AI agent.
 - **Built from your real setup.** It uses your conversation, your code, and the skills, agents, MCP servers and hooks you have installed. Hooks are read for Claude, which can't see them otherwise.
 - **Nothing runs until you send it.** A review card offers **Send it**, **Run my original**, or your changes, and the prompt is also copied to your clipboard.
 - **It asks only when it must.** "Which did you mean?" appears only when two readings would lead to different work.
-- **Nine companion skills:** sharpen a prompt for another AI, hand off to a fresh session, split a big task, coach your prompting, and more.
+- **Ten companion skills:** sharpen a prompt for another AI, hand off to a fresh session, split a big task, plan a project in phases, coach your prompting, and more.
 - **Zero dependencies, nothing leaves your machine.** No API calls and no telemetry.
 
 **Contents:** [Install](#install) · [Before / after](#before--after) · [Sharpen in action](#sharpen-in-action) · [How it works](#how-it-works) · [Review card](#the-review-card) · [Skills](#skills) · [Commands](#commands) · [Status badge](#status-badge) · [Numbers](#numbers) · [Privacy](#privacy) · [Updating](#updating) · [Troubleshooting](#troubleshooting) · [FAQ](#faq) · [Contributing](#contributing)
@@ -180,7 +180,7 @@ Coming next: Codex, Gemini CLI and GitHub Copilot CLI. Each gets a dropdown here
 
 For anything that edits code or runs commands, it writes a full brief, the way a professional prompt engineer would: **starting state, target state, where it may work and what it must not touch, "only make the changes this asks for", what to stop and ask about first, and the evidence to report**. A value only you can decide, like a price or a limit, becomes a visible blank, `[ASK: …]`, instead of a guess.
 
-Before showing the prompt, Sharpen scans it for common prompt mistakes (vague verbs, no finish line, bundled tasks, requests for hidden reasoning, pasted credentials) and checks that your meaning is unchanged, the scope is stated, every name is real, and there's no filler. The deeper material lives in six reference files it reads only when a prompt needs them: [anti-patterns](skills/sharpen/references/anti-patterns.md) (72 named mistakes), [brief shapes](skills/sharpen/references/briefs.md) (long runs, gated chains, decisions, reviews, UI work, prompt fixes, final reports, machine-read output), [techniques](skills/sharpen/references/techniques.md) (escalation, decomposition, examples, verification, grounding, agent eagerness, context budget, long runs), [prompts inside a product](skills/sharpen/references/llm-features.md) (system prompts, tool design, agent context, untrusted input, images, prompt fixes and migrations), [target profiles](skills/sharpen/references/targets.md) for other tools and model families, and dated [model notes](skills/sharpen/references/model-notes.md) (provider settings, formats and sample blocks, each linked to the page that confirms it). They draw on the [Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide) by DAIR.AI, the [OpenAI Cookbook](https://github.com/openai/openai-cookbook), Anthropic's context-engineering and tool-writing guides, and the Anthropic, OpenAI and Google prompting guides.
+Before showing the prompt, Sharpen scans it for common prompt mistakes (vague verbs, no finish line, bundled tasks, requests for hidden reasoning, pasted credentials) and checks that your meaning is unchanged, the scope is stated, every name is real, and there's no filler. The deeper material lives in seven reference files it reads only when a prompt needs them: [anti-patterns](skills/sharpen/references/anti-patterns.md) (88 named mistakes), [brief shapes](skills/sharpen/references/briefs.md) (long runs, gated chains, decisions, reviews, UI work, prompt fixes, final reports, machine-read output), [techniques](skills/sharpen/references/techniques.md) (escalation, decomposition, examples, verification, grounding, agent eagerness, context budget, long runs), [prompts inside a product](skills/sharpen/references/llm-features.md) (system prompts, tool design, agent context, untrusted input, images, prompt fixes and migrations), [target profiles](skills/sharpen/references/targets.md) for other tools and model families, dated [model notes](skills/sharpen/references/model-notes.md) (provider settings, formats and sample blocks, each linked to the page that confirms it), and [prompt phases](skills/sharpen/references/phases.md) (kickoff, spec, plan, tasks, build, long loop, done check, resume, sized to the work). They draw on the [Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide) by DAIR.AI, the [OpenAI Cookbook](https://github.com/openai/openai-cookbook), Anthropic's context-engineering and tool-writing guides, and the Anthropic, OpenAI and Google prompting guides.
 
 **4. Review card, then run.** Nothing runs until you answer the card.
 
@@ -199,7 +199,7 @@ Why a card and not your prompt swapped in place? Claude Code doesn't allow that.
 
 ## Skills
 
-Nine companion skills. They work whether Sharpen is on or off.
+Ten companion skills. They work whether Sharpen is on or off.
 
 | Skill | What it does |
 |---|---|
@@ -210,6 +210,7 @@ Nine companion skills. They work whether Sharpen is on or off.
 | `/sharpen:sharpen-split <request>` | Splits a big request into **small, ordered prompts**, grouped into waves you can run in parallel. |
 | `/sharpen:sharpen-save [name]` | Turns a prompt you keep typing into a **project slash command**. Shows you the file first; never overwrites. |
 | `/sharpen:sharpen-interview <feature>` | Asks about a fuzzy feature **one question at a time**, then writes `SPEC.md`. |
+| `/sharpen:sharpen-plan <project or feature>` | Builds the **phase chain** (kickoff, spec, plan, tasks, build prompt), sized to the work, and writes the files **only after you approve**. |
 | `/sharpen:sharpen-decompile <prompt>` | Takes a prompt you already have and **breaks it down, adapts it for another tool, simplifies it, or splits it**, with each weakness named. |
 | `/sharpen:sharpen-help` | A quick reference card. |
 
