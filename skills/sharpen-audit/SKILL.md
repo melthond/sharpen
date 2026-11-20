@@ -30,7 +30,14 @@ Check in this order, most costly first:
 4. **Unwritten rules.** Conventions the code follows but no file states: the house component library, error handling style, naming, "migrations are never edited", files that must not be touched.
 5. **Mismatches.** Instructions that disagree with the code: a script named in the README that doesn't exist in `package.json`, a renamed folder, a stale command. A wrong instruction is worse than none.
 6. **Tools that fit.** Installed skills, agents or MCP servers that match this stack but aren't mentioned anywhere, so they never get suggested in a `Tools:` plan. Also project agents or skills that reference something that no longer exists.
-7. **Bloat.** An instruction file so long, or so full of general advice, that the project-specific lines get lost. Every line costs context in every session.
+7. **Prune.** Instruction files only grow, and each line "takes a little of Claude's attention on every task". Anthropic recommends staying under 200 lines for `CLAUDE.md`, and Cursor says to keep each rule file under 500 lines. In a 100-repo study cited by Addy Osmani, 62% of agent files carried lint-style rules a linter should enforce, 42% had context bloat and 35% had skill leakage. Flag each line that is:
+   - **inferable from the code**: architecture, folder layout or stack the agent can read for itself. Write down only what it can't find by reading the repo.
+   - **a lint or format rule**: belongs in the linter or formatter config.
+   - **contradicted** by another line, by the code, or across layers (user, project and subfolder files).
+   - **stale**: it points at a file, script or folder that no longer exists, or was written for an older model ("CRITICAL: you MUST", "think step by step").
+   - **must-never or emphasised** (IMPORTANT, NEVER, capitals): it belongs in a hook or a deny rule. "If you keep adding emphasis to a `CLAUDE.md` line and Claude still misses it, that's a sign the line belongs in a hook."
+   - **area-specific**: move it to `.claude/rules/<area>.md` with a `paths:` filter.
+   Also list any unused MCP servers in `.mcp.json`: connected servers add their tool names and instructions to the context even when they aren't used.
 
 ## 3. Check before you report
 
@@ -47,7 +54,7 @@ Very simple English. Start with `Project:` and one line (stack, size, which inst
 Then the findings, ranked, in three groups. Skip empty groups:
 - **Add now:** the gaps that make options wrong or leave the agent unable to check its work.
 - **Worth adding:** the gaps that make options vaguer than they need to be.
-- **Tidy:** stale lines, bloat, small mismatches.
+- **Tidy:** stale lines, bloat, small mismatches. For each line to cut, give `Remove or move:` with the exact line, where it goes instead (the linter, a hook, a rules file, nowhere) and why. Recommend archiving removed lines and watching a few sessions before deleting them for good.
 
 Number the findings across all groups, so the user can say "add 1 and 3". Each finding has three parts:
 

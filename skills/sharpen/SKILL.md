@@ -27,6 +27,10 @@ If every reading leads to the same action, it isn't ambiguous. Open exploration 
 
 **Anti-pattern scan (silent).** Fix: vague verbs, bundled unrelated tasks, no finish line, feelings instead of the fault, "the thing we discussed", no file anchor, no scope boundary, invited scope creep, requests for hidden reasoning, act-or-propose left unclear, pasted material not delimited, relative dates ("latest"), mental arithmetic, lines that contradict each other, thoroughness amplifiers ("be THOROUGH") on small tasks, and credentials pasted into the prompt (remove them; name the environment variable instead). For anything subtler, read `references/anti-patterns.md`.
 
+**Requirements and size (silent).** Sweep for what's unsaid (states, errors, empty data, *when X* conditions): fill from the code or as `[ASK:]`. Facts only a person knows go in `Ask first:`. Most important first; past ~15 rules, split it or move must-never rules to a hook (`references/techniques.md`).
+
+**Session checks.** Two failed tries at one fault in `Tried:`: offer `/sharpen:sharpen-handoff` and a fresh session, not a third prompt. New unrelated task: suggest `/clear`. Confirm risky verbs (delete, drop, reset, overwrite, force) and their target on the card. Private data + untrusted content + outward send: flag it and `Stop and ask before:` sending.
+
 **Shape it to the task.** Classify the intent and fill its slots:
 
 | Intent | Slots |
@@ -43,14 +47,14 @@ If every reading leads to the same action, it isn't ambiguous. Open exploration 
 | Prompt for a model | Where it runs · Inputs · Output + fallback · Eval set |
 | Other | Goal · Where · Constraints · Done when |
 
-For anything that edits code or runs commands beyond a one-liner, use the agentic brief: `Starting state:`, `Target state:`, `Work only in:` / `Do not touch:`, "Only make the changes this asks for", `Stop and ask before:` (deleting files, new dependencies, schema changes, pushing, deploying), and `Evidence:` (the real command output). Other shapes (file-scope, long run, chain with gates, decision, review, UI, prompt fix, final report, machine-read output, format lock, grounded research) are in `references/briefs.md`. When the task needs reasoning, dependent steps, examples, grounding, or an agent running on its own (search budget, context, long runs), read `references/techniques.md`. When the prompt being written goes inside the user's product (system prompt, template, classifier, tools), read `references/llm-features.md`. For a provider setting or model-specific detail, read `references/model-notes.md` and confirm it in the linked docs.
+For anything that edits code or runs commands beyond a one-liner, use the agentic brief: `Starting state:`, `Target state:`, `Work only in:` / `Do not touch:`, "Only make the changes this asks for", `Stop and ask before:` (deleting files, new dependencies, schema changes, pushing, deploying), and `Evidence:` (the real command output). Other shapes (file-scope, long run, chain, decision, review, UI, prompt fix, final report, subagent, machine-read, format lock, research) are in `references/briefs.md`. When the task needs reasoning, dependent steps, examples, grounding, or an agent running on its own (search budget, context, long runs), read `references/techniques.md`. When the prompt being written goes inside the user's product (system prompt, template, classifier, tools), read `references/llm-features.md`. For a provider setting or model-specific detail, read `references/model-notes.md` and confirm it in the linked docs.
 
 Then add the lines that fit *this* setup:
 - `Decided:` binding decisions from the conversation. `Tried:` what already failed, and why.
-- `Tools:` required whenever a listed skill, agent or MCP tool fits: at most 3, in order, each with its job. `Tools: Explore agent to find every caller → systematic-debugging skill → test-automator agent`. Prefer the project's own agents and skills.
+- `Tools:` required whenever a listed skill, agent or MCP tool fits: at most 3, in order, each with its job. `Tools: Explore agent to find callers → systematic-debugging skill`. Prefer the project's own agents and skills.
 - `Hooks:` required whenever a hook from the setup block will run during the work: `Hooks: dead-code-check runs after every edit, so remove unused code as you go`. Hooks are constraints, never called.
 
-**Delivery check.** The goal and hard boundaries come first, the check comes last. Firm, plain wording, no capitals for emphasis. Say what to do; keep "don't" for real boundaries. Every line changes what the agent does. For a clear prompt, keep every part of the request and only *add*. Size it to the task: 3 lines for a small one, the full brief for a big one. Would it work on the first try?
+**Delivery check.** The goal and hard boundaries come first, the check comes last. Firm, plain wording; no capitals. Say what to do; keep "don't" for real boundaries. Every line changes what the agent does. For a clear prompt, keep every part of the request and only *add*. Size it to the task: 3 lines for a small one, the full brief for a big one. Would it work on the first try?
 
 ## 4. Show the review card
 

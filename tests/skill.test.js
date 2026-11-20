@@ -249,6 +249,51 @@ test('model-notes.md is dated, sourced and routed, and keeps the confirm-first r
   assert.ok(ref('targets.md').includes('model-notes.md') && ref('llm-features.md').includes('model-notes.md'));
 });
 
+// --- researched fixes for common prompting problems (surveys, papers, practitioner reports) ---
+test('method runs the requirements sweep and the session checks', () => {
+  const m = loadMethod(METHOD_FILE);
+  for (const s of ['Ask first:', 'when X', '~15 rules', 'Session checks', '/sharpen:sharpen-handoff', '/clear', 'risky verbs', 'untrusted content']) {
+    assert.ok(m.includes(s), 'missing: ' + s);
+  }
+});
+
+test('techniques.md carries the requirements sweep, dependency check and data formats with sources', () => {
+  const t = ref('techniques.md');
+  for (const s of ['Missed-requirements sweep', '41.1%', 'Ask first', '79%', 'IFScale', 'Confirm a package exists', '5.2%', 'npm view', 'lockfile', 'context7', 'TOON']) {
+    assert.ok(t.includes(s), 'techniques missing: ' + s);
+  }
+});
+
+test('briefs.md carries evidence by task, guards, owner line, intent tests, caps, where-to-look and the subagent contract', () => {
+  const b = ref('briefs.md');
+  for (const s of ['Evidence by task type', 'Guards stay', 'Owner line', 'flag-for-a-human', 'Stop hook', '--max-budget-usd', 'claude -w',
+    'Where to look:', 'Explain (optional', '## Subagent contract', 'Verified by:', 'MAST', 'No blocking issues', 'Skip style']) {
+    assert.ok(b.includes(s), 'briefs missing: ' + s);
+  }
+});
+
+test('llm-features.md covers format-variant evals and the lethal trifecta', () => {
+  const t = ref('llm-features.md');
+  for (const s of ['Test more than one wording', '76 points', 'Repeat runs', 'lethal trifecta']) assert.ok(t.includes(s), 'llm-features missing: ' + s);
+});
+
+test('anti-patterns cover session and safety checks (88 rows)', () => {
+  const a = ref('anti-patterns.md');
+  assert.ok((a.match(/^\| \d+ /gm) || []).length >= 88, 'anti-pattern table should have 88+ rows');
+  for (const s of ['Third correction', 'Risky verb', 'Lethal trifecta', 'Pep-talk persistence', 'Unchecked new package', 'Agent-file bloat']) assert.ok(a.includes(s), 'missing: ' + s);
+});
+
+test('sharpen-audit prunes as well as adds', () => {
+  const m = body('sharpen-audit');
+  for (const s of ['Prune', 'inferable from the code', 'belongs in a hook', 'unused MCP', '200', '500', 'Remove or move:']) assert.ok(m.includes(s), 'audit missing: ' + s);
+  assert.ok(m.includes('Changes nothing'), 'still read-only');
+});
+
+test('sharpen-handoff points to files and commits instead of summarising code', () => {
+  const m = body('sharpen-handoff');
+  for (const s of ['commits', 'symbols', '4 of 45']) assert.ok(m.includes(s), 'handoff missing: ' + s);
+});
+
 test('companion skills use the new references and keep outward prompts private', () => {
   assert.ok(body('sharpen-decompile').includes('references/techniques.md'));
   assert.ok(body('sharpen-decompile').includes('references/llm-features.md'));

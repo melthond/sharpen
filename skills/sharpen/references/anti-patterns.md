@@ -122,3 +122,26 @@ Adapted from Anthropic's context-engineering, tool-writing and Claude prompting 
 | 70 | Stale carried-over prompting | old "MUST verify thoroughly" lines kept for a newer model | Remove them, then re-run the eval |
 | 71 | Context stuffed up front | every possibly-relevant file pasted in | Identifiers (paths, symbols, links) the agent loads just in time |
 | 72 | Unsized subagent result | "research X" sent to a subagent with no return shape | A condensed return with a stated size: "under 300 words" or "a file:line list" |
+
+## Session and safety checks
+
+From developer surveys and practitioner reports, 2025–2026. Sources: [Claude Code best practices](https://code.claude.com/docs/en/best-practices), [Stack Overflow 2025](https://survey.stackoverflow.co/2025/ai) and [2026](https://survey.stackoverflow.co/2026), [IFScale](https://arxiv.org/abs/2507.11538), [What Prompts Don't Say](https://arxiv.org/abs/2505.13360), [package hallucinations](https://arxiv.org/abs/2406.10279), [the lethal trifecta](https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/), [Simon Willison on coding agents](https://simonwillison.net/tags/coding-agents/), Thoughtworks Radar Vol 35 and [Addy Osmani](https://addyosmani.com/blog/audit-your-agent-files/).
+
+| # | Problem | Looks like | Fix |
+|---|---|---|---|
+| 73 | Unstated conditions | "add CSV export" with no word on empty data, huge files or errors | The missed-requirements sweep in `techniques.md`; conditions are the requirements models guess least |
+| 74 | Context only a person has | the agent discovers the real business rule halfway through | An `Ask first:` line with the questions only the user can answer |
+| 75 | Rule overload | a prompt or `CLAUDE.md` with dozens of rules | Most important first; past about 15 rules, split the task or move must-never rules to a hook |
+| 76 | Emphasis instead of enforcement | the same rule re-sent with IMPORTANT, then in capitals | Suggest a hook or a deny rule: "If you keep adding emphasis… that line belongs in a hook" (Anthropic) |
+| 77 | Third correction | `Tried:` shows two failed attempts at the same fault | Offer a fresh session via `/sharpen:sharpen-handoff` with a better prompt, not a third correction: "after two failed corrections run `/clear` and write a better prompt instead of a third" (Anthropic) |
+| 78 | Stale session | a new, unrelated task in a long conversation | Suggest `/clear` (or a handoff) before the new task |
+| 79 | Risky verb, unconfirmed | "delete", "drop", "reset", "overwrite", "force", "wipe" in a run, especially an unattended one | Confirm the verb and its target on the card. A one-word typo ("delete" for "hit") sent Claude Code churning for over 12 hours (Simon Willison) |
+| 80 | Lethal trifecta | one task reads private data, takes in untrusted content (web, email, issues) and can send outward | Flag it on the card; remove one leg, or add `Stop and ask before:` sending (for a batch: one test send, then one approval for the batch) |
+| 81 | Pep-talk persistence | "keep going, loop until done, don't be lazy" | Remove it: "more likely to cause over-work than fix a stall" (Anthropic). Give a check command and caps instead |
+| 82 | Unchecked new package | "add a library that does X" | Confirm it exists in the registry before installing; models invent 5.2–21.7% of package names |
+| 83 | Guard removed to pass | a check, validation or feature deleted to make an error go away | "Never remove a guard or feature to make something pass; ask" (`briefs.md`, *Guards stay*) |
+| 84 | Review that must find something | "find problems in this PR" | Review against a spec, with a severity bar and an allowed "no blocking issues" |
+| 85 | Uncapped unattended run | an overnight or headless run with no limit | Turn and spend caps, and a trial run on a few files first |
+| 86 | Everything reviewed the same | a large agent change with no pointer to its risky parts | "Where to look" in the final report: the 1–3 spots a human should check first |
+| 87 | Code summarised for a handoff | a prose summary of how the code works passed to the next session | Point to the files, symbols and commits instead: prose summaries answered 4 of 45 behavioural questions where the source answered 27 (cited by Osmani) |
+| 88 | Agent-file bloat | `CLAUDE.md` or rules that only grow | Prune: Anthropic recommends staying under 200 lines, Cursor under 500 per rule file. Run `/sharpen:sharpen-audit` to find cuts |

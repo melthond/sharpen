@@ -77,6 +77,34 @@ For prompts that send an agent off to work on its own: how far to search, how to
 - **Progress updates.** A one-line plan before the first tool call. Then 1–2 sentences at each new phase or plan change, outcome first ("Cause is in `cache.ts:40`; next: patch and rerun the suite"). Don't narrate each tool call. Newer models may finish after the last tool call with no summary, so ask for the closing summary when it's wanted.
 - **Clean up.** "Delete any temp scripts or scratch files you created before you finish."
 
+## Before the prompt: requirements, context and size
+
+**Missed-requirements sweep.** Prompts routinely leave requirements out. Models fill in unstated ones by default only 41.1% of the time, under-specified prompts are twice as likely to regress when the model or prompt changes (sometimes losing over 20% accuracy), and conditional requirements ("when X, then Y") are guessed least often, at 22.9% ([Yang et al. 2025](https://arxiv.org/abs/2505.13360)). Before writing the prompt, check the usual gaps for the intent and fill each from the code or the conversation, or turn it into an `[ASK: …]` blank:
+
+| Intent | Usually unstated |
+|---|---|
+| UI | States (empty, loading, error, disabled), widths, keyboard and focus, real content |
+| API, backend | Errors and status codes, auth and permissions, validation, limits, idempotency |
+| Data, queries | Empty and null values, duplicates, time zones, size and pagination |
+| Any change | Conditions: what happens *when* the input is missing, too large or concurrent |
+| User-facing text | Audience, tone, length, where it appears |
+
+Format requirements are the ones models guess best (70.7%), so spend the lines on conditions and constraints instead.
+
+**Ask first.** In 2026, 79% of developers said they regularly find the context they need only after the fact, and 60.9% said important context lives in people's heads ([Stack Overflow 2026](https://survey.stackoverflow.co/2026)). When a fact only a person knows would change the work (a business rule, an unwritten convention, which of two systems is live), put it in an `Ask first:` line so the agent asks before it starts, not halfway through.
+
+**Size it.** More rules dilute each other. On IFScale, even the best frontier models reached 68% accuracy at 500 simultaneous instructions; strong reasoning models held up through roughly 100–250, others decayed much earlier, and all were biased towards earlier instructions ([Jaroslawicz et al. 2025](https://arxiv.org/abs/2507.11538)). So put the most important lines first. When a prompt needs more than about 15 rules (Sharpen's rule of thumb, not a research threshold), split the task or move the must-never rules into a hook.
+
+## Dependencies and docs
+
+- **Confirm a package exists before installing it.** Code models suggest packages that don't exist: at least 5.2% of suggestions from commercial models and 21.7% from open-source ones, across 576,000 samples ([Spracklen et al., USENIX Security 2025](https://arxiv.org/abs/2406.10279)). Attackers register those names ("slopsquatting"). Write: "Before adding any new dependency, confirm it exists in the registry (`npm view <name>`, `pip index versions <name>`), check its publisher and recent downloads, and stop and ask before installing it." The same paper found retrieval-based grounding among the mitigations that reduced hallucinated packages.
+- **Use the version in the lockfile**, not the one the model remembers: "Read the installed version from `package-lock.json` / `poetry.lock` and use that version's API."
+- **Current docs over memory.** For library or API work, add `Today: <date>` and route the lookup to a docs tool when one is listed (a documentation MCP server such as context7, or the official docs URL): "Check the current docs for `<library>@<version>` before using an API you haven't seen in this codebase." Thoughtworks lists anchoring agents to up-to-date reference sources as a fix for template and knowledge decay.
+
+## Data formats inside prompts
+
+Pass structured data in formats models know well: JSON, YAML, Markdown tables, CSV. A study of agentic context formats found the unfamiliar TOON format used 138% more tokens than YAML at 500 tables and 740% more at 10,000, because models "lacked familiarity" with its syntax (Claude models only; [via Simon Willison](https://simonwillison.net/2026/Feb/9/structured-context-engineering-for-file-native-agentic-systems/)). For long document lists, see *Context placement*.
+
 ## Examples (few-shot)
 
 - **How many depends on the target.** Reasoning models: start with none, and add examples only if the format misses. Claude: 3–5 relevant, diverse ones, each in `<example>` inside `<examples>`. Small or local models: a few, always. Too many and the model overfits to them.

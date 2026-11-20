@@ -32,6 +32,8 @@ A good handoff beats a long conversation. A fresh session with a sharp starting 
 
 Leave out the history of *how* you got here, unless a step explains a decision or a dead end. Leave out chit-chat, tool output and code that's already in files. Point to the file instead.
 
+**Point to code, don't describe it.** Name the files, symbols (`incrementAttempts()` in `pin.ts:42`) and commits (`git log` hashes or the branch) the next session should read, rather than explaining how the code works in prose. In a study cited by Addy Osmani, prose summaries answered 4 of 45 behavioural questions about the code, while the source itself answered 27 of 45. Write in prose only what the code can't show: decisions, intent, and dead ends.
+
 ## 3. Check before you hand it over
 
 - Every path, command, branch and name must be real: check that the file exists if you're unsure. Never invent a status ("tests pass") you didn't see in this conversation. Write `(not verified)` instead.
