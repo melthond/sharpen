@@ -199,6 +199,56 @@ test('briefs and targets carry the new shapes and model-family advice', () => {
   for (const s of ['Base / completion models', 'chat template', 'never special tokens from memory', 'structured-output']) assert.ok(t.includes(s), 'targets missing: ' + s);
 });
 
+// --- context engineering, tools and agent runs (Anthropic + OpenAI Cookbook guides) ---
+test('method routes UI, model prompts and agent runs to their references', () => {
+  const m = loadMethod(METHOD_FILE);
+  for (const s of ['UI / frontend', 'Prompt for a model', 'review, UI, prompt fix, final report', 'search budget', 'thoroughness amplifiers']) {
+    assert.ok(m.includes(s), 'missing: ' + s);
+  }
+});
+
+test('techniques.md covers eagerness, context budget and long runs', () => {
+  const t = ref('techniques.md');
+  for (const s of ['Agent runs', 'Context is a budget', 'just in time', 'escape hatch', 'thoroughness amplifiers', 'in parallel',
+    'Compaction', 'Structured notes', 'Fresh-window startup', 'Plan hygiene', 'Progress updates', 'Self-rubric', 'High-stakes re-scan',
+    'Claim only what a result showed', 'Missing means null', 'Colleague test', 'right altitude', 'not JSON', 'OpenAI Cookbook']) {
+    assert.ok(t.includes(s), 'techniques missing: ' + s);
+  }
+});
+
+test('briefs.md has review, UI, prompt-fix and final-report shapes', () => {
+  const b = ref('briefs.md');
+  for (const s of ['## Review', '## UI and frontend', '## Prompt fix', '## Final report', 'Code quality', 'Startup:', 'most severe first', 'second-order leads']) {
+    assert.ok(b.includes(s), 'briefs missing: ' + s);
+  }
+});
+
+test('llm-features.md covers the system prompt skeleton, tool design, agent state and migration', () => {
+  const t = ref('llm-features.md');
+  for (const s of ['System prompt skeleton', 'right altitude', 'tasks, not endpoints', 'Namespace', 'response_format', 'held-out',
+    'Agent context and state', 'append-only', 'Money and irreversible actions', 'Images and documents as input', 'Fixing and migrating prompts', 'prefill']) {
+    assert.ok(t.includes(s), 'llm-features missing: ' + s);
+  }
+});
+
+test('anti-patterns cover agent-run failure modes', () => {
+  const a = ref('anti-patterns.md');
+  assert.ok((a.match(/^\| \d+ /gm) || []).length >= 72, 'anti-pattern table should have 72+ rows');
+  for (const s of ['Thoroughness amplifiers', 'escape hatch', 'Guessed parameters', 'Plan left open', 'Unsized subagent result']) assert.ok(a.includes(s), 'missing: ' + s);
+});
+
+test('model-notes.md is dated, sourced and routed, and keeps the confirm-first rule', () => {
+  const t = ref('model-notes.md');
+  assert.match(t, /Checked \d{4}-\d{2}-\d{2}/, 'carries a check date');
+  for (const s of ['[unverified]', 'output_config.effort', 'budget_tokens', 'Prefill', 'reasoning.effort', '*** Begin Patch', '<context_gathering>',
+    '<persistence>', 'thinking_level', 'Thought signatures', 'UI stack defaults', 'Conflict on fonts', '12-Factor Agents', 'The Prompt Report']) {
+    assert.ok(t.includes(s), 'model-notes missing: ' + s);
+  }
+  assert.ok((t.match(/https:\/\//g) || []).length >= 20, 'every section links its source');
+  assert.ok(loadMethod(METHOD_FILE).includes('references/model-notes.md'), 'method routes to it');
+  assert.ok(ref('targets.md').includes('model-notes.md') && ref('llm-features.md').includes('model-notes.md'));
+});
+
 test('companion skills use the new references and keep outward prompts private', () => {
   assert.ok(body('sharpen-decompile').includes('references/techniques.md'));
   assert.ok(body('sharpen-decompile').includes('references/llm-features.md'));

@@ -25,7 +25,7 @@ If every reading leads to the same action, it isn't ambiguous. Open exploration 
 
 **Intent check (silent).** Pin down: the precise action, the deliverable, the constraints (must and must-not), the context (decisions, failed attempts), the audience if it's user-facing, and a binary success check. A value only the user can supply (a price, a limit, wording, a choice between designs) becomes a visible blank such as `[ASK: oat milk price in cents]`. Never invent one.
 
-**Anti-pattern scan (silent).** Fix: vague verbs, bundled unrelated tasks, no finish line, feelings instead of the fault, "the thing we discussed", no file anchor, no scope boundary, invited scope creep, requests for hidden reasoning, act-or-propose left unclear, pasted material not delimited, relative dates ("latest"), mental arithmetic, lines that contradict each other, and credentials pasted into the prompt (remove them; name the environment variable instead). For anything subtler, read `references/anti-patterns.md`.
+**Anti-pattern scan (silent).** Fix: vague verbs, bundled unrelated tasks, no finish line, feelings instead of the fault, "the thing we discussed", no file anchor, no scope boundary, invited scope creep, requests for hidden reasoning, act-or-propose left unclear, pasted material not delimited, relative dates ("latest"), mental arithmetic, lines that contradict each other, thoroughness amplifiers ("be THOROUGH") on small tasks, and credentials pasted into the prompt (remove them; name the environment variable instead). For anything subtler, read `references/anti-patterns.md`.
 
 **Shape it to the task.** Classify the intent and fill its slots:
 
@@ -39,9 +39,11 @@ If every reading leads to the same action, it isn't ambiguous. Open exploration 
 | Review | What (diff/files) · Focus · Report only |
 | Explore | Keep it open · No edits · Scope of the look |
 | Ops (git, deploy, config) | Exact action · Target · Ask before anything irreversible |
+| UI / frontend | Existing design system or from scratch · States · Widths · Visual check |
+| Prompt for a model | Where it runs · Inputs · Output + fallback · Eval set |
 | Other | Goal · Where · Constraints · Done when |
 
-For anything that edits code or runs commands beyond a one-liner, use the agentic brief: `Starting state:`, `Target state:`, `Work only in:` / `Do not touch:`, "Only make the changes this asks for", `Stop and ask before:` (deleting files, new dependencies, schema changes, pushing, deploying), and `Evidence:` (the real command output). Other shapes (file-scope, long run, chain with gates, decision, machine-read output, format lock, grounded research) are in `references/briefs.md`. When the task needs reasoning, dependent steps, examples or grounding, read `references/techniques.md`. When the prompt being written goes inside the user's product (system prompt, template, classifier, tools), read `references/llm-features.md`.
+For anything that edits code or runs commands beyond a one-liner, use the agentic brief: `Starting state:`, `Target state:`, `Work only in:` / `Do not touch:`, "Only make the changes this asks for", `Stop and ask before:` (deleting files, new dependencies, schema changes, pushing, deploying), and `Evidence:` (the real command output). Other shapes (file-scope, long run, chain with gates, decision, review, UI, prompt fix, final report, machine-read output, format lock, grounded research) are in `references/briefs.md`. When the task needs reasoning, dependent steps, examples, grounding, or an agent running on its own (search budget, context, long runs), read `references/techniques.md`. When the prompt being written goes inside the user's product (system prompt, template, classifier, tools), read `references/llm-features.md`. For a provider setting or model-specific detail, read `references/model-notes.md` and confirm it in the linked docs.
 
 Then add the lines that fit *this* setup:
 - `Decided:` binding decisions from the conversation. `Tried:` what already failed, and why.

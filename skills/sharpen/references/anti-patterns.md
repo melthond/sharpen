@@ -95,3 +95,30 @@ Ideas adapted from [prompt-master](https://github.com/nidhinjs/prompt-master) (M
 | 50 | Conflicts with standing instructions | a prompt that goes against CLAUDE.md or the target's system prompt | Flag the conflict on the card; don't silently pick one |
 | 51 | Unsourced claims about code | "why does X happen?" answered from memory | "Open and read the files before any claim about them" |
 | 52 | Over-scoped minimalism | "only make the changes asked" on a feature the user wants complete | List the extras the user wants; keep the scope lock for bugs and refactors |
+
+## Agent runs and context
+
+Adapted from Anthropic's context-engineering, tool-writing and Claude prompting guides and the OpenAI Cookbook prompting guides (MIT). See `techniques.md` (*Agent runs*) for the full lines.
+
+| # | Problem | Looks like | Fix |
+|---|---|---|---|
+| 53 | Thoroughness amplifiers | "be THOROUGH", "gather maximum context", "if in doubt, use X" on a small task | A search budget and an early stop: "search until you can name the lines to change, then act" |
+| 54 | Limit without an escape hatch | "at most 2 searches" and nothing else | "If still unsure after that, proceed on the most reasonable reading and list the assumption" |
+| 55 | Edge-case rule list | fifteen "if X then Y" lines | The principle plus 3–5 varied, canonical examples |
+| 56 | Scripted system prompt | a brittle if-else tree for every situation | The right altitude: principles, concrete signals to act on, examples |
+| 57 | Sample phrases copied | a greeting or refusal line given once | "This is a sample; vary the wording" |
+| 58 | Forced tool call without the inputs | "always call lookup before answering" | Add "If you don't have what the tool needs, ask the user" |
+| 59 | Serial independent work | eight files read one at a time | "Run independent reads in parallel; dependent steps in order" |
+| 60 | Guessed parameters | placeholders or invented ids in tool calls | "Never guess a value or use a placeholder: look it up or ask" |
+| 61 | Plan left open | todo items still pending at the end | "Before finishing, mark every item done, blocked or cancelled, each with why" |
+| 62 | Edit loop | the same files re-edited with no progress | "After two passes without the check moving, stop and summarise" |
+| 63 | Scratch left behind | temp scripts and debug files in the repo | "Delete temp files you created before finishing" |
+| 64 | Report dump | whole files, before/after code or build logs in the final message | The *Final report* shape in `briefs.md`, sized to the change |
+| 65 | Ungrounded high-stakes answer | "this is always deductible" | The high-stakes re-scan in `techniques.md`; ask for the facts that change the answer |
+| 66 | Claimed but not shown | "tests pass", "payment sent" with no result seen | "Claim only what a command or tool result in this session showed" |
+| 67 | Overthinking | long exploration before the first useful action | "Pick an approach and see it through; revisit only if new information contradicts it" |
+| 68 | Overlapping tools | `search`, `find`, `lookup` that do nearly the same thing | Fewer task-shaped tools with distinct, namespaced names |
+| 69 | Over-engineering | docstrings on untouched code, handling for impossible cases, one-off helpers | The *Code quality* default in `briefs.md` |
+| 70 | Stale carried-over prompting | old "MUST verify thoroughly" lines kept for a newer model | Remove them, then re-run the eval |
+| 71 | Context stuffed up front | every possibly-relevant file pasted in | Identifiers (paths, symbols, links) the agent loads just in time |
+| 72 | Unsized subagent result | "research X" sent to a subagent with no return shape | A condensed return with a stated size: "under 300 words" or "a file:line list" |

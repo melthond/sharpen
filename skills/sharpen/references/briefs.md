@@ -1,8 +1,8 @@
 # Brief shapes
 
-Read this when the engineered prompt needs more than the quick shape: a multi-file change, an agentic run, an analysis, or a strict output format. Use the smallest shape that carries what the task needs, and leave out any line with nothing real to put in it.
+Read this when the engineered prompt needs more than the quick shape: a multi-file change, an agentic run, an analysis, a review, UI work, a prompt that misbehaves, or a strict output format. Use the smallest shape that carries what the task needs, and leave out any line with nothing real to put in it.
 
-Ideas adapted from [prompt-master](https://github.com/nidhinjs/prompt-master) (MIT), the [Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide) by DAIR.AI (Saravia, 2022, MIT), and the Anthropic, OpenAI and Google prompting guides, rewritten for coding agents.
+Ideas adapted from [prompt-master](https://github.com/nidhinjs/prompt-master) (MIT), the [Prompt Engineering Guide](https://github.com/dair-ai/Prompt-Engineering-Guide) by DAIR.AI (Saravia, 2022, MIT), the Anthropic, OpenAI and Google prompting guides, Anthropic's context-engineering and Claude prompting best-practice guides, and the Codex and GPT-5 prompting guides in the [OpenAI Cookbook](https://github.com/openai/openai-cookbook) (MIT), rewritten for coding agents.
 
 ## Quick (most prompts)
 
@@ -44,18 +44,27 @@ Defaults worth adding when they apply:
 - **Shared worktree:** "Never use `--no-verify` or skip checks. Don't revert changes you didn't make or delete files you don't recognise; if the worktree changes unexpectedly, stop and ask."
 - **Artifacts in the conversation:** point to them (`@path/to/file`, the pasted screenshot, the log file) instead of paraphrasing them.
 - **A feature the user wants complete:** list the extras (empty, loading and error states, keyboard navigation), and drop "Only make the changes this asks for", which pushes the other way.
+- **Code quality:** "Fix the root cause. Follow the codebase's conventions, and search for an existing helper before writing one. No broad try/catch, silent fallbacks or type escapes (`as any`). Don't add docstrings, comments or types to code you didn't change, error handling for cases that can't happen, or one-off helpers. Validate only at real boundaries (user input, external APIs)."
+- **Exploration:** "Plan the reads you need, run the independent ones in parallel, and stop searching once you can name the lines to change." Add the eagerness lines from `techniques.md` (*Agent runs*) when the task is clearly small or clearly open.
+- **Cleanup:** "Delete any temp scripts or scratch files you created."
 
 ## Long or unattended run (background, overnight, many steps)
 
 The agentic brief, plus the lines that let it run without a human:
 
 ```
-Plan: write a short plan first and keep it updated in <todo tool or plan file>
+Plan: 2–5 milestones in <todo tool or plan file>, one in progress at a time, updated after each; before finishing, mark every item done, blocked (why) or cancelled (why)
 Progress: track state in <progress.md / tests.json>; commit at each milestone, so a fresh session can pick up
+Startup: on a fresh session, run pwd, read <progress.md>, <tests.json> and git log, then continue the next unchecked item
+Context: don't stop early because of context limits; save progress to <progress.md> before a reset
+Updates: 1–2 sentences at each new phase or plan change, outcome first; no narration of each tool call
 Do every item or say why it's unnecessary; never skip one silently
+No progress: if the same files are edited twice and the check doesn't move, stop and summarise
 Limits: <turn, time or spend cap>; stop and report when reached
 Deliver to: <a PR, a branch, a summary file>; <who approves before merge>
 ```
+
+For the choice between compaction, notes and subagents, see `techniques.md` (*Agent runs*).
 
 For multi-session work, pair it with `/sharpen:sharpen-handoff`.
 
@@ -80,6 +89,68 @@ Criteria: <what matters, in priority order>
 Options: propose 2–3 (or compare <A> and <B>); rate each against the criteria; drop the ones that can't work
 Return: the recommendation, the reason, the evidence, and what would change the decision
 Read-only.
+```
+
+## Review (code, a PR, a diff)
+
+Report only; the user decides what to fix.
+
+```
+Review: <diff, branch, PR number or files>
+Focus: <correctness, security, performance, tests: in priority order>
+Read the code around the change, not only the diff. No edits.
+Return:
+1. Findings, most severe first, each with file:line, the concrete failure (input → wrong result), and a suggested fix
+2. Open questions or assumptions
+3. One-line overall verdict
+If nothing is found, say so and list what you checked.
+```
+
+## UI and frontend
+
+Say which of two situations this is; they pull opposite ways.
+
+```
+Inside an existing design system:
+Use the existing tokens, components and patterns (<path to tokens / component library>). Don't invent colours, shadows, fonts, spacing or animations. Match <reference screen or component>. When unsure, pick the simplest reading.
+
+From scratch, or a redesign the user wants bold:
+Direction: <the look, in a few concrete words: "editorial, high contrast, serif headings">
+Type: a deliberate font pairing, not a default stack (Inter, Roboto, Arial, system)
+Colour: one cohesive palette as CSS variables (one base, up to two accents); avoid clichéd defaults such as purple gradients on white
+Motion: one or two purposeful animations (a staggered reveal on load), CSS first
+Depth: layered backgrounds, gradients or shapes, not flat fills
+
+Both:
+States: hover, focus, active, disabled, empty, loading, error
+Layout: works at <360px, 768px, 1280px>; no horizontal scroll
+Accessibility: keyboard reachable, visible focus, labels, contrast AA
+Done when: it renders at each width, and screenshots are checked against <reference or the direction above>
+```
+
+## Prompt fix (a prompt that misbehaves)
+
+For a system prompt, template or agent prompt that gives wrong results. Find the cause before patching.
+
+```
+Prompt: <path or pasted, in <prompt> tags>
+Failures: <transcripts or input → bad output pairs, in <failures> tags>
+1. Root cause only: for each failure, quote the lines that cause it (a contradiction, a missing format, a missing fallback, a thoroughness amplifier, a sample phrase being copied)
+2. Patch: the smallest edits that fix those causes; keep the structure and roughly the length; no redesign
+Return: each edit with its reason, then the revised prompt
+Done when: the eval set (normal, edge, empty, adversarial inputs) passes before and after; see llm-features.md
+```
+
+## Final report (what the agent hands back)
+
+Size the report to the change, and add it to any brief whose final message matters:
+
+```
+Report: lead with what changed, where (path:line) and how it was checked.
+- Tiny change: 2–5 sentences, no headings
+- Medium: up to 6 bullets
+- Large: one short line per file or area, then risks and next steps
+No full files, no before/after code pairs, no build or test logs unless something failed. List assumptions and anything unverified.
 ```
 
 ## Machine-read output (parsed, pasted into code, or fed to a later step)
@@ -148,6 +219,8 @@ Return: <shape and length>
 ```
 
 If a search returns nothing useful, change the query; don't build on the empty result.
+
+For a deeper or unattended research run, add: "Follow second-order leads (a source's own sources, the changelog behind a claim). Where sources disagree, resolve the conflict or report both with dates. When the question is open and no one is there to ask, cover each plausible reading rather than asking." Keep a notes file with the hypotheses and their confidence (see `techniques.md`).
 
 ## Placement rules (every shape)
 
