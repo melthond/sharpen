@@ -21,9 +21,13 @@ function readStdinJson(timeoutMs = 3000) {
   });
 }
 
+// Resolves once the output is handed to the OS. Callers must wait for it before process.exit: on macOS, pipe writes are
+// asynchronous, and exiting early cut the hook's JSON off after ~8 KB once the method grew past that (CI, Node 18).
 function emit(event, context) {
-  if (!context) return;
-  process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: event, additionalContext: context } }));
+  if (!context) return Promise.resolve();
+  return new Promise((resolve) => {
+    process.stdout.write(JSON.stringify({ hookSpecificOutput: { hookEventName: event, additionalContext: context } }), () => resolve());
+  });
 }
 
 module.exports = { METHOD_FILE, REFS_NOTE, readStdinJson, emit };

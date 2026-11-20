@@ -34,7 +34,7 @@ readStdinJson()
         if (setup) context = `${context}\n\n${setup}`;
         context = withStatusline(context);
       }
-      emit('UserPromptSubmit', context);
+      return emit('UserPromptSubmit', context); // wait for the write before the exit below
     }
   })
   .catch(() => {}) // never block or break a prompt

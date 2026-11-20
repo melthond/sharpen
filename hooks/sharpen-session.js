@@ -15,7 +15,7 @@ readStdinJson()
     const setup = setupNote(input && input.cwd);
     if (setup) parts.push(setup);
     if (nudge) parts.push(nudge);
-    emit('SessionStart', parts.join('\n\n'));
+    return emit('SessionStart', parts.join('\n\n')); // wait for the write before the exit below
   })
   .catch(() => {})
   .finally(() => process.exit(0));
