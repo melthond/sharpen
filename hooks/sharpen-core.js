@@ -1,5 +1,6 @@
 // sharpen — pure decision: (prompt, state, method) -> context to inject + new state
 const fs = require('fs');
+const { statsLine } = require('./sharpen-stats');
 
 const NUDGE = 'SHARPEN is on. Run the Sharpen step on this prompt, using the conversation, the code and the setup (skills, agents, MCP tools, plugins, hooks). Do not start the work yet. If it is ambiguous, ask "Which did you mean?" with options. Otherwise start your reply with "Sharpened prompt (clear):" or "Sharpened prompt (fill-in):", put the engineered prompt in a code block (with a "Tools:" line naming the listed skills/agents/MCP tools to use, and a "Hooks:" line for hooks from the setup block that will run during the work), then show the review card: AskUserQuestion "Send this sharpened prompt?" with "Send it (Recommended)" (preview = the engineered prompt) and "Run my original". Act only after the user answers.';
 const PASTED_NOTE = 'SHARPEN: the user sent a sharpened prompt they pasted from the review card, possibly edited. Do not sharpen it again and do not ask. Start your reply with "Sending sharpened prompt." and act on it exactly as written.';
@@ -24,14 +25,17 @@ function isPasted(prompt, last) {
   return head.length >= 20 && norm(prompt).startsWith(head);
 }
 
-function decide(prompt, state, method, last = null) {
+function decide(prompt, state, method, last = null, stats = null) {
   const p = String(prompt || '').trim();
   const cmd = p.match(/^\/sharpen(?::sharpen)?(?:\s+(\S+))?\s*$/i); // also the namespaced /sharpen:sharpen form
   if (cmd) {
     const arg = (cmd[1] || '').toLowerCase();
     if (arg === 'on') return { context: `${ON_NOTE}\n\n${method}`, newState: { on: true } };
     if (arg === 'off') return { context: OFF_NOTE, newState: { on: false } };
-    if (!arg) return { context: state.on ? STATUS_ON : STATUS_OFF, newState: null };
+    if (!arg) {
+      const status = state.on ? STATUS_ON : STATUS_OFF;
+      return { context: stats ? `${status} Then add this line: ${statsLine(stats)}` : status, newState: null };
+    }
     return { context: USAGE, newState: null };
   }
   if (/^sharpen:/i.test(p)) return { context: `${FORCE_NOTE}\n\n${method}`, newState: null };

@@ -38,7 +38,7 @@ Every prompt is built from your conversation (`Decided:`), your code (real paths
 |---|---|
 | `/sharpen on` | Turn it on. Remembered across sessions. |
 | `/sharpen off` | Turn it off. |
-| `/sharpen` | Show whether it's on. |
+| `/sharpen` | Show whether it's on, plus how many sharpened prompts needed a follow-up correction (counted locally). |
 | `raw: <prompt>` | Skip Sharpen for this one prompt. |
 | `sharpen: <prompt>` | Always get options for this prompt, even if it's clear or Sharpen is off. |
 

@@ -258,7 +258,7 @@ That full set ran on the first release. Later releases were spot-checked live on
 - **Your prompts are never logged.** The hooks read the prompt, decide, and exit.
 - **Your settings are read, never changed.** The hook summary keeps only each hook's event and script *name*, never its arguments, which can hold tokens.
 - **Your clipboard is used.** When a review card appears, the engineered prompt replaces what's on your clipboard.
-- **Files written:** `~/.config/sharpen/state.json`, `last-sharpened.txt` (so a pasted copy isn't sharpened twice), and the badge script. `~/.claude/settings.json` is only edited to add the badge when you have no status line yet.
+- **Files written:** `~/.config/sharpen/state.json`, `last-sharpened.txt` (so a pasted copy isn't sharpened twice), `stats.json` (two counts only: review cards shown, and follow-up prompts that pushed back, such as "still failing"; no prompt text; shown by `/sharpen`), and the badge script. `~/.claude/settings.json` is only edited to add the badge when you have no status line yet.
 
 ## Updating
 

@@ -26,6 +26,26 @@ test('prompt hook toggles on and emits context', () => {
   assert.strictEqual(JSON.parse(fs.readFileSync(path.join(dir, 'state.json'), 'utf8')).on, true);
 });
 
+test('card and correction counters: card counted by the clipboard hook, pushback by the prompt hook', () => {
+  const dir = home();
+  setOn(dir);
+  const card = JSON.stringify({ tool_name: 'AskUserQuestion', tool_input: { questions: [{ question: 'Send this sharpened prompt?', options: [{ label: 'Send it', preview: 'Fix the footer year in src/Footer.tsx' }] }] } });
+  spawnSync(process.execPath, [hook('sharpen-clipboard.js')], { input: card, env: { ...env(dir), SHARPEN_CLIPBOARD_FILE: path.join(dir, 'clip.txt') }, encoding: 'utf8' });
+  run('sharpen-prompt.js', '{"prompt":"still failing after that"}', dir);
+  run('sharpen-prompt.js', '{"prompt":"now add a test"}', dir);
+  assert.deepStrictEqual(JSON.parse(fs.readFileSync(path.join(dir, 'stats.json'), 'utf8')), { cards: 1, corrections: 1 });
+  const status = JSON.parse(run('sharpen-prompt.js', '{"prompt":"/sharpen"}', dir).stdout).hookSpecificOutput.additionalContext;
+  assert.ok(status.includes('Sharpened prompts: 1. Follow-up corrections: 1 (100%).'), status);
+});
+
+test('no correction is counted while Sharpen is off or before any card', () => {
+  const dir = home();
+  run('sharpen-prompt.js', '{"prompt":"no, wrong"}', dir); // off
+  setOn(dir);
+  run('sharpen-prompt.js', '{"prompt":"no, wrong"}', dir); // on, but no card shown yet
+  assert.strictEqual(fs.existsSync(path.join(dir, 'stats.json')), false);
+});
+
 test('prompt hook silent when off', () => {
   const r = run('sharpen-prompt.js', '{"prompt":"fix it"}', home());
   assert.strictEqual(r.status, 0);
