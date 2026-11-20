@@ -117,6 +117,18 @@ Real screenshots of Sharpen in each agent it supports, taken in a small demo app
 
 <p align="center"><sub>Two readings: <code>fix the login thing</code> in an app with two login bugs, so Sharpen asks which one.</sub></p>
 
+<p align="center">
+  <img src="assets/screenshots/claude-code/vscode-extension.png" width="688" alt="A real Sharpen card in the Claude Code extension for VS Code. The prompt was fix the login thing. It asks Which did you mean, naming the two failing login tests in src/auth/pin.js and src/auth/session.js, with Fix both login bugs, Fix PIN lockout only, Fix session expiry only, and Run as typed. The preview shows the engineered prompt with Starting state, Target state, Work only in, Do not touch, Tools, Hooks and Evidence lines.">
+</p>
+
+<p align="center"><sub>The same card in the <b>Claude Code extension for VS Code</b>. The red status line badge is terminal only, so VS Code doesn't show it.</sub></p>
+
+<p align="center">
+  <img src="assets/screenshots/claude-code/vscode-oat-milk.png" width="701" alt="A real Sharpen card in the Claude Code extension for VS Code. The prompt was add oat milk. It notes that src/menu.js has a flat MENU list with no add-on system and no oat milk price in the code, and asks Which did you mean, with Oat milk as add-on, Oat milk as menu item, Run as typed, and Other. The preview shows the engineered prompt with Starting state, Target state, ASK blanks for the oat milk price and which drinks it applies to, Work only in, Do not touch, Tools, Hooks and Evidence lines.">
+</p>
+
+<p align="center"><sub>In VS Code: <code>add oat milk</code>. The price isn't in the code, so it becomes an <code>[ASK: …]</code> blank instead of a guess.</sub></p>
+
 Install:
 
 ```
