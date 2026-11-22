@@ -92,8 +92,7 @@ function SkillChat({ index, command }: { index: number; command: string }) {
     return () => io.disconnect()
   }, [])
 
-  return <figure className="skill-chat" ref={ref}>
-    <figcaption className="chat-bar"><span className="chat-dot" aria-hidden="true" />Claude Code<span className="chat-tag">Example</span></figcaption>
+  return <figure className="skill-chat" ref={ref} aria-label="Example exchange">
     <div className="chat-body">
       <p className="chat-you" style={{ '--i': 0 } as CSSProperties}><span className="sr-only">You: </span>{command}</p>
       <div className="chat-reply" style={{ '--i': 1 } as CSSProperties}>
@@ -104,7 +103,7 @@ function SkillChat({ index, command }: { index: number; command: string }) {
           {actions.length > 0 && <div className="chat-actions" aria-hidden="true">{actions.map((a, j) => <span key={a} className={j === 0 ? 'is-primary' : undefined}>{a}</span>)}</div>}
         </div>
       </div>
-      <p className="chat-note">{note}</p>
+      <p className="chat-note">Example. {note}</p>
     </div>
   </figure>
 }
