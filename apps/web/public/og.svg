@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <style>@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@700');</style>
+  <title id="title">Sharpen: You type “fix the login thing.” It knows which one.</title>
+  <desc id="desc">A clean white link preview with the Sharpen wordmark and tagline.</desc>
+  <rect width="1200" height="630" fill="#ffffff"/>
+  <circle cx="1115" cy="70" r="250" fill="#fdf3f0"/>
+  <circle cx="1060" cy="600" r="210" fill="#fdf3f0"/>
+  <g font-family="Google Sans, Arial, sans-serif">
+    <text x="108" y="115" fill="#dd4528" font-size="32" font-weight="700" letter-spacing="-0.5">sharpen</text>
+    <text x="108" y="280" fill="#1b1b1b" font-size="66" font-weight="700" letter-spacing="-2">You type “fix the login thing.”</text>
+    <text x="108" y="375" fill="#dd4528" font-size="76" font-weight="700" letter-spacing="-2.5">It knows which one.</text>
+    <path d="M108 433h90" stroke="#dd4528" stroke-width="7" stroke-linecap="round"/>
+    <text x="108" y="500" fill="#5c5c5c" font-size="26" font-weight="400">The prompt you meant, for Claude Code.</text>
+  </g>
+</svg>

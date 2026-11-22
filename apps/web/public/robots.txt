@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://sharpen-web-psi.vercel.app/sitemap.xml

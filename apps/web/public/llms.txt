@@ -1,0 +1,17 @@
+# Sharpen
+
+> Sharpen is a free, open-source (MIT) Claude Code plugin. It turns the prompt you typed into the prompt you meant, using your conversation, your code, and your installed skills, agents, MCP servers and hooks, and shows that prompt on a review card before anything runs.
+
+- Runs locally inside Claude Code. Prompts are not logged and nothing is sent anywhere outside the agent.
+- Requires Claude Code with plugin support and Node.js 18 or later.
+- Install, as two prompts in Claude Code: `/plugin marketplace add ardfaiyaz/sharpen` then `/plugin install sharpen@sharpen`, then restart Claude Code.
+- Turn it on with `/sharpen on`, off with `/sharpen off`; `/sharpen` reports the state.
+
+## Pages
+
+- [Home](https://sharpen-web-psi.vercel.app/): what Sharpen does and examples of the review card
+- [Docs](https://sharpen-web-psi.vercel.app/docs/): install, what it reads, the review card, companion skills, commands, privacy, troubleshooting
+
+## Source
+
+- [GitHub repository](https://github.com/ardfaiyaz/sharpen): code, README and releases
