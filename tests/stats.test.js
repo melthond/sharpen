@@ -41,6 +41,19 @@ test('isCorrection spots a re-prompt that pushes back', () => {
   }
 });
 
+test('isCorrection spots polite and non-English pushback', () => {
+  for (const p of ["that isn't what I asked", 'that is not what I meant', "that's not right", 'not quite', "that's not it",
+    'non, pas ça', 'ça ne marche pas', 'no funciona', 'eso no es lo que pedí', 'não funcionou', 'nein, falsch', 'funktioniert nicht']) {
+    assert.ok(isCorrection(p), p);
+  }
+});
+
+test('isCorrection ignores new instructions that only start like pushback', () => {
+  for (const p of ['no need to change the tests', 'still, add a comment', 'not quite done yet: add the footer too', 'nothing to fix, add docs']) {
+    assert.ok(!isCorrection(p), p);
+  }
+});
+
 test('statsLine reports the rate, and says so when there is no data', () => {
   assert.strictEqual(statsLine({ cards: 0, corrections: 0 }), 'No sharpened prompts counted yet.');
   assert.strictEqual(statsLine({ cards: 20, corrections: 3 }), 'Sharpened prompts: 20. Follow-up corrections: 3 (15%).');
