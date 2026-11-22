@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
+import { useEffect, useId, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { FloatingPaths } from '@/components/ui/background-paths'
 import AsciiGlitch from './AsciiGlitch.tsx'
 import Faq from './Faq.tsx'
@@ -47,10 +47,10 @@ const GATE = [
 ]
 
 const FLOW = [
-  ['Gate', 'Clear requests keep their wording. One reading gets the gaps filled. Two readings get a question.'],
-  ['Gather', 'The conversation first, then a few focused code searches, then your skills, tools and hooks.'],
-  ['Engineer', 'Target, files, limits, tools, a finish line and evidence, checked for common prompt problems.'],
-  ['Review', 'The prompt lands on a card. Nothing starts until you send it, edit it, or run your original.'],
+  ['Gate', 'Clear stays as typed. One reading gets filled in. Two get a question.'],
+  ['Gather', 'Your chat first, then a few code searches, then your skills, tools and hooks.'],
+  ['Engineer', 'Target, files, limits, tools and a finish line, checked for common mistakes.'],
+  ['Review', 'It lands on a card. Nothing runs until you send it, edit it, or run your original.'],
 ]
 
 // The real fill-in run from the Sharpen README, as quoted in the docs.
@@ -64,15 +64,15 @@ const SHARPENED = [
 ]
 
 const FEATURES = [
-  ['Knows which one', 'Two open login bugs? It asks which you meant, with one option per reading.'],
-  ['Full briefs', 'Starting state, target state, scope lock, stop-and-ask rules and evidence for anything that edits code.'],
-  ['No guessed values', 'Prices, limits and wording only you can decide become visible [ASK: …] blanks.'],
-  ['88 anti-patterns', 'Vague verbs, missing finish lines, relative dates, test gaming and third-try corrections are caught before you see the card.'],
-  ['Techniques built in', 'Escalation, gated chains, search budgets, context limits and long-run plans, drawn from the major prompting guides.'],
-  ['Your setup, used', 'Tools: and Hooks: lines name the skills, agents and hooks you actually have installed.'],
-  ['Knows the phase', 'Kickoff, spec, plan, tasks or build: each gets its own shape and a next step. Small fixes stay small.'],
-  ['Safety checks', 'Risky verbs get confirmed, new packages get checked in the registry, and private data plus outward sends get a stop.'],
-  ['Grounded in research', 'Built from the Anthropic, OpenAI and Google guides, published studies and 2025–2026 developer surveys, each linked in the references.'],
+  ['Knows which one', 'Two open login bugs? It asks which one you meant.'],
+  ['Full briefs', 'Start and target state, scope, stop rules and evidence for code changes.'],
+  ['No guessed values', 'Prices, limits and wording only you know become [ASK: …] blanks.'],
+  ['88 anti-patterns', 'Vague verbs, missing finish lines and test gaming, caught before the card.'],
+  ['Techniques built in', 'Escalation, gated chains, search budgets and long-run plans.'],
+  ['Your setup, used', 'Tools: and Hooks: lines name what you actually have.'],
+  ['Knows the phase', 'Kickoff, spec, plan, tasks or build each get their shape. Small fixes stay small.'],
+  ['Safety checks', 'Risky verbs get confirmed, new packages checked, and private data kept in.'],
+  ['Grounded in research', 'Built on the Anthropic, OpenAI and Google guides, studies and 2025–2026 surveys.'],
 ]
 
 export default function App() {
@@ -103,7 +103,7 @@ export default function App() {
         <section id="how" className="section section-wide reveal">
           <div className="how-grid">
             <div className="how-copy">
-              <SectionHead index="01" label="How it works" title="One gate before every task." lead="Sharpen reads your request and takes one of three paths: keep it, fill it in, or ask. Pick a request to see the card it would show." />
+              <SectionHead index="01" label="How it works" title="One gate before every task." lead="Every request takes one of three paths: keep it, fill it in, or ask. Pick one to see its card." />
               <FlowSteps />
             </div>
             <GateDemo />
@@ -111,7 +111,7 @@ export default function App() {
         </section>
 
         <section id="features" className="section section-wide reveal">
-          <SectionHead index="02" label="What it adds" title="Same request. A prompt that can finish." lead="A real run from the Sharpen README: one line in, a brief with the file, the related work, the rule to keep and the check out." wide />
+          <SectionHead index="02" label="What it adds" title="Same request. A prompt that can finish." lead="A real run from the README. One line in, a full brief out." wide />
           <div className="split">
             <div className="split-before">
               <span className="split-label">You type</span>
@@ -197,8 +197,21 @@ function GateDemo() {
     tabs.current[next]?.focus()
   }
 
+  // One red indicator slides to the active tab. Until it is measured, the active tab paints its own red.
+  const [box, setBox] = useState<CSSProperties | null>(null)
+  useLayoutEffect(() => {
+    const place = () => {
+      const tab = tabs.current[active]
+      if (tab) setBox({ width: tab.offsetWidth, height: tab.offsetHeight, transform: `translate(${tab.offsetLeft}px, ${tab.offsetTop}px)` })
+    }
+    place()
+    window.addEventListener('resize', place)
+    return () => window.removeEventListener('resize', place)
+  }, [active])
+
   return <div className="console">
-    <div className="console-tabs" role="tablist" aria-label="Pick a request" onKeyDown={onKeyDown}>
+    <div className={box ? 'console-tabs has-indicator' : 'console-tabs'} role="tablist" aria-label="Pick a request" onKeyDown={onKeyDown}>
+      {box && <span className="console-indicator" aria-hidden="true" style={box} />}
       {GATE.map((g, i) => <button key={g.prompt} ref={(el) => { tabs.current[i] = el }} type="button" role="tab" id={`${id}-tab-${i}`} aria-selected={i === active} aria-controls={`${id}-panel`} tabIndex={i === active ? 0 : -1} onClick={() => setActive(i)}>
         {g.tab}
       </button>)}
@@ -212,11 +225,21 @@ function GateDemo() {
         <GateCard card={item.card} />
       </div>
       <div className="console-actions">
-        <p>{item.ask}</p>
-        <div aria-hidden="true">{item.actions.map((a, j) => <span key={a} className={j === 0 ? 'is-primary' : undefined}>{a}</span>)}</div>
+        <p><span className="sr-only">{item.ask}</span><ScrambleText>{item.ask}</ScrambleText></p>
+        <div aria-hidden="true">{item.actions.map((a, j) => <ActionPill key={j} label={a} primary={j === 0} />)}</div>
       </div>
     </div>
   </div>
+}
+
+/** A card button whose width eases to fit each new label, while the label fades in. */
+function ActionPill({ label, primary }: { label: string; primary: boolean }) {
+  const text = useRef<HTMLSpanElement>(null)
+  const [width, setWidth] = useState<number>()
+  useLayoutEffect(() => { if (text.current) setWidth(text.current.offsetWidth) }, [label])
+  return <span className={primary ? 'action-pill is-primary' : 'action-pill'} style={width ? { width } : undefined}>
+    <span ref={text} key={label}>{label}</span>
+  </span>
 }
 
 /** The brief from the real run. Its lines scramble in again the first time it scrolls into view. */
