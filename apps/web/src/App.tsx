@@ -95,7 +95,7 @@ export default function App() {
         <section className="hero">
           <div className="hero-bg" aria-hidden="true"><FloatingPaths position={1} /><FloatingPaths position={-1} /><AsciiGlitch /></div>
           <h1>You type “fix the login thing.”<br /><span className="scramble-line"><span className="sr-only">It knows which one.</span><ScrambleText>It knows which one.</ScrambleText></span></h1>
-          <p className="lead">Sharpen turns the prompt you typed into the prompt you meant, and shows it to you before any work starts.</p>
+          <p className="lead">Sharpen turns what you typed into what you meant, and shows you before any work starts.</p>
           <Terminal commands={INSTALL} ariaLabel="Install commands" />
           <div className="hero-docs"><ArrowLink href="/docs/">Read the docs</ArrowLink></div>
         </section>
@@ -218,7 +218,7 @@ function GateDemo() {
     </div>
     <div className="console-body" role="tabpanel" id={`${id}-panel`} aria-labelledby={`${id}-tab-${active}`}>
       <p className="console-prompt"><b aria-hidden="true">&gt; </b><span className="sr-only">{item.prompt}</span><ScrambleText>{item.prompt}</ScrambleText></p>
-      <div className="gate-chips"><span className="console-from"><span aria-hidden="true">✳</span> Sharpen</span><span className="gate-kind">{item.kind}</span><span className={`gate-source${item.real ? ' is-real' : ''}`}>{item.real ? 'Real run' : 'Illustration'}</span></div>
+      <div className="gate-chips"><span className="console-from"><span aria-hidden="true">✳</span> Sharpen</span><FitPill className="gate-kind" label={item.kind} /><FitPill className={item.real ? 'gate-source is-real' : 'gate-source'} label={item.real ? 'Real run' : 'Illustration'} /></div>
       <div className="gate-stack">
         {/* Every card sits hidden in the same cell, so the panel is always the tallest card's size. */}
         {GATE.map((g) => <GateCard key={g.prompt} card={g.card} hidden />)}
@@ -226,18 +226,18 @@ function GateDemo() {
       </div>
       <div className="console-actions">
         <p><span className="sr-only">{item.ask}</span><ScrambleText>{item.ask}</ScrambleText></p>
-        <div aria-hidden="true">{item.actions.map((a, j) => <ActionPill key={j} label={a} primary={j === 0} />)}</div>
+        <div aria-hidden="true">{item.actions.map((a, j) => <FitPill key={j} label={a} className={j === 0 ? 'action-pill is-primary' : 'action-pill'} />)}</div>
       </div>
     </div>
   </div>
 }
 
-/** A card button whose width eases to fit each new label, while the label fades in. */
-function ActionPill({ label, primary }: { label: string; primary: boolean }) {
+/** A pill (chip or card button) whose width eases to fit each new label, while the label fades in. No scramble. */
+function FitPill({ label, className }: { label: string; className: string }) {
   const text = useRef<HTMLSpanElement>(null)
   const [width, setWidth] = useState<number>()
   useLayoutEffect(() => { if (text.current) setWidth(text.current.offsetWidth) }, [label])
-  return <span className={primary ? 'action-pill is-primary' : 'action-pill'} style={width ? { width } : undefined}>
+  return <span className={`fit-pill ${className}`} style={width ? { width } : undefined}>
     <span ref={text} key={label}>{label}</span>
   </span>
 }

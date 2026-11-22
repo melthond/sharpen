@@ -11,7 +11,7 @@ export default function SkillsShowcase() {
           <h2 id="skills-title">Ten skills, one plugin.<br /><span>Use one, or all of them.</span></h2>
         </div>
         <div className="skills-aside">
-          <p className="section-lead">Sharpen runs on its own. These run when you call them: type <code>/sharpen:</code> in Claude Code, whether automatic review is on or off.</p>
+          <p className="section-lead">Sharpen runs on its own. These run when you call them: type <code>/sharpen:</code> in Claude Code.</p>
           <a href="/docs/#skills">All skill docs <span aria-hidden="true">→</span></a>
         </div>
       </header>
