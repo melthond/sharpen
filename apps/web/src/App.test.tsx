@@ -196,31 +196,21 @@ test('features reflect the current plugin: 88 anti-patterns, phases, safety chec
   expect(container.querySelector('#skills h2')!.textContent).toContain('Ten skills')
 })
 
-test('skills section shows ten cards, each with a centered phase sticker, a command pill and an example chat', () => {
+test('skills section shows all ten skills as grid tiles, the first one featured', () => {
   const { container } = render(<App />)
-  const cards = container.querySelectorAll('#skills .skill-card')
-  expect(cards).toHaveLength(10)
-  cards.forEach((card) => {
-    expect(card.querySelector('.skill-sticker > span > span')!.textContent).toMatch(/^PHASE[A-Z]+$/)
-    expect(card.querySelector('.install-pill .sr-only')!.textContent).toMatch(/^\/sharpen:sharpen-/)
-    expect(card.querySelector('.skill-chat .chat-you')!.textContent).toContain('/sharpen:sharpen-')
-    expect(card.querySelectorAll('.chat-card dl > div')).toHaveLength(3)
+  const tiles = container.querySelectorAll('#skills .skill-grid > .skill-tile')
+  expect(tiles).toHaveLength(10)
+  expect(tiles[0].classList.contains('is-featured')).toBe(true)
+  expect(container.querySelectorAll('#skills .is-featured')).toHaveLength(1)
+  tiles.forEach((tile) => {
+    expect(tile.querySelector('.skill-phase')!.textContent).toMatch(/^[A-Z]+$/)
+    expect(tile.querySelector('h3 a')!.getAttribute('href')).toBe('/docs/#skills')
+    const command = tile.querySelector('.skill-cmd code')!.textContent!.replace(/^\$ /, '')
+    expect(command).toMatch(/^\/sharpen:sharpen-[a-z]+$/)
+    expect(tile.querySelector('.skill-copy')!.getAttribute('aria-label')).toBe(`Copy ${command}`)
   })
   expect(container.querySelector('#skills h2')!.textContent).toContain('Use one, or all of them.')
-})
-
-test('skills nav marks the clicked skill and scrolls to its card', () => {
-  const scrollIntoView = vi.fn()
-  Element.prototype.scrollIntoView = scrollIntoView
-  const { container } = render(<App />)
-  const nav = within(screen.getByRole('navigation', { name: 'Companion skills' }))
-  const buttons = nav.getAllByRole('button')
-  expect(buttons).toHaveLength(10)
-  expect(buttons[0].getAttribute('aria-current')).toBe('true')
-  fireEvent.click(nav.getByRole('button', { name: 'sharpen-split' }))
-  expect(buttons[3].getAttribute('aria-current')).toBe('true')
-  expect(buttons[0].getAttribute('aria-current')).toBeNull()
-  expect(scrollIntoView.mock.contexts[0]).toBe(container.querySelector('#skill-sharpen-split'))
+  expect(container.querySelector('#skills .skills-nav, #skills .skill-chat')).toBeNull()
 })
 
 test('footer shows a decorative half logo on both pages', async () => {

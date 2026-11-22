@@ -3,7 +3,7 @@ import CopyButton from './CopyButton.tsx'
 import { scrambleLines, useScramble } from './useScramble.tsx'
 
 /** Every command block on the site: a white pill with red `$` prompts, a copy icon, and the morph scramble. */
-export default function Terminal({ commands, ariaLabel, copyLabel = 'Copy install commands', className = '' }: { commands: string; ariaLabel: string; copyLabel?: string; className?: string }) {
+export default function Terminal({ commands, ariaLabel }: { commands: string; ariaLabel: string }) {
   const ref = useRef<HTMLDivElement>(null)
   const [runs, setRuns] = useState(0)
   // Replays the type-in each time the pill scrolls into view, going down or back up.
@@ -15,11 +15,11 @@ export default function Terminal({ commands, ariaLabel, copyLabel = 'Copy instal
     return () => io.disconnect()
   }, [])
 
-  return <div className={`install-pill ${className}`.trim()} ref={ref} role="group" aria-label={ariaLabel}>
+  return <div className="install-pill" ref={ref} role="group" aria-label={ariaLabel}>
     {/* A new key remounts the text, which replays the type-in while each line keeps its full width reserved. */}
     <code aria-hidden="true"><Typed key={runs} text={commands} /></code>
     <span className="sr-only">{commands}</span>
-    <CopyButton className="pill-copy" text={commands} label={copyLabel} />
+    <CopyButton className="pill-copy" text={commands} label="Copy install commands" />
   </div>
 }
 
