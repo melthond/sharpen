@@ -188,6 +188,39 @@ test('how it works: picking a request switches the gate result, and arrow keys m
   expect(document.activeElement).toBe(tabs[0])
 })
 
+test('how it works: four equal request tabs, and the steps light up 01 to 04 once the list is in view', () => {
+  vi.useFakeTimers()
+  const observers: { cb: (e: { isIntersecting: boolean }[]) => void; targets: Element[] }[] = []
+  class TestIntersectionObserver {
+    targets: Element[] = []
+    constructor(public cb: (e: { isIntersecting: boolean }[]) => void) { observers.push(this) }
+    observe(el: Element) { this.targets.push(el) }
+    unobserve() {}
+    disconnect() {}
+  }
+  vi.stubGlobal('IntersectionObserver', TestIntersectionObserver)
+  const { container } = render(<App />)
+  expect([...container.querySelectorAll('#how .console-tabs button')].map((b) => b.textContent)).toEqual(['Ambiguous', 'Fill-in', 'Clear', 'Your value'])
+  const steps = container.querySelector('#how .how-steps')!
+  const lit = () => steps.querySelectorAll('li.is-lit').length
+  expect(lit()).toBe(0)
+  act(() => observers.find((o) => o.targets.includes(steps))!.cb([{ isIntersecting: true }]))
+  const seen: number[] = []
+  for (let i = 0; i < 4; i++) { act(() => { vi.advanceTimersByTime(650) }); seen.push(lit()) }
+  expect(seen).toEqual([1, 2, 3, 4])
+  expect(steps.querySelector('li:last-child')!.classList.contains('is-lit')).toBe(true)
+  vi.useRealTimers()
+})
+
+test('what it adds: the split shows the request beside the full brief from the real run', () => {
+  const { container } = render(<App />)
+  expect(container.querySelector('#features .split-before')!.textContent).toContain('fix the clipboard so it clears after 30 seconds')
+  const rows = [...container.querySelectorAll('#features .split-after li')]
+  expect(rows.map((r) => r.querySelector('b')!.textContent)).toEqual(['Goal', 'Where', 'Also update', 'Keep', 'Hooks', 'Check'])
+  expect(rows[1].querySelector('.sr-only')!.textContent).toContain('apps/admin/src/lib/clipboard.ts:2')
+  expect(container.querySelectorAll('#features .feature-list > li')).toHaveLength(9)
+})
+
 test('features reflect the current plugin: 88 anti-patterns, phases, safety checks, research sources', () => {
   const { container } = render(<App />)
   const text = container.querySelector('#features .feature-list')!.textContent!

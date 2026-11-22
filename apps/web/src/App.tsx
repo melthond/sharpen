@@ -12,24 +12,36 @@ import { scrambleLines, useScramble } from './useScramble.tsx'
 // The four gate outcomes from the docs' examples section. Only the clipboard card is from a real run (`real`).
 const GATE = [
   {
+    tab: 'Ambiguous',
     prompt: 'fix the login thing',
     kind: 'Ambiguous · asks',
+    ask: 'Pick one reading.',
+    actions: ['The PIN lockout', 'The expired session'],
     card: { title: 'Which did you mean?', lines: ['The PIN lockout', 'The expired member session', 'Run as typed'], options: true },
   },
   {
+    tab: 'Fill-in',
     prompt: 'fix the clipboard so it clears after 30 seconds',
     kind: 'Fill-in',
+    ask: 'Send this sharpened prompt?',
+    actions: ['Send it', 'Run my original'],
     real: true,
     card: { title: 'Sharpened prompt (fill-in)', lines: ['Change the clipboard clear for copied keys from 60 to 30 seconds.', 'Where: apps/admin/src/lib/clipboard.ts:2', 'Check: the clipboard test passes.'] },
   },
   {
+    tab: 'Clear',
     prompt: 'Rename getUser to fetchUser in src/api.ts',
     kind: 'Clear · keeps the ask',
+    ask: 'Send this sharpened prompt?',
+    actions: ['Send it', 'Run my original'],
     card: { title: 'Sharpened prompt (clear)', lines: ['Rename getUser to fetchUser in src/api.ts.', 'Also update: the callers it finds.', 'Check: the project’s test command.'] },
   },
   {
+    tab: 'Your value',
     prompt: 'Set the plan price to the right amount',
     kind: 'Your value · asks',
+    ask: 'Fill the blank, then send.',
+    actions: ['Fill it in', 'Run my original'],
     card: { title: 'Sharpened prompt (fill-in)', lines: ['Set the plan price to [ASK: plan price].'] },
   },
 ]
@@ -43,7 +55,7 @@ const FLOW = [
 
 // The real fill-in run from the Sharpen README, as quoted in the docs.
 const SHARPENED = [
-  ['', 'Change the clipboard clear for copied keys from 60 to 30 seconds.'],
+  ['Goal', 'Change the clipboard clear for copied keys from 60 to 30 seconds.'],
   ['Where', 'apps/admin/src/lib/clipboard.ts:2 (HOLD_MS = 60_000 → 30_000)'],
   ['Also update', 'generate.tsx:181, clipboard.test.ts, PRD FR-19, checklist US-020.'],
   ['Keep', 'the "leave it alone if something else was copied" rule.'],
@@ -88,35 +100,30 @@ export default function App() {
           <div className="hero-docs"><ArrowLink href="/docs/">Read the docs</ArrowLink></div>
         </section>
 
-        <section id="how" className="section reveal">
-          <SectionHead index="01" label="How it works" title="One gate before every task." lead="Sharpen reads your request and takes one of three paths: keep it, fill it in, or ask. Pick a request to see the card it would show." />
-          <GateDemo />
-          <ol className="flow">
-            {FLOW.map(([title, text], i) => <li key={title} style={{ '--stagger-index': i } as CSSProperties}>
-              <span>0{i + 1}</span><h3>{title}</h3><p>{text}</p>
-            </li>)}
-          </ol>
+        <section id="how" className="section section-wide reveal">
+          <div className="how-grid">
+            <div className="how-copy">
+              <SectionHead index="01" label="How it works" title="One gate before every task." lead="Sharpen reads your request and takes one of three paths: keep it, fill it in, or ask. Pick a request to see the card it would show." />
+              <FlowSteps />
+            </div>
+            <GateDemo />
+          </div>
         </section>
 
-        <section id="features" className="section reveal">
-          <SectionHead index="02" label="What it adds" title="Same request. A prompt that can finish." lead="A real run from the Sharpen README: one line in, a brief with the file, the related work, the rule to keep and the check out." />
-          <div className="compare">
-            <div className="compare-side compare-before">
-              <span className="compare-label">You type</span>
+        <section id="features" className="section section-wide reveal">
+          <SectionHead index="02" label="What it adds" title="Same request. A prompt that can finish." lead="A real run from the Sharpen README: one line in, a brief with the file, the related work, the rule to keep and the check out." wide />
+          <div className="split">
+            <div className="split-before">
+              <span className="split-label">You type</span>
               <p>“fix the clipboard so it clears after 30 seconds”</p>
+              <span className="split-meta">1 line · no file · no check</span>
             </div>
-            <div className="compare-arrow" aria-hidden="true">→</div>
-            <div className="compare-side compare-after">
-              <span className="compare-label">Sharpen hands Claude</span>
-              <ul>
-                {SHARPENED.map(([tag, text]) => <li key={text} className={tag ? 'added' : undefined}>
-                  {tag && <b>{tag}:</b>} {text}
-                </li>)}
-              </ul>
-            </div>
+            <SplitBrief />
           </div>
           <ul className="feature-list">
-            {FEATURES.map(([title, text]) => <li key={title}><h3>{title}</h3><p>{text}</p></li>)}
+            {FEATURES.map(([title, text], i) => <li key={title} style={{ '--stagger-index': i } as CSSProperties}>
+              <span aria-hidden="true">0{i + 1}</span><div><h3>{title}</h3><p>{text}</p></div>
+            </li>)}
           </ul>
         </section>
 
@@ -133,12 +140,45 @@ export default function App() {
   )
 }
 
-function SectionHead({ index, label, title, lead }: { index: string; label: string; title: string; lead?: string }) {
-  return <header className="section-head">
+function SectionHead({ index, label, title, lead, wide }: { index: string; label: string; title: string; lead?: string; wide?: boolean }) {
+  return <header className={wide ? 'section-head is-wide' : 'section-head'}>
     <p className="section-eyebrow">{index} <span aria-hidden="true">·</span> {label}</p>
     <h2>{title}</h2>
     {lead && <p className="section-lead">{lead}</p>}
   </header>
+}
+
+const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+
+/** Runs `onEnter` once, the first time the element scrolls into view. Returns undefined when it can't watch (old browser). */
+function onFirstView(el: Element, onEnter: () => void, threshold = 0.35) {
+  if (!('IntersectionObserver' in window)) return undefined
+  const io = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) { io.disconnect(); onEnter() } }, { threshold })
+  io.observe(el)
+  return () => io.disconnect()
+}
+
+/** The four steps. Prerendered fully lit; with script they dim, then light 01 to 04 one by one the first time the list comes into view. */
+function FlowSteps() {
+  const ref = useRef<HTMLOListElement>(null)
+  const [lit, setLit] = useState(FLOW.length)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || reducedMotion()) return
+    const timers: number[] = []
+    const stop = onFirstView(el, () => FLOW.forEach((_, i) => timers.push(window.setTimeout(() => setLit(i + 1), 350 + i * 650))))
+    if (!stop) return
+    setLit(0)
+    return () => { stop(); timers.forEach(clearTimeout) }
+  }, [])
+
+  return <ol className="how-steps" ref={ref} style={{ '--lit': lit / FLOW.length } as CSSProperties}>
+    {FLOW.map(([title, text], i) => <li key={title} className={i < lit ? 'is-lit' : undefined}>
+      <span className="how-dot" aria-hidden="true" />
+      <h3><span>0{i + 1}</span> {title}</h3>
+      <p>{text}</p>
+    </li>)}
+  </ol>
 }
 
 function GateDemo() {
@@ -157,21 +197,41 @@ function GateDemo() {
     tabs.current[next]?.focus()
   }
 
-  return <div className="gate-demo">
-    <div className="gate-tabs" role="tablist" aria-label="Pick a request" onKeyDown={onKeyDown}>
-      <span className="gate-tabs-label" aria-hidden="true">Pick a request</span>
+  return <div className="console">
+    <div className="console-tabs" role="tablist" aria-label="Pick a request" onKeyDown={onKeyDown}>
       {GATE.map((g, i) => <button key={g.prompt} ref={(el) => { tabs.current[i] = el }} type="button" role="tab" id={`${id}-tab-${i}`} aria-selected={i === active} aria-controls={`${id}-panel`} tabIndex={i === active ? 0 : -1} onClick={() => setActive(i)}>
-        “{g.prompt}”
+        {g.tab}
       </button>)}
     </div>
-    <div className="gate-panel" role="tabpanel" id={`${id}-panel`} aria-labelledby={`${id}-tab-${active}`}>
-      <div className="gate-chips"><span className="gate-kind">{item.kind}</span><span className={`gate-source${item.real ? ' is-real' : ''}`}>{item.real ? 'Real run' : 'Illustration'}</span></div>
+    <div className="console-body" role="tabpanel" id={`${id}-panel`} aria-labelledby={`${id}-tab-${active}`}>
+      <p className="console-prompt"><b aria-hidden="true">&gt; </b><span className="sr-only">{item.prompt}</span><ScrambleText>{item.prompt}</ScrambleText></p>
+      <div className="gate-chips"><span className="console-from"><span aria-hidden="true">✳</span> Sharpen</span><span className="gate-kind">{item.kind}</span><span className={`gate-source${item.real ? ' is-real' : ''}`}>{item.real ? 'Real run' : 'Illustration'}</span></div>
       <div className="gate-stack">
         {/* Every card sits hidden in the same cell, so the panel is always the tallest card's size. */}
         {GATE.map((g) => <GateCard key={g.prompt} card={g.card} hidden />)}
         <GateCard card={item.card} />
       </div>
+      <div className="console-actions">
+        <p>{item.ask}</p>
+        <div aria-hidden="true">{item.actions.map((a, j) => <span key={a} className={j === 0 ? 'is-primary' : undefined}>{a}</span>)}</div>
+      </div>
     </div>
+  </div>
+}
+
+/** The brief from the real run. Its lines scramble in again the first time it scrolls into view. */
+function SplitBrief() {
+  const ref = useRef<HTMLDivElement>(null)
+  const [runs, setRuns] = useState(0)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || reducedMotion()) return
+    return onFirstView(el, () => setRuns(1))
+  }, [])
+
+  return <div className="split-after" ref={ref}>
+    <span className="split-label">Sharpen hands Claude</span>
+    <ul>{SHARPENED.map(([tag, text]) => <li key={tag}><b>{tag}</b><span><span className="sr-only">{text}</span><ScrambleText key={runs}>{text}</ScrambleText></span></li>)}</ul>
   </div>
 }
 
