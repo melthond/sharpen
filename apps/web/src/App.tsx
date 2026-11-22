@@ -1,12 +1,12 @@
 import { useEffect, useId, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react'
 import { FloatingPaths } from '@/components/ui/background-paths'
 import AsciiGlitch from './AsciiGlitch.tsx'
-import CopyButton from './CopyButton.tsx'
 import Faq from './Faq.tsx'
 import SiteFooter, { ArrowLink } from './SiteFooter.tsx'
 import SiteHeader from './SiteHeader.tsx'
 import { INSTALL } from './site.ts'
-import { SKILL_DOCS, SKILLS } from './skills.ts'
+import SkillsShowcase from './SkillsShowcase.tsx'
+import Terminal from './Terminal.tsx'
 import { scrambleLines, useScramble } from './useScramble.tsx'
 
 // The four gate outcomes from the docs' examples section. Only the clipboard card is from a real run (`real`).
@@ -63,9 +63,6 @@ const FEATURES = [
   ['Grounded in research', 'Built from the Anthropic, OpenAI and Google guides, published studies and 2025–2026 developer surveys, each linked in the references.'],
 ]
 
-// Featured bento tiles (larger) by index into SKILLS: sharpen-prompt and sharpen-split.
-const FEATURED = new Set([0, 3])
-
 export default function App() {
   useEffect(() => {
     const els = document.querySelectorAll<HTMLElement>('.reveal')
@@ -87,7 +84,7 @@ export default function App() {
           <div className="hero-bg" aria-hidden="true"><FloatingPaths position={1} /><FloatingPaths position={-1} /><AsciiGlitch /></div>
           <h1>You type “fix the login thing.”<br /><span className="scramble-line"><span className="sr-only">It knows which one.</span><ScrambleText>It knows which one.</ScrambleText></span></h1>
           <p className="lead">Sharpen turns the prompt you typed into the prompt you meant, and shows it to you before any work starts.</p>
-          <InstallPill />
+          <Terminal commands={INSTALL} ariaLabel="Install commands" />
           <div className="hero-docs"><ArrowLink href="/docs/">Read the docs</ArrowLink></div>
         </section>
 
@@ -123,22 +120,7 @@ export default function App() {
           </ul>
         </section>
 
-        <section id="skills" className="skills-band reveal">
-          <div className="skills-inner">
-            <SectionHead index="03" label="Companion skills" title="Ten skills for the prompts around the work." lead="Sharpen runs on its own. These run when you call them: type /sharpen: in Claude Code, whether automatic review is on or off." />
-            <ul className="bento">
-              {SKILLS.map(([name, summary, detail], i) => <li key={name} className={FEATURED.has(i) ? 'is-featured' : undefined} style={{ '--stagger-index': i } as CSSProperties}>
-                <span className="bento-index">0{i + 1}</span>
-                <code>/sharpen:{name}</code>
-                <h3>{summary}</h3>
-                <p>{detail}</p>
-                {FEATURED.has(i) && <p className="bento-more">{SKILL_DOCS[i][2]}</p>}
-                <div className="bento-try"><span>Try</span><code>{SKILL_DOCS[i][3]}</code></div>
-              </li>)}
-            </ul>
-            <ArrowLink href="/docs/#skills">See every skill in the docs</ArrowLink>
-          </div>
-        </section>
+        <SkillsShowcase />
 
         <section id="faq" className="section reveal">
           <SectionHead index="04" label="FAQ" title="Questions, answered." />
@@ -213,13 +195,4 @@ function GateScramble({ card }: { card: (typeof GATE)[number]['card'] }) {
 
 function ScrambleText({ children }: { children: string }) {
   return <span aria-hidden="true">{scrambleLines(useScramble(children, 1000))}</span>
-}
-
-function InstallPill() {
-  const text = useScramble(INSTALL, 900)
-  return <div className="install-pill" role="group" aria-label="Install commands">
-    <code aria-hidden="true">{scrambleLines(text).map((line, i) => <span key={i}><b>$</b> {line}</span>)}</code>
-    <span className="sr-only">{INSTALL}</span>
-    <CopyButton className="pill-copy" text={INSTALL} label="Copy install commands" />
-  </div>
 }

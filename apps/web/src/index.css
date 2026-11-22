@@ -61,16 +61,6 @@ a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
 
 
 /* macOS terminal */
-.term { max-width: 34rem; margin: 0 auto 2rem; text-align: left; border-radius: 12px; overflow: hidden; background: #1e1e1e; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35); }
-.term-bar { display: flex; align-items: center; gap: 0.45rem; padding: 0.65rem 0.9rem; background: #2d2d2d; }
-.term-bar span { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
-.term-bar span:nth-child(2) { background: #febc2e; }
-.term-bar span:nth-child(3) { background: #28c840; }
-.term-bar em { flex: 1; text-align: center; margin-right: 3rem; font-style: normal; font-size: 0.8rem; color: #9a9a9a; }
-.copy-btn { flex: none; min-width: 4.5rem; min-height: 44px; padding: 0.3rem 0.6rem; border: 1px solid #777; border-radius: 6px; background: #383838; color: #fff; font: inherit; font-size: 0.8rem; cursor: pointer; }
-.copy-btn:hover { background: #4b4b4b; }
-.copy-btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; outline-color: #fff; }
-.term b { color: #28c840; font-weight: 600; }
 
 /* scroll reveal */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -96,16 +86,6 @@ a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
 
 
 /* Light macOS terminal. The inline SVG paths are Lucide's Copy and Check icons. */
-.term { background: #fff; border: 1px solid #dfe3e8; box-shadow: 0 20px 50px rgba(32, 37, 44, .2); }
-.term-bar { min-height: 54px; background: #f4f5f7; border-bottom: 1px solid #e3e6ea; }
-.term-bar em { color: #626b78; font-weight: 500; }
-.term .copy-btn { display: grid; place-items: center; width: 44px; min-width: 44px; min-height: 44px; padding: 0; background: #fff; border: 1px solid #d4dae3; border-radius: 7px; color: #20252c; cursor: pointer; }
-.term .copy-btn:hover { background: #f3f5f8; border-color: #aeb7c2; }
-.term .copy-btn svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.term .copy-btn:focus-visible { outline-color: #20252c; outline-offset: 2px; }
-.term pre { max-width: none; margin: 0; background: #fff; padding: 1.2rem 1.4rem; overflow-x: auto; overscroll-behavior-inline: contain; font-size: .9rem; line-height: 1.8; }
-.term pre code { white-space: pre; }
-.term .sr-only { color: #20252c; }
 
 /* The docs page borrows GitOwl's compact, three-column guide hierarchy. */
 .docs-page { min-height: 100svh; }
@@ -166,17 +146,9 @@ a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
 
 
 
-/* The same light macOS terminal is reused for install commands on every page. */
-.term { width: min(100%, 34rem); background: #fff; border: 1px solid #dfe3e8; box-shadow: 0 20px 50px rgba(32, 37, 44, .2); }
-.term pre b { color: #b8361d; }
-.doc-blocks .term { margin: 1.2rem 0 0; }
-.term .copy-btn:focus-visible { outline-color: #20252c; outline-offset: 2px; }
 
 .reveal { transition: opacity .6s ease, transform .6s cubic-bezier(.23, 1, .32, 1); }
 .docs-reveal { transition: opacity .55s ease, transform .55s cubic-bezier(.23, 1, .32, 1); }
-@media (max-width: 640px) {
-  .term pre { padding-inline: 1rem; font-size: .7rem; }
-}
 @media (prefers-reduced-motion: reduce) {
   .reveal, .docs-reveal { opacity: 1; transform: none; transition: none; }
 }
@@ -261,7 +233,15 @@ a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
 .hero-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, .35) 20%, #000 75%); }
 
 /* Install pill, styled after the usehallmark.com command chip. */
-.install-pill { display: inline-flex; align-items: center; gap: 1.1rem; max-width: 100%; margin-top: .25rem; padding: .85rem .85rem .85rem 1.4rem; border: 1px solid #e8e4e2; border-radius: 22px; background: rgba(255, 255, 255, .85); box-shadow: 0 10px 30px rgba(27, 27, 27, .06); backdrop-filter: blur(6px); text-align: left; animation: hero-arrive 850ms 190ms cubic-bezier(.23, 1, .32, 1) both; }
+.install-pill { display: inline-flex; align-items: center; gap: 1.1rem; max-width: 100%; margin-top: .25rem; padding: .85rem .85rem .85rem 1.4rem; border: 1px solid #e8e4e2; border-radius: 22px; background: rgba(255, 255, 255, .85); box-shadow: 0 10px 30px rgba(27, 27, 27, .06); backdrop-filter: blur(6px); text-align: left; }
+.hero .install-pill { animation: hero-arrive 850ms 190ms cubic-bezier(.23, 1, .32, 1) both; }
+/* Outside the hero the pill fills its column, and long commands wrap instead of scrolling. */
+.docs-hero .install-pill, .doc-blocks .install-pill, .term-pill { display: flex; width: 100%; margin: 0; box-sizing: border-box; }
+.doc-blocks .install-pill { margin-top: 1.2rem; }
+.install-pill.term-pill code { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .88rem; overflow-x: visible; }
+.term-pill, .docs-hero .install-pill, .doc-blocks .install-pill { grid-template-columns: minmax(0, 1fr); }
+.term-pill code { max-width: 100%; }
+.term-pill code > span { padding-left: 1.1em; text-indent: -1.1em; }
 .install-pill code { display: grid; gap: .2rem; min-width: 0; overflow-x: auto; color: var(--ink); font-size: .95rem; white-space: pre; }
 .install-pill b { color: var(--red); font-weight: 500; }
 .pill-copy { display: grid; place-items: center; flex: none; width: 44px; height: 44px; padding: 0; border: 0; border-radius: 10px; background: transparent; color: var(--muted); cursor: pointer; transition: background-color .2s ease, color .2s ease; }
@@ -300,7 +280,7 @@ a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
   .install-pill code { font-size: .7rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero h1, .hero .lead, .install-pill { animation: none; }
+  .hero h1, .hero .lead, .hero .install-pill { animation: none; }
   .site-header, .docs-link::after, .faq-answer, .faq-answer p, .faq-item button span { transition: none; }
 }
 
@@ -312,8 +292,7 @@ a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
 .docs-eyebrow span { margin: 0 .35rem; }
 .docs-hero h1 { font-size: clamp(2.5rem, 5.5vw, 4.4rem); letter-spacing: -.03em; }
 .docs-hero h1 span { color: var(--red-dark); }
-.docs-hero .term { width: 100%; margin: 0; }
-.install-pill code, .term pre { scrollbar-width: thin; scrollbar-color: rgba(184, 54, 29, .35) transparent; }
+.install-pill code { scrollbar-width: thin; scrollbar-color: rgba(184, 54, 29, .35) transparent; }
 @media (max-width: 860px) {
   .docs-hero-inner { grid-template-columns: minmax(0, 1fr); }
 }
@@ -379,29 +358,85 @@ a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
 .feature-list h3 { font-size: 1rem; }
 .feature-list p { font-size: .9rem; line-height: 1.65; }
 
-/* Companion skills: its own highlighted band with a bento grid. */
-.skills-band { background: radial-gradient(60% 50% at 85% 0%, rgba(221, 69, 40, .12), transparent 70%), var(--tint); border-block: 1px solid var(--line); }
-.skills-inner { max-width: 1080px; margin: 0 auto; padding: 6rem 1.25rem; }
-.bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-flow: dense; gap: 1rem; margin: 0 0 1.75rem; padding: 0; list-style: none; }
-.bento > li { grid-column: span 5; position: relative; display: flex; flex-direction: column; align-items: flex-start; min-width: 0; padding: 1.4rem; border: 1px solid #ecd6d0; border-radius: 16px; background: #fff; box-shadow: 0 3px 12px rgba(101, 44, 31, .04); transition: transform .3s cubic-bezier(.23, 1, .32, 1), box-shadow .25s ease, border-color .2s ease; }
-/* Rows: featured (7, two rows tall) beside two 5-wide tiles, twice; then three 4-wide tiles. */
-.bento > li:nth-child(n+7) { grid-column: span 4; }
-.bento > li.is-featured { grid-column: span 7; grid-row: span 2; padding: 2rem; overflow: hidden; border-color: rgba(221, 69, 40, .45); background: linear-gradient(150deg, #fff 40%, #fde9e3); }
-.bento > li.is-featured:nth-child(4) { grid-column: 6 / span 7; }
-.bento > li.is-featured::after { content: ''; position: absolute; width: 16rem; aspect-ratio: 1; right: -6rem; bottom: -7rem; border: 1px solid rgba(184, 54, 29, .16); border-radius: 50%; box-shadow: 0 0 0 1.6rem rgba(184, 54, 29, .03), 0 0 0 3.2rem rgba(184, 54, 29, .025); pointer-events: none; }
-.bento .is-featured .bento-more { margin-top: .9rem; }
-.bento > li:hover { transform: translateY(-4px); border-color: #d9afa5; box-shadow: 0 16px 34px rgba(101, 44, 31, .1); }
-.bento-index { color: #80645d; font: 500 .72rem ui-monospace, Consolas, monospace; letter-spacing: .1em; }
-.bento > li > code { margin-top: .8rem; padding: .3rem .5rem; border-radius: 6px; background: #fdf0ec; color: #8c2c19; font-size: .8rem; font-weight: 600; }
-.bento h3 { margin: .9rem 0 .45rem; font-size: 1.15rem; letter-spacing: -.02em; }
-.bento .is-featured h3 { font-size: clamp(1.4rem, 2.6vw, 1.9rem); }
-.bento p { color: #4f5864; font-size: .92rem; line-height: 1.65; }
-.bento .is-featured p { font-size: 1rem; max-width: 30rem; }
-.bento-try { display: grid; gap: .3rem; width: 100%; margin-top: auto; padding-top: 1rem; }
-.bento-try span { color: #737d8a; font: 600 .62rem ui-monospace, Consolas, monospace; letter-spacing: .1em; text-transform: uppercase; }
-.bento-try code { color: #4f5864; font-size: .75rem; overflow-wrap: anywhere; }
-.reveal:not(.in) .bento > li, .reveal:not(.in) .flow > li { opacity: 0; transform: translateY(14px); }
-.reveal.in .bento > li, .reveal.in .flow > li { animation: item-rise .48s ease both; animation-delay: calc(var(--stagger-index, 0) * 55ms); }
+/* Companion skills: a sticky command list beside one two-panel card per skill. */
+.skills-inner { max-width: 1180px; margin: 0 auto; padding: 6rem 1.25rem; }
+.skills-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1.5rem 3rem; margin-bottom: 3.5rem; }
+.skills-head h2 { margin: 0; font-weight: 700; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.04; letter-spacing: -.025em; }
+.skills-head h2 span { color: var(--red-dark); }
+.skills-head .section-lead { max-width: 23rem; margin: 0; }
+.skills-head .section-lead code { color: var(--red-dark); }
+.skills-layout { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 3rem; }
+.skills-nav { position: sticky; top: 6rem; flex: 0 0 13rem; display: flex; flex-direction: column; border-left: 1px solid var(--line); }
+.skills-nav button { position: relative; min-height: 44px; padding: 0 0 0 1.1rem; border: 0; background: none; color: var(--muted); font: .92rem ui-monospace, Consolas, monospace; text-align: left; cursor: pointer; transition: color .3s ease; }
+.skills-nav button:hover, .skills-nav button[aria-current='true'] { color: var(--ink); }
+.skills-nav button[aria-current='true'] { font-weight: 600; }
+.skills-nav button:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+.skills-nav-bar { position: absolute; top: 0; left: -2px; width: 3px; height: 44px; background: var(--red); transition: transform .45s cubic-bezier(.22, 1, .36, 1); }
+.skills-list { flex: 999 1 40rem; min-width: 0; display: flex; flex-direction: column; gap: 3.5rem; padding-top: 1.5rem; }
+.skill-anchor { scroll-margin-top: 6rem; }
+.skill-card { display: flex; flex-wrap: wrap; min-height: 32rem; border: 1px solid var(--line); border-radius: 12px; background: #fff; box-shadow: 0 14px 36px rgba(101, 44, 31, .08); }
+.skill-face { position: relative; flex: 1 1 22rem; min-width: 0; display: flex; flex-direction: column; gap: 1.2rem; padding: 2.5rem 2.5rem 2rem; border-radius: 11px 0 0 11px; }
+.skill-card.theme-0 .skill-face { background: var(--red-dark); color: #fff; }
+.skill-card.theme-1 .skill-face { background: var(--tint); color: var(--ink); }
+.skill-card.theme-2 .skill-face { background: #f9ddd5; color: var(--ink); }
+.skill-face h3 { margin: 0; padding-right: 5rem; font-size: clamp(2.1rem, 3.6vw, 3.2rem); font-weight: 700; line-height: 1; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.skill-face h3 span { color: #c96a55; }
+.skill-card.theme-0 .skill-face h3 span { color: rgba(255, 255, 255, .62); }
+.skill-card.theme-2 .skill-face h3 span { color: #a8442d; }
+.skill-face p { max-width: 34ch; color: inherit; font-size: 1.06rem; line-height: 1.55; }
+.skill-use { display: grid; gap: .3rem; font-weight: 600; font-size: .95rem; }
+.skill-use span { color: var(--muted); font-weight: 400; font-size: .82rem; }
+.skill-card.theme-0 .skill-use span { color: rgba(255, 255, 255, .8); }
+/* The sticker hangs past the card's corner, outlined in black. */
+.skill-sticker { position: absolute; z-index: 2; top: -2.1rem; right: -.6rem; width: 6.75rem; height: 6.75rem; transform: rotate(-10deg); filter: drop-shadow(0 6px 10px rgba(27, 27, 27, .18)); pointer-events: none; }
+.skill-sticker svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.skill-sticker polygon { fill: var(--red-dark); stroke: #111; stroke-width: 3.5; stroke-linejoin: round; }
+.skill-sticker > span { position: absolute; inset: 0; display: grid; place-items: center; color: #fff; font: 700 .64rem/1.15 ui-monospace, Consolas, monospace; letter-spacing: .06em; text-align: center; }
+.skill-card.theme-0 .skill-sticker polygon { fill: #fff; }
+.skill-card.theme-0 .skill-sticker > span { color: var(--red-dark); }
+.skill-doc { align-self: flex-start; margin-top: auto; color: inherit; font-weight: 600; text-underline-offset: 4px; }
+.skill-doc:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+/* Hang further past the corner only where the page has room for it. */
+@media (min-width: 1260px) { .skill-sticker { right: -1.9rem; } }
+/* Right panel: an example Claude Code exchange, your command and then Sharpen's reply card. */
+.skill-chat { flex: 1 1 22rem; min-width: 0; display: flex; flex-direction: column; margin: 0; padding: 1.5rem; }
+.chat-bar { display: flex; align-items: center; gap: .55rem; padding-bottom: .9rem; border-bottom: 1px solid var(--line); color: var(--muted); font: 600 .78rem ui-monospace, Consolas, monospace; }
+.chat-dot { width: .55rem; height: .55rem; border-radius: 50%; background: var(--red); box-shadow: 0 0 0 4px var(--tint); }
+.chat-tag { margin-left: auto; padding: .2rem .55rem; border: 1px solid var(--line); border-radius: 999px; font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; }
+.chat-body { flex: 1; display: flex; flex-direction: column; gap: 1rem; padding-top: 1.2rem; }
+.chat-you { align-self: flex-end; max-width: 88%; padding: .7rem .95rem; border-radius: 16px 16px 4px 16px; background: var(--ink); color: #fff; font: .84rem/1.5 ui-monospace, Consolas, monospace; overflow-wrap: anywhere; }
+.chat-reply { display: grid; gap: .5rem; }
+.chat-from { color: var(--red-dark); font-weight: 600; font-size: .85rem; }
+.chat-card { padding: 1.05rem 1.1rem; border: 1px solid var(--line); border-radius: 4px 16px 16px 16px; background: linear-gradient(160deg, #fff 55%, var(--tint)); box-shadow: 0 10px 24px rgba(101, 44, 31, .07); }
+.chat-card strong { display: block; color: var(--ink); font-size: 1rem; }
+.chat-card dl { margin: .6rem 0 0; }
+.chat-card dl > div { display: flex; flex-wrap: wrap; gap: .1rem .8rem; padding: .55rem 0; border-top: 1px solid var(--line); }
+.chat-card dt { flex: 0 0 5.5rem; color: var(--red-dark); font: 600 .72rem/1.9 ui-monospace, Consolas, monospace; letter-spacing: .05em; text-transform: uppercase; }
+.chat-card dd { flex: 1 1 10rem; margin: 0; color: var(--ink); font-size: .93rem; line-height: 1.5; }
+.chat-actions { display: flex; flex-wrap: wrap; gap: .45rem; margin-top: .8rem; }
+.chat-actions span { padding: .4rem .8rem; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--ink); font-size: .8rem; font-weight: 600; }
+.chat-actions span.is-primary { border-color: var(--red-dark); background: var(--red-dark); color: #fff; }
+.chat-note { margin-top: auto; font-size: .84rem; }
+/* Rows rise in, one after another, the first time the chat scrolls into view. */
+.skill-chat .chat-you, .skill-chat .chat-reply, .skill-chat dl > div { transition: opacity .45s ease, transform .55s cubic-bezier(.22, 1, .36, 1); transition-delay: calc(var(--i, 0) * 140ms); }
+.skill-chat.is-waiting .chat-you, .skill-chat.is-waiting .chat-reply, .skill-chat.is-waiting dl > div { opacity: 0; transform: translateY(10px); transition: none; }
+@media (max-width: 860px) {
+  .skills-inner { padding: 4rem 1rem; }
+  /* The list becomes a sticky row of chips under the header. */
+  .skills-nav { position: sticky; top: 4.4rem; z-index: 5; flex: 1 1 100%; flex-direction: row; gap: .5rem; overflow-x: auto; margin: 0 -1rem; padding: .6rem 1rem; border-left: 0; background: rgba(255, 255, 255, .94); backdrop-filter: blur(8px); scrollbar-width: none; }
+  .skills-nav-bar { display: none; }
+  .skills-nav button { flex: none; padding: 0 .9rem; border: 1px solid var(--line); border-radius: 999px; background: #fff; }
+  .skills-nav button[aria-current='true'] { border-color: var(--red-dark); background: var(--red-dark); color: #fff; }
+  .skill-anchor { scroll-margin-top: 8.5rem; }
+  .skill-face { border-radius: 11px 11px 0 0; padding: 2rem 1.4rem 1.6rem; }
+  .skill-chat { padding: 1.4rem 1.1rem; }
+  .skill-sticker { right: -.6rem; width: 5.5rem; height: 5.5rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skills-nav button, .skills-nav-bar { transition: none; }
+}
+.reveal:not(.in) .flow > li { opacity: 0; transform: translateY(14px); }
+.reveal.in .flow > li { animation: item-rise .48s ease both; animation-delay: calc(var(--stagger-index, 0) * 55ms); }
 
 /* Footer: a giant logo cropped to its top half (hair to blindfold), rising from the bottom edge. */
 /* The footer is exactly as tall as the cropped logo; the text sits over it. */
@@ -421,23 +456,17 @@ a:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
   .gate-demo, .compare { grid-template-columns: minmax(0, 1fr); }
   .compare-arrow { justify-self: center; transform: rotate(90deg); }
   .flow, .feature-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .bento > li, .bento > li:nth-child(n) { grid-column: span 6; grid-row: auto; }
-  .bento > li.is-featured:nth-child(n) { grid-column: 1 / -1; } /* :nth-child(n) outranks the desktop :nth-child(4) placement */
 }
 @media (max-width: 640px) {
   .flow, .feature-list { grid-template-columns: minmax(0, 1fr); }
-  .bento { grid-template-columns: minmax(0, 1fr); }
-  .bento > li, .bento > li:nth-child(n) { grid-column: 1; }
-  .skills-inner { padding: 4rem 1rem; }
   .gate-panel, .compare-side { padding: 1.1rem; }
-  .bento > li.is-featured { padding: 1.4rem; }
   .footer-inner { grid-template-columns: minmax(0, 1fr); padding-inline: 1rem; }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-docs, .gate-panel { animation: none; }
-  .arrow-link svg, .gate-tabs button, .bento > li { transition: none; }
+  .arrow-link svg, .gate-tabs button { transition: none; }
   .arrow-link:hover svg, .arrow-link:focus-visible svg { transform: none; }
-  .reveal .bento > li, .reveal .flow > li { opacity: 1; transform: none; animation: none !important; }
+  .reveal .flow > li { opacity: 1; transform: none; animation: none !important; }
 }
 
 /* Landing hero: canvas that turns stretches of the moving lines into ASCII (see AsciiGlitch.tsx). */

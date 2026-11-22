@@ -77,8 +77,8 @@ test('docs terminal copies the install commands and announces success', async ()
   Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText } })
   const Docs = (await import('./Docs.tsx')).default
   const { container } = render(<Docs />)
-  const terminal = container.querySelector<HTMLElement>('.term')!
-  expect(terminal.querySelector('pre code')!.getAttribute('aria-hidden')).toBe('true')
+  const terminal = container.querySelector<HTMLElement>('.install-pill')!
+  expect(terminal.querySelector('code')!.getAttribute('aria-hidden')).toBe('true')
   expect(terminal.querySelector(':scope > .sr-only')!.textContent).toContain('/plugin install sharpen@sharpen')
 
   fireEvent.click(within(terminal).getByRole('button', { name: 'Copy install commands' }))
@@ -88,7 +88,7 @@ test('docs terminal copies the install commands and announces success', async ()
   expect(within(terminal).getByText('Copied', { selector: '[aria-live="polite"]' })).toBeTruthy()
 })
 
-test('docs header shows the floating paths and a light quick-start terminal that copies the install commands', async () => {
+test('docs header shows the floating paths and an install pill that copies the install commands', async () => {
   const writeText = vi.fn().mockResolvedValue(undefined)
   Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText } })
   const Docs = (await import('./Docs.tsx')).default
@@ -96,8 +96,8 @@ test('docs header shows the floating paths and a light quick-start terminal that
   const hero = container.querySelector<HTMLElement>('.docs-hero')!
   expect(screen.getByRole('heading', { level: 1 }).closest('.docs-hero')).not.toBeNull()
   expect(hero.querySelector('.hero-bg svg')).not.toBeNull()
-  const terminal = within(hero.querySelector<HTMLElement>('.term')!)
-  expect(terminal.getByText('QUICK START')).toBeTruthy()
+  const terminal = within(hero.querySelector<HTMLElement>('.install-pill')!)
+  expect(hero.querySelector('.install-pill')!.getAttribute('aria-label')).toBe('Quick start install commands')
   fireEvent.click(terminal.getByRole('button', { name: 'Copy install commands' }))
   await waitFor(() => expect(writeText).toHaveBeenCalledWith(INSTALL))
   expect(await terminal.findByRole('button', { name: 'Copied' })).toBeTruthy()
@@ -113,7 +113,7 @@ test('renders the separate documentation page with section navigation', async ()
   }
   expect(screen.getByRole('navigation', { name: 'On this page' })).toBeTruthy()
   expect(within(screen.getByRole('navigation', { name: 'Site' })).getByRole('link', { name: 'Docs' }).getAttribute('aria-current')).toBe('page')
-  expect(container.querySelector('.term')).not.toBeNull()
+  expect(container.querySelector('.install-pill')).not.toBeNull()
   expect(container.querySelectorAll('.skill-doc-card')).toHaveLength(10)
   expect(container.querySelectorAll('#faq .faq-item')).toHaveLength(8)
   expect(screen.getByText('REAL EXAMPLE · FILL-IN')).toBeTruthy()
@@ -196,13 +196,31 @@ test('features reflect the current plugin: 88 anti-patterns, phases, safety chec
   expect(container.querySelector('#skills h2')!.textContent).toContain('Ten skills')
 })
 
-test('skills bento lists all ten with an example each, two featured', () => {
+test('skills section shows ten cards, each with a centered phase sticker, a command pill and an example chat', () => {
   const { container } = render(<App />)
-  const tiles = container.querySelectorAll('#skills .bento > li')
-  expect(tiles).toHaveLength(10)
-  expect(container.querySelector('#skills')!.textContent).toContain('/sharpen:sharpen-plan')
-  expect(container.querySelectorAll('#skills .bento > li.is-featured')).toHaveLength(2)
-  tiles.forEach((tile) => expect(tile.querySelector('.bento-try code')!.textContent).toMatch(/^\/sharpen:/))
+  const cards = container.querySelectorAll('#skills .skill-card')
+  expect(cards).toHaveLength(10)
+  cards.forEach((card) => {
+    expect(card.querySelector('.skill-sticker > span > span')!.textContent).toMatch(/^PHASE[A-Z]+$/)
+    expect(card.querySelector('.install-pill .sr-only')!.textContent).toMatch(/^\/sharpen:sharpen-/)
+    expect(card.querySelector('.skill-chat .chat-you')!.textContent).toContain('/sharpen:sharpen-')
+    expect(card.querySelectorAll('.chat-card dl > div')).toHaveLength(3)
+  })
+  expect(container.querySelector('#skills h2')!.textContent).toContain('Use one, or all of them.')
+})
+
+test('skills nav marks the clicked skill and scrolls to its card', () => {
+  const scrollIntoView = vi.fn()
+  Element.prototype.scrollIntoView = scrollIntoView
+  const { container } = render(<App />)
+  const nav = within(screen.getByRole('navigation', { name: 'Companion skills' }))
+  const buttons = nav.getAllByRole('button')
+  expect(buttons).toHaveLength(10)
+  expect(buttons[0].getAttribute('aria-current')).toBe('true')
+  fireEvent.click(nav.getByRole('button', { name: 'sharpen-split' }))
+  expect(buttons[3].getAttribute('aria-current')).toBe('true')
+  expect(buttons[0].getAttribute('aria-current')).toBeNull()
+  expect(scrollIntoView.mock.contexts[0]).toBe(container.querySelector('#skill-sharpen-split'))
 })
 
 test('footer shows a decorative half logo on both pages', async () => {

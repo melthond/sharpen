@@ -25,3 +25,18 @@ export const SKILL_DOCS = [
   ['sharpen-audit', 'Find project knowledge an agent cannot see', 'Check guidance, test commands, conventions, project boundaries, and available tools. Get ranked, paste-ready suggestions; the audit changes no files.', '/sharpen:sharpen-audit'],
   ['sharpen-help', 'Get the quick reference', 'See the current on/off state, controls, review-card choices, companion skills, status badge, and file locations in one compact reference.', '/sharpen:sharpen-help'],
 ]
+
+// Skills-section cards, same order as SKILLS: [phase badge, reply title, reply lines, reply buttons, footnote].
+// Each is drawn as a small Claude Code chat. The replies are examples drawn from the docs, not recorded runs.
+export const SKILL_CARDS: [string, string, [string, string][], string[], string][] = [
+  ['ANY', 'Prompt for a ticket', [['Goal', 'Show an empty state when the list has no items.'], ['Context', 'What a reader outside this session needs to know.'], ['Done when', 'The empty state renders with a next step.']], ['Copy', 'Edit'], 'Handed back as text. Nothing runs.'],
+  ['REVIEW', 'Prompt breakdown', [['Parts', 'Verb “make better”, target “dashboard”.'], ['Weak spot', '“Better” has no measure.'], ['Weak spot', 'No finish line.']], ['Adapt', 'Simplify', 'Split'], 'The prompt is analyzed, never run.'],
+  ['HANDOFF', 'Handoff prompt', [['Decided', 'Choices already made, so they stay made.'], ['Tried', 'What failed, so it isn’t retried.'], ['Next', 'The next step and its check.']], ['Copy', 'Edit'], 'Paste it into a fresh session or hand it to a teammate.'],
+  ['PLAN', 'Split into waves', [['Wave 1', 'Rebuild settings.'], ['Wave 2', 'Tests and docs, in parallel.'], ['Each', 'Its own finish line and scope.']], ['Copy prompts', 'Edit'], 'Sharpen writes the plan; you run the prompts.'],
+  ['SPEC', 'Question 1', [['Asks', 'Who can send an invitation?'], ['Then', 'One question at a time, only the ones that matter.'], ['Writes', 'SPEC.md once the decisions are clear.']], ['Answer', 'Skip'], 'It never builds the feature during the interview.'],
+  ['KICKOFF', 'Project plan', [['Size', 'Big feature: the full set of files.'], ['Files', 'Kickoff rules, spec, plan, tasks, build prompt.'], ['Shown', 'Every file before it is written.']], ['Approve', 'Edit'], 'Nothing is written until you approve.'],
+  ['RETRO', 'Prompt review', [['Missing', 'What recent prompts left out.'], ['Cost', 'What that cost you.'], ['Habit', 'One practical thing to try next.']], ['Try it'], 'Coaching on this conversation’s prompts.'],
+  ['REUSE', 'New slash command', [['Makes', 'A project slash command.'], ['Generalizes', 'The details that change each time.'], ['Shows', 'The proposed file first.']], ['Write file', 'Cancel'], 'It asks before writing anything.'],
+  ['SETUP', 'Setup audit', [['Checks', 'Guidance, test commands, conventions, tools.'], ['Ranks', 'What to add first.'], ['Gives', 'Paste-ready CLAUDE.md notes.']], ['Copy notes'], 'The audit changes no files.'],
+  ['START', 'Sharpen help', [['State', 'Whether automatic review is on.'], ['Controls', 'How to turn it on, off, or check it.'], ['Skills', 'Every companion skill, in one place.']], [], 'Everything in one compact reference.'],
+]

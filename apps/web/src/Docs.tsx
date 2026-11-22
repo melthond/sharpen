@@ -38,7 +38,7 @@ export default function Docs() {
           <p className="doc-lead">A practical guide to installing Sharpen, understanding what it reads, reviewing the prompt it prepares, and choosing the right companion skill for the job.</p>
           <div className="guide-meta"><span>Claude Code plugin</span><span>Runs locally</span><span>Nothing starts before review</span></div>
         </div>
-        <Terminal commands={INSTALL} label="QUICK START" ariaLabel="Quick start install commands" />
+        <Terminal commands={INSTALL} ariaLabel="Quick start install commands" />
       </div>
     </header>
     <main className="docs-layout">
@@ -56,7 +56,7 @@ export default function Docs() {
             <span className="doc-index">01 / GETTING STARTED</span>
             <h2>Install once, then turn it on</h2>
             <p>Sharpen needs Claude Code with plugin support and Node.js 18 or later for its hooks. In Claude Code, run each command as a separate prompt:</p>
-            <Terminal commands={INSTALL} label="claude — zsh" ariaLabel="Terminal with Sharpen installation commands" />
+            <Terminal commands={INSTALL} ariaLabel="Terminal with Sharpen installation commands" />
             <ol className="guide-steps">
               <li><strong>Restart Claude Code.</strong> Plugins load at the start of a session, so the current session will not pick up the installation.</li>
               <li><strong>Enable Sharpen:</strong> send <code>/sharpen on</code>.</li>
@@ -179,7 +179,7 @@ export default function Docs() {
             <span className="doc-index">10 / UPDATES AND TROUBLESHOOTING</span>
             <h2>Update, restart, and check common issues</h2>
             <p>Update the marketplace and plugin, then restart Claude Code so the new version loads in a fresh session. Run these as separate prompts:</p>
-            <Terminal commands={'/plugin marketplace update sharpen\n/plugin update sharpen@sharpen'} label="claude — zsh" ariaLabel="Terminal with Sharpen update commands" />
+            <Terminal commands={'/plugin marketplace update sharpen\n/plugin update sharpen@sharpen'} ariaLabel="Terminal with Sharpen update commands" />
             <div className="trouble-grid">
               <article><h3>No review card appears</h3><p>The session may still have an older plugin version loaded. Restart Claude Code, check that Sharpen is on with <code>/sharpen</code>, and try again.</p></article>
               <article><h3>The status badge is missing</h3><p>If a status line already existed, Sharpen did not replace it. Add <code>node "~/.config/sharpen/sharpen-statusline.js"</code> to the existing status-line command if you want the badge alongside it.</p></article>
