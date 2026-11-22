@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
 
-const SITE = 'https://sharpen-web-psi.vercel.app'
+const SITE = 'https://sharpen-site.vercel.app'
 const { render } = await import(pathToFileURL('dist-ssr/entry-server.js').href)
 const template = readFileSync('dist/index.html', 'utf8')
 

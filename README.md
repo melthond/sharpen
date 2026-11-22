@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://sharpen-web-psi.vercel.app"><strong>Website</strong></a>
+  <a href="https://sharpen-site.vercel.app"><strong>Website</strong></a>
 </p>
 
 <p align="center">

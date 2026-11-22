@@ -9,8 +9,8 @@
 
 ## Pages
 
-- [Home](https://sharpen-web-psi.vercel.app/): what Sharpen does and examples of the review card
-- [Docs](https://sharpen-web-psi.vercel.app/docs/): install, what it reads, the review card, companion skills, commands, privacy, troubleshooting
+- [Home](https://sharpen-site.vercel.app/): what Sharpen does and examples of the review card
+- [Docs](https://sharpen-site.vercel.app/docs/): install, what it reads, the review card, companion skills, commands, privacy, troubleshooting
 
 ## Source
 

@@ -5,10 +5,10 @@
   "description": "You type “fix the login thing.” It knows which one.",
   "license": "MIT",
   "scripts": {
-    "test": "node --test \"tests/**/*.test.js\""
+    "test": "node --test tests/"
   },
   "engines": {
     "node": ">=18"
   },
-  "homepage": "https://sharpen-web-psi.vercel.app"
+  "homepage": "https://sharpen-site.vercel.app"
 }
