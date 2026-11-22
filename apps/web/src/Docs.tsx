@@ -62,7 +62,7 @@ export default function Docs() {
               <li><strong>Enable Sharpen:</strong> send <code>/sharpen on</code>.</li>
               <li><strong>Try a real request.</strong> Sharpen is off by default and remembers its on/off setting across sessions.</li>
             </ol>
-            <aside className="guide-callout"><strong>Use the official source.</strong> Install only from <a href={REPO}>ardfaiyaz/sharpen</a>. Sharpen is plain JavaScript and Markdown; it does not ship binaries.</aside>
+            <aside className="guide-callout"><strong>Use the official source.</strong> Install only from <a href={REPO}>melthond/sharpen</a>. Sharpen is plain JavaScript and Markdown; it does not ship binaries.</aside>
           </section>
           <section className="docs-reveal" id="workflow">
             <span className="doc-index">02 / THE FLOW</span>
@@ -189,7 +189,7 @@ export default function Docs() {
           <section className="docs-reveal" id="faq">
             <span className="doc-index">11 / FAQ AND LIMITS</span><h2>Common questions</h2>
             <Faq />
-            <div className="doc-help"><p>For the full method, real review-card screenshots, evaluation notes, and source details:</p><a href="https://github.com/ardfaiyaz/sharpen/blob/main/README.md">Read the complete plugin README ↗</a><a href="https://github.com/ardfaiyaz/sharpen/issues">Ask a question or report an issue ↗</a></div>
+            <div className="doc-help"><p>For the full method, real review-card screenshots, evaluation notes, and source details:</p><a href="https://github.com/melthond/sharpen/blob/main/README.md">Read the complete plugin README ↗</a><a href="https://github.com/melthond/sharpen/issues">Ask a question or report an issue ↗</a></div>
           </section>
         </div>
       </article>

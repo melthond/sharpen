@@ -37,7 +37,7 @@ function useStars() {
   const [stars, setStars] = useState<string | null>(null)
   useEffect(() => {
     const controller = new AbortController()
-    fetch('https://api.github.com/repos/ardfaiyaz/sharpen', { signal: controller.signal })
+    fetch('https://api.github.com/repos/melthond/sharpen', { signal: controller.signal })
       .then((response) => response.ok ? response.json() : null)
       .then((repo) => {
         if (typeof repo?.stargazers_count === 'number') setStars(new Intl.NumberFormat('en', { notation: 'compact' }).format(repo.stargazers_count).toLowerCase())

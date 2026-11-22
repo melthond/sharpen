@@ -3,7 +3,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testi
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import App from './App.tsx'
 
-const INSTALL = '/plugin marketplace add ardfaiyaz/sharpen\n/plugin install sharpen@sharpen'
+const INSTALL = '/plugin marketplace add melthond/sharpen\n/plugin install sharpen@sharpen'
 
 // No test may reach the real GitHub API.
 beforeEach(() => { vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('offline'))) })
@@ -20,7 +20,7 @@ test('renders the hero with only the headline, lead and install pill, and a head
 
   const header = within(screen.getByRole('navigation', { name: 'Site' }))
   expect(header.getByRole('link', { name: 'Docs' }).getAttribute('href')).toBe('/docs/')
-  expect(header.getByRole('link', { name: 'Sharpen on GitHub' }).getAttribute('href')).toBe('https://github.com/ardfaiyaz/sharpen')
+  expect(header.getByRole('link', { name: 'Sharpen on GitHub' }).getAttribute('href')).toBe('https://github.com/melthond/sharpen')
   expect(container.querySelector('#install')).toBeNull()
   for (const id of ['how', 'features', 'skills', 'faq']) expect(container.querySelector(`section#${id}`), id).not.toBeNull()
 })

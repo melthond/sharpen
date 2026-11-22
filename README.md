@@ -13,9 +13,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/stars/ardfaiyaz/sharpen?style=flat-square&color=111111&label=stars" alt="Stars">
-  <img src="https://img.shields.io/github/v/release/ardfaiyaz/sharpen?style=flat-square&color=111111&label=release" alt="Release">
-  <a href="https://github.com/ardfaiyaz/sharpen/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/ardfaiyaz/sharpen/test.yml?branch=main&style=flat-square&label=tests" alt="Tests"></a>
+  <img src="https://img.shields.io/github/stars/melthond/sharpen?style=flat-square&color=111111&label=stars" alt="Stars">
+  <img src="https://img.shields.io/github/v/release/melthond/sharpen?style=flat-square&color=111111&label=release" alt="Release">
+  <a href="https://github.com/melthond/sharpen/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/melthond/sharpen/test.yml?branch=main&style=flat-square&label=tests" alt="Tests"></a>
   <img src="https://img.shields.io/badge/works%20with-Claude%20Code-111111?style=flat-square" alt="Works with Claude Code">
   <img src="https://img.shields.io/badge/dependencies-0-111111?style=flat-square" alt="Zero dependencies">
   <img src="https://img.shields.io/badge/telemetry-none-111111?style=flat-square" alt="No telemetry">
@@ -54,7 +54,7 @@ Sharpen puts her inside your AI agent.
 In Claude Code, as two separate prompts:
 
 ```
-/plugin marketplace add ardfaiyaz/sharpen
+/plugin marketplace add melthond/sharpen
 ```
 ```
 /plugin install sharpen@sharpen
@@ -68,7 +68,7 @@ Restart Claude Code, then:
 
 That was it. Send it a vague prompt and watch.
 
-Sharpen is **off by default**, and stays on or off across sessions until you change it. Only install it from `ardfaiyaz/sharpen` on GitHub. It's plain JavaScript and Markdown and never ships binaries. A copy that does isn't the real one.
+Sharpen is **off by default**, and stays on or off across sessions until you change it. Only install it from `melthond/sharpen` on GitHub. It's plain JavaScript and Markdown and never ships binaries. A copy that does isn't the real one.
 
 ## Before / after
 
@@ -132,7 +132,7 @@ Real screenshots of Sharpen in each agent it supports, taken in a small demo app
 Install:
 
 ```
-/plugin marketplace add ardfaiyaz/sharpen
+/plugin marketplace add melthond/sharpen
 /plugin install sharpen@sharpen
 ```
 
@@ -349,7 +349,7 @@ Sharpen's method and reference files are built from published work: the [DAIR.AI
 Bug fixes are welcome. A change to the method needs an eval that compares no Sharpen, `main` and your branch, because a harmless-looking rewording can make Sharpen worse. Everything is in **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
 ```bash
-git clone https://github.com/ardfaiyaz/sharpen
+git clone https://github.com/melthond/sharpen
 cd sharpen
 npm test                 # zero dependencies
 claude --plugin-dir .    # try your checkout without installing it
@@ -383,6 +383,6 @@ The diagrams use the hand-drawn xkcd Script font, which has its own license: see
 
 ## Star History
 
-<a href="https://www.star-history.com/ardfaiyaz/sharpen#history">
-  <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=ardfaiyaz/sharpen&type=Date" />
+<a href="https://www.star-history.com/melthond/sharpen#history">
+  <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=melthond/sharpen&type=Date" />
 </a>

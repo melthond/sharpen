@@ -3,11 +3,11 @@
   "version": "2.2.2",
   "description": "You type “fix the login thing.” It knows which one.",
   "author": {
-    "name": "ardfaiyaz",
-    "url": "https://github.com/ardfaiyaz"
+    "name": "melthond",
+    "url": "https://github.com/melthond"
   },
   "homepage": "https://sharpen-site.vercel.app",
-  "repository": "https://github.com/ardfaiyaz/sharpen",
+  "repository": "https://github.com/melthond/sharpen",
   "license": "MIT",
   "keywords": [
     "prompt-engineering",

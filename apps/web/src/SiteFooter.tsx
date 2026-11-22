@@ -13,7 +13,7 @@ export default function SiteFooter() {
         <a href={REPO}>GitHub</a>
         <a href={`${REPO}/issues`}>Report an issue</a>
       </nav>
-      <p className="footer-legal">MIT licensed · by ardfaiyaz</p>
+      <p className="footer-legal">MIT licensed · by melthond</p>
     </div>
     <div className="footer-mark" aria-hidden="true"><img src="/logo.svg" alt="" /></div>
   </footer>
