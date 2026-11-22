@@ -68,6 +68,8 @@ Restart Claude Code, then:
 
 That was it. Send it a vague prompt and watch.
 
+If Sharpen saves you a re-prompt, a [star](https://github.com/melthond/sharpen) helps others find it.
+
 Sharpen is **off by default**, and stays on or off across sessions until you change it. Only install it from `melthond/sharpen` on GitHub. It's plain JavaScript and Markdown and never ships binaries. A copy that does isn't the real one.
 
 ## Before / after
