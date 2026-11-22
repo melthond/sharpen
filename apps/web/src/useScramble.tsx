@@ -1,52 +1,67 @@
 import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react'
 
-const GLYPHS = '.:+*#'
-const BAND = 3 // scramble glyphs riding at the cursor
+const GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789?!*-='
+const STEP_MS = 45 // random characters refresh on this beat, not every frame, so the churn reads smooth
+const glyph = () => GLYPHS[(Math.random() * GLYPHS.length) | 0]
 
-/** One frame: `text` keeps its full length so lines hold their place; only the first `cut` characters are visible. */
-export type ScrambleFrame = { text: string; cut: number }
+/** One line of a frame: the first `cut` characters show; the rest of `text` stays invisible and holds the line's space. */
+export type ScrambleLine = { text: string; cut: number }
 
-function frame(text: string, typed: number): ScrambleFrame {
-  const cut = Math.min(text.length, typed + BAND)
-  const band = [...text.slice(typed, cut)].map((c) => /\s/.test(c) ? c : GLYPHS[(Math.random() * GLYPHS.length) | 0]).join('')
-  return { text: text.slice(0, typed) + band + text.slice(cut), cut }
+const clamp = (n: number) => Math.min(1, Math.max(0, n))
+const ease = (n: number) => n * n * (3 - 2 * n)
+// Fixed per position, so the same characters stay corrupted as the share grows.
+const threshold = (i: number) => { const x = Math.sin(i * 12.9898 + 4.1414) * 43758.5453; return x - Math.floor(x) }
+
+/**
+ * Morphs one line at progress p (0..1): the old characters corrupt into random ones, the new text resolves left to right,
+ * and the visible length slides from the old length to the new one (a longer old line pulls back from the right).
+ */
+export function morphLine(from: string, to: string, p: number): ScrambleLine {
+  if (p >= 1) return { text: to, cut: to.length }
+  const corrupt = ease(clamp(p / 0.45))
+  const resolved = Math.floor(to.length * ease(clamp((p - 0.25) / 0.75)))
+  const length = Math.max(resolved, Math.round(from.length + (to.length - from.length) * ease(clamp((p - 0.15) / 0.7))))
+  let text = ''
+  for (let i = 0; i < length; i++) {
+    if (i < resolved) { text += to[i]; continue }
+    const source = i < from.length ? from[i] : to[i] ?? ' '
+    text += /\s/.test(source) ? source : i < from.length && threshold(i) >= corrupt ? source : glyph()
+  }
+  return { text: text + to.slice(length), cut: length }
 }
 
-/** Where the animation is `t` ms in: erase `from` right to left (half of `ms`), then type `to` left to right (`ms`). */
-export function scrambleAt(from: string, to: string, ms: number, t: number): ScrambleFrame | null {
-  const erase = from ? ms / 2 : 0
-  if (t < erase) return frame(from, Math.round(from.length * (1 - t / erase)))
-  const progress = (t - erase) / ms
-  return progress < 1 ? frame(to, Math.floor(progress * to.length)) : null
+/** Every line morphs on its own, all at once. Lines that only exist in the old text retract to nothing. */
+export function scrambleAt(from: string, to: string, p: number): ScrambleLine[] {
+  const a = from.split('\n'), b = to.split('\n')
+  return Array.from({ length: Math.max(a.length, b.length) }, (_, i) => morphLine(a[i] ?? '', b[i] ?? '', p))
 }
 
-/** ASCII scramble that types in on load and backspaces the old text before typing a new one. Visual only; keep the real text in an sr-only node. */
-export function useScramble(text: string, ms: number): ScrambleFrame {
-  const [state, setState] = useState<ScrambleFrame>({ text, cut: text.length })
+const settled = (text: string) => text.split('\n').map((line) => ({ text: line, cut: line.length }))
+
+/** Character-morph scramble: resolves in on load and morphs old text into new on change. Visual only; keep the real text in an sr-only node. */
+export function useScramble(text: string, ms: number): ScrambleLine[] {
+  const [lines, setLines] = useState(() => settled(text))
   const onScreen = useRef('')
   useEffect(() => {
     const from = onScreen.current
     onScreen.current = text
     const still = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? true
     const started = performance.now()
-    let raf = 0
+    let raf = 0, step = -1
     const tick = (now: number) => {
-      const next = still ? null : scrambleAt(from, text, ms, now - started)
-      setState(next ?? { text, cut: text.length })
-      if (next) raf = requestAnimationFrame(tick)
+      const t = now - started
+      if (still || t >= ms) { setLines(settled(text)); return }
+      const s = Math.floor(t / STEP_MS)
+      if (s !== step) { step = s; setLines(scrambleAt(from, text, t / ms)) }
+      raf = requestAnimationFrame(tick)
     }
     tick(started)
     return () => cancelAnimationFrame(raf)
   }, [text, ms])
-  return state
+  return lines
 }
 
-/** Splits a frame into lines: the typed part shows, the rest stays invisible but keeps its space. */
-export function scrambleLines({ text, cut }: ScrambleFrame): ReactNode[] {
-  let start = 0
-  return text.split('\n').map((line, i) => {
-    const shown = Math.max(0, Math.min(line.length, cut - start))
-    start += line.length + 1
-    return <Fragment key={i}>{line.slice(0, shown)}{shown < line.length && <span className="scramble-ghost">{line.slice(shown)}</span>}</Fragment>
-  })
+/** Renders frame lines: the visible part shows, the rest stays invisible but keeps its space. */
+export function scrambleLines(lines: ScrambleLine[]): ReactNode[] {
+  return lines.map(({ text, cut }, i) => <Fragment key={i}>{text.slice(0, cut)}{cut < text.length && <span className="scramble-ghost">{text.slice(cut)}</span>}</Fragment>)
 }

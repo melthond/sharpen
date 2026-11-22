@@ -2,7 +2,7 @@ import CopyButton from './CopyButton.tsx'
 import { scrambleLines, useScramble } from './useScramble.tsx'
 
 export default function Terminal({ commands, label = 'claude — zsh', ariaLabel = 'Terminal commands' }: { commands: string; label?: string; ariaLabel?: string }) {
-  const displayText = useScramble(commands, 680)
+  const displayText = useScramble(commands, 900)
 
   return <div className="term" role="group" aria-label={ariaLabel}>
     <div className="term-bar" aria-label="Terminal window controls">

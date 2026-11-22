@@ -204,7 +204,7 @@ function GateCard({ card, hidden }: { card: (typeof GATE)[number]['card']; hidde
 
 // Title and lines scramble as one text: on a tab change the old card backspaces out, then the new one types in.
 function GateScramble({ card }: { card: (typeof GATE)[number]['card'] }) {
-  const [title, ...lines] = scrambleLines(useScramble([card.title, ...card.lines].join('\n'), 520))
+  const [title, ...lines] = scrambleLines(useScramble([card.title, ...card.lines].join('\n'), 1100))
   return <div aria-hidden="true">
     <strong>{title}</strong>
     <ul className={card.options ? 'is-options' : undefined}>{lines.map((line, i) => <li key={i}>{line}</li>)}</ul>
@@ -212,11 +212,11 @@ function GateScramble({ card }: { card: (typeof GATE)[number]['card'] }) {
 }
 
 function ScrambleText({ children }: { children: string }) {
-  return <span aria-hidden="true">{scrambleLines(useScramble(children, 760))}</span>
+  return <span aria-hidden="true">{scrambleLines(useScramble(children, 1000))}</span>
 }
 
 function InstallPill() {
-  const text = useScramble(INSTALL, 680)
+  const text = useScramble(INSTALL, 900)
   return <div className="install-pill" role="group" aria-label="Install commands">
     <code aria-hidden="true">{scrambleLines(text).map((line, i) => <span key={i}><b>$</b> {line}</span>)}</code>
     <span className="sr-only">{INSTALL}</span>
