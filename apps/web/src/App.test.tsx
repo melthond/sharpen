@@ -169,61 +169,53 @@ test('landing page: docs link under the hero, numbered sections in order, no dia
   expect(container.querySelector('img[src^="/diagrams/"]')).toBeNull()
 })
 
-test('how it works: picking a request switches the gate result, and arrow keys move between tabs', () => {
+test('how it works: picking a request lights its path and switches the card, and arrow keys move between tabs', () => {
   const { container } = render(<App />)
-  const tabs = within(container.querySelector<HTMLElement>('#how')!).getAllByRole('tab')
-  expect(tabs).toHaveLength(4)
-  expect(screen.getByRole('tabpanel').textContent).toContain('Which did you mean?')
-  expect(screen.getByRole('tabpanel').textContent).toContain('Illustration')
-  expect(container.querySelector('.gate-note, .gate-footnote')).toBeNull()
-  expect(container.querySelector('#how')!.textContent).not.toContain('One action and a real location')
-  fireEvent.click(tabs[1])
+  const how = container.querySelector<HTMLElement>('#how')!
+  const tabs = within(how).getAllByRole('tab')
+  const lit = () => how.querySelector('.gate-path.is-lit h3')!.textContent
+  expect(tabs.map((t) => t.textContent)).toEqual(['fix the login thing', 'fix the clipboard so it clears after 30 seconds', 'rename getUser to fetchUser in src/api.ts', 'set the plan price'])
+  expect(how.querySelectorAll('.gate-path')).toHaveLength(3)
+  expect(how.querySelectorAll('.gate-path.is-lit')).toHaveLength(1)
+  expect(tabs[1].getAttribute('aria-selected')).toBe('true')
+  expect(lit()).toBe('Fill it in')
   expect(screen.getByRole('tabpanel').textContent).toContain('Real run')
-  expect(screen.getByRole('tabpanel').textContent).not.toContain('Illustration')
+  fireEvent.click(tabs[0])
+  expect(lit()).toBe('Ask')
+  expect(screen.getByRole('tabpanel').textContent).toContain('Which did you mean?')
+  expect(screen.getByRole('tabpanel').textContent).toContain('Example')
+  fireEvent.click(tabs[2])
+  expect(lit()).toBe('Keep it')
   fireEvent.click(tabs[3])
-  expect(tabs[3].getAttribute('aria-selected')).toBe('true')
+  expect(lit()).toBe('Ask')
   expect(screen.getByRole('tabpanel').textContent).toContain('[ASK: plan price]')
   fireEvent.keyDown(tabs[3], { key: 'ArrowRight' })
   expect(tabs[0].getAttribute('aria-selected')).toBe('true')
   expect(document.activeElement).toBe(tabs[0])
 })
 
-test('how it works: four equal request tabs, and the steps light up 01 to 04 once the list is in view', () => {
-  vi.useFakeTimers()
-  const observers: { cb: (e: { isIntersecting: boolean }[]) => void; targets: Element[] }[] = []
-  class TestIntersectionObserver {
-    targets: Element[] = []
-    constructor(public cb: (e: { isIntersecting: boolean }[]) => void) { observers.push(this) }
-    observe(el: Element) { this.targets.push(el) }
-    unobserve() {}
-    disconnect() {}
-  }
-  vi.stubGlobal('IntersectionObserver', TestIntersectionObserver)
+test('what it adds: the card flips between the line you type and the brief from the real run', () => {
   const { container } = render(<App />)
-  expect([...container.querySelectorAll('#how .console-tabs button')].map((b) => b.textContent)).toEqual(['Ambiguous', 'Fill-in', 'Clear', 'Your value'])
-  const steps = container.querySelector('#how .how-steps')!
-  const lit = () => steps.querySelectorAll('li.is-lit').length
-  expect(lit()).toBe(0)
-  act(() => observers.find((o) => o.targets.includes(steps))!.cb([{ isIntersecting: true }]))
-  const seen: number[] = []
-  for (let i = 0; i < 4; i++) { act(() => { vi.advanceTimersByTime(650) }); seen.push(lit()) }
-  expect(seen).toEqual([1, 2, 3, 4])
-  expect(steps.querySelector('li:last-child')!.classList.contains('is-lit')).toBe(true)
-  vi.useRealTimers()
-})
-
-test('what it adds: the split shows the request beside the full brief from the real run', () => {
-  const { container } = render(<App />)
-  expect(container.querySelector('#features .split-before')!.textContent).toContain('fix the clipboard so it clears after 30 seconds')
-  const rows = [...container.querySelectorAll('#features .split-after li')]
+  const features = container.querySelector<HTMLElement>('#features')!
+  const [typed, sends] = within(features).getAllByRole('button')
+  const before = features.querySelector('.flip-before')!, after = features.querySelector('.flip-after')!
+  expect(sends.getAttribute('aria-pressed')).toBe('true')
+  expect(before.classList.contains('is-hidden')).toBe(true)
+  const rows = [...after.querySelectorAll('li')]
   expect(rows.map((r) => r.querySelector('b')!.textContent)).toEqual(['Goal', 'Where', 'Also update', 'Keep', 'Hooks', 'Check'])
   expect(rows[1].querySelector('.sr-only')!.textContent).toContain('apps/admin/src/lib/clipboard.ts:2')
-  expect(container.querySelectorAll('#features .feature-list > li')).toHaveLength(9)
+  fireEvent.click(typed)
+  expect(typed.getAttribute('aria-pressed')).toBe('true')
+  expect(before.classList.contains('is-hidden')).toBe(false)
+  expect(after.classList.contains('is-hidden')).toBe(true)
+  expect(before.textContent).toContain('fix the clipboard so it clears after 30 seconds')
 })
 
-test('features reflect the current plugin: 88 anti-patterns, phases, safety checks, research sources', () => {
+test('features: nine pills, five on the top row and four below', () => {
   const { container } = render(<App />)
-  const text = container.querySelector('#features .feature-list')!.textContent!
+  const rows = [...container.querySelectorAll('#features .feature-pills > ul')]
+  expect(rows.map((r) => r.children.length)).toEqual([5, 4])
+  const text = container.querySelector('#features .feature-pills')!.textContent!
   for (const s of ['88 anti-patterns', 'Knows the phase', 'Safety checks', 'Grounded in research']) expect(text).toContain(s)
   expect(text).not.toContain('52 anti-patterns')
   expect(container.querySelector('#skills h2')!.textContent).toContain('Ten skills')
