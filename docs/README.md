@@ -1,5 +1,9 @@
 # Design docs
 
+<p align="center">
+  <img src="../assets/sharpen-terminal.gif" alt="In Claude Code you type 'fix the login thing'. Sharpen catches it, reads your conversation, code, skills and hooks, asks which login problem you meant, then shows the engineered prompt on a review card." width="100%">
+</p>
+
 These are dated records of how Sharpen was designed. They show what was decided at the time, not how Sharpen works now. Records are kept as written; when one is replaced, it's marked here instead. For how Sharpen works today, see the [README](../README.md), the [docs page](https://sharpen-site.vercel.app/docs/) and the method itself, [`skills/sharpen/SKILL.md`](../skills/sharpen/SKILL.md).
 
 | Date | Record | Status |

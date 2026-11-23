@@ -1,5 +1,9 @@
 # Sharpen website
 
+<p align="center">
+  <img src="../../assets/sharpen-banner.png" alt="Sharpen: a kid with spiky white hair and a red blindfold, beside the word Sharpen. You type “fix the login thing.” It knows which one." width="100%">
+</p>
+
 The source of [sharpen-site.vercel.app](https://sharpen-site.vercel.app): the landing page at `/` and the docs page at `/docs/`. It's built with React 19, Vite, Tailwind CSS 4 and TypeScript. This app has its own dependencies. The plugin itself still has none.
 
 ## Run it

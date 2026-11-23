@@ -1,11 +1,5 @@
 <p align="center">
-  <img src="assets/logo.svg" width="220" alt="Sharpen: a kid with spiky white hair, a red blindfold whose tails stream back, and a knowing half-smile">
-</p>
-
-<h1 align="center">Sharpen</h1>
-
-<p align="center">
-  <em>You type “fix the login thing.” It knows which one.</em>
+  <img src="assets/sharpen-banner.png" alt="Sharpen: a kid with spiky white hair and a red blindfold, beside the word Sharpen. You type “fix the login thing.” It knows which one." width="100%">
 </p>
 
 <p align="center">
@@ -29,7 +23,11 @@
 </p>
 
 <p align="center">
-  <img src="assets/hero.svg" width="880" alt="You type 'fix the login thing'. Sharpen reads your conversation, code, tools and hooks, and shows the engineered prompt on a review card with Send it and Run my original. It is also copied to your clipboard.">
+  <img src="assets/sharpen-terminal.gif" alt="In Claude Code you type 'fix the login thing'. Sharpen catches it before anything runs, reads your conversation, code, skills and hooks, asks which login problem you meant, then shows the engineered prompt on a review card with Send it and Run my original." width="100%">
+</p>
+
+<p align="center">
+  <img src="assets/sharpen-result.gif" alt="After Send it, Claude fixes src/auth/pin.js and src/auth/session.js and runs npm test. Sharpen handled 12 of 12 test prompts right. Install with /plugin marketplace add melthond/sharpen, then /plugin install sharpen@sharpen." width="100%">
 </p>
 
 ---
