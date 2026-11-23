@@ -152,13 +152,36 @@ function FitPill({ label, className }: { label: string; className: string }) {
   </span>
 }
 
-/** One card, two faces: the line you type, or the brief Sharpen sends. Both share one grid cell so the card never jumps. */
+/** One card, two faces: the line you type, or the brief Sharpen sends. Both share one grid cell so the card never jumps.
+ * It opens on the line you type. After the mouse rests on the section for 3s (in view for 3s on touch screens) it flips once
+ * to the brief, which scrambles in. A click takes over and stops the auto-flip. */
 function Flip() {
-  const [after, setAfter] = useState(true)
-  return <div className="flip">
-    <div className="flip-switch" role="group" aria-label="Show">
-      <button type="button" aria-pressed={!after} onClick={() => setAfter(false)}>You type</button>
-      <button type="button" aria-pressed={after} onClick={() => setAfter(true)}>Sharpen sends</button>
+  const [after, setAfter] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const auto = useRef(true)
+  useEffect(() => {
+    const section = ref.current?.closest('section')
+    if (!section) return
+    let timer = 0
+    const arm = () => { if (auto.current && !timer) timer = window.setTimeout(() => { if (auto.current) { auto.current = false; setAfter(true) } }, 3000) }
+    const disarm = () => { window.clearTimeout(timer); timer = 0 }
+    const hover = window.matchMedia?.('(hover: hover)').matches ?? true
+    if (!hover && 'IntersectionObserver' in window) {
+      const io = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) arm(); else disarm() }, { threshold: 0.4 })
+      io.observe(section)
+      return () => { io.disconnect(); disarm() }
+    }
+    section.addEventListener('mouseenter', arm)
+    section.addEventListener('mouseleave', disarm)
+    return () => { section.removeEventListener('mouseenter', arm); section.removeEventListener('mouseleave', disarm); disarm() }
+  }, [])
+  const pick = (value: boolean) => { auto.current = false; setAfter(value) }
+
+  return <div className="flip" ref={ref}>
+    <div className={after ? 'flip-switch is-after' : 'flip-switch'} role="group" aria-label="Show">
+      <span className="flip-thumb" aria-hidden="true" />
+      <button type="button" aria-pressed={!after} onClick={() => pick(false)}>You type</button>
+      <button type="button" aria-pressed={after} onClick={() => pick(true)}>Sharpen sends</button>
     </div>
     <div className="flip-card">
       <div className={after ? 'flip-before is-hidden' : 'flip-before'}>

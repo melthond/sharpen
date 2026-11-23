@@ -194,21 +194,51 @@ test('how it works: picking a request lights its path and switches the card, and
   expect(document.activeElement).toBe(tabs[0])
 })
 
-test('what it adds: the card flips between the line you type and the brief from the real run', () => {
+test('what it adds: opens on the line you type, and the buttons flip the card', () => {
   const { container } = render(<App />)
   const features = container.querySelector<HTMLElement>('#features')!
   const [typed, sends] = within(features).getAllByRole('button')
   const before = features.querySelector('.flip-before')!, after = features.querySelector('.flip-after')!
+  expect(typed.getAttribute('aria-pressed')).toBe('true')
+  expect(after.classList.contains('is-hidden')).toBe(true)
+  expect(before.textContent).toContain('fix the clipboard so it clears after 30 seconds')
+  fireEvent.click(sends)
   expect(sends.getAttribute('aria-pressed')).toBe('true')
+  expect(after.classList.contains('is-hidden')).toBe(false)
   expect(before.classList.contains('is-hidden')).toBe(true)
   const rows = [...after.querySelectorAll('li')]
   expect(rows.map((r) => r.querySelector('b')!.textContent)).toEqual(['Goal', 'Where', 'Also update', 'Keep', 'Hooks', 'Check'])
   expect(rows[1].querySelector('.sr-only')!.textContent).toContain('apps/admin/src/lib/clipboard.ts:2')
-  fireEvent.click(typed)
+})
+
+test('what it adds: flips to the brief after the mouse rests on the section for 3s, and never again after a click', () => {
+  vi.useFakeTimers()
+  const { container } = render(<App />)
+  const features = container.querySelector<HTMLElement>('#features')!
+  const [typed, sends] = within(features).getAllByRole('button')
+  const hover = (type: 'mouseenter' | 'mouseleave') => act(() => { features.dispatchEvent(new MouseEvent(type)) })
+  const wait = (ms: number) => act(() => { vi.advanceTimersByTime(ms) })
+
+  hover('mouseenter'); wait(2000); hover('mouseleave'); wait(3000)
   expect(typed.getAttribute('aria-pressed')).toBe('true')
-  expect(before.classList.contains('is-hidden')).toBe(false)
-  expect(after.classList.contains('is-hidden')).toBe(true)
-  expect(before.textContent).toContain('fix the clipboard so it clears after 30 seconds')
+  hover('mouseenter'); wait(3000)
+  expect(sends.getAttribute('aria-pressed')).toBe('true')
+  fireEvent.click(typed)
+  hover('mouseleave'); hover('mouseenter'); wait(5000)
+  expect(typed.getAttribute('aria-pressed')).toBe('true')
+  vi.useRealTimers()
+})
+
+test('what it adds: a click before the 3s are up cancels the auto-flip', () => {
+  vi.useFakeTimers()
+  const { container } = render(<App />)
+  const features = container.querySelector<HTMLElement>('#features')!
+  const [typed] = within(features).getAllByRole('button')
+  act(() => { features.dispatchEvent(new MouseEvent('mouseenter')) })
+  fireEvent.click(typed)
+  act(() => { vi.advanceTimersByTime(4000) })
+  expect(typed.getAttribute('aria-pressed')).toBe('true')
+  vi.useRealTimers()
 })
 
 test('features: nine pills, five on the top row and four below', () => {
