@@ -80,12 +80,14 @@ If you had no status line, `/sharpen on` added one. If you already had one, Shar
 | Path | What it is |
 |---|---|
 | `~/.config/sharpen/state.json` | On or off |
+| `~/.config/sharpen/last-sharpened.txt` | The last engineered prompt, so a pasted copy isn't sharpened again |
+| `~/.config/sharpen/stats.json` | Two counts: cards shown and follow-ups that pushed back. No prompt text |
 | `~/.config/sharpen/sharpen-statusline.js` | The badge script, kept outside the plugin folder so updates don't break it |
 | `~/.claude/settings.json` | Only edited to add the badge when you had no status line |
 
 Nothing leaves your machine: no network calls, no telemetry, and your prompts are never logged.
 
-More: https://github.com/melthond/sharpen
+More: https://sharpen-site.vercel.app/docs/ · https://github.com/melthond/sharpen
 
 ---
 

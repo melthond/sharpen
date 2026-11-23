@@ -1,10 +1,15 @@
 # Sharpen eval set
 
-Run each prompt with `tests/eval/run.sh` from inside a real project (round 1 used the sargo repo). Each run starts with no conversation history, so the fill-in tier is checked by hand in a live session. In headless mode `AskUserQuestion` isn't available, so options show up as the numbered-list fallback. About $0.40 per prompt.
+The prompts that every method change gets checked against (see [CONTRIBUTING](../../CONTRIBUTING.md#method-changes-need-an-eval)). Run each one with `tests/eval/run.sh` inside a real project. Round 1 used the sargo repo.
+
+- Each run starts with no conversation history, so the fill-in tier has to be checked by hand in a live session.
+- Headless mode has no `AskUserQuestion`, so the options show up as a numbered list.
+- A run costs about $0.40 per prompt.
 
 **Pass rules:**
-- **Clear:** starts with `Sharpened prompt (clear):`, keeps the request intact (context added only), and does it.
-- **Ambiguous:** 2–4 options, each a different action, naming real files, plus `Run as typed`, with no extra "Something else". A `Use:` line appears only when a listed skill, agent or MCP tool fits.
+- **Clear:** starts with `Sharpened prompt (clear):`, keeps the request intact (context added only), and waits for the review card.
+- **Ambiguous:** `Which did you mean?` with 2–3 options, each a different action naming real files, plus `Run as typed`, and no "Something else". A `Tools:` line appears only when a listed skill, agent or MCP tool fits.
+- **Fill-in:** starts with `Sharpened prompt (fill-in):`. Values only the user knows are `[ASK: …]` blanks, never guesses.
 - **`raw:`:** no Sharpen step.
 - **`sharpen:`:** options *before* any work.
 
@@ -27,7 +32,7 @@ Run each prompt with `tests/eval/run.sh` from inside a real project (round 1 use
 
 **Not yet checked live:** the fill-in tier (`Sharpened prompt (fill-in):`) on a prompt that only the conversation resolves needs a real session with history, and `AskUserQuestion` buttons and previews need an interactive session.
 
-**Since 0.6.0:** the verdict lines are `Sharpened prompt (clear):` and `Sharpened prompt (fill-in):`, each followed by the engineered prompt. The round 1 results above used the earlier one-line verdicts.
+**Older rounds:** round 1 used the one-line verdicts, the `Use:` line and 2–4 options that came before the review card (v1.6.0), so its results are kept in that wording.
 
 ## Round 2 (v1.7.0): the prompt-engineering pass
 

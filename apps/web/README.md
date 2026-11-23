@@ -1,16 +1,40 @@
-# React + Vite
+# Sharpen website
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+The source of [sharpen-site.vercel.app](https://sharpen-site.vercel.app): the landing page at `/` and the docs page at `/docs/`. It's built with React 19, Vite, Tailwind CSS 4 and TypeScript. This app has its own dependencies. The plugin itself still has none.
 
-Currently, two official plugins are available:
+## Run it
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+cd apps/web
+npm ci
+npm run dev        # local dev server
+```
 
-## React Compiler
+| Script | Does |
+|---|---|
+| `npm run dev` | Dev server with hot reload |
+| `npm test` | Vitest unit tests |
+| `npm run lint` | Oxlint |
+| `npm run typecheck` | `tsc` |
+| `npm run build` | Type-check, client build, SSR build, then `scripts/prerender.mjs` writes real HTML for `/` and `/docs/` |
+| `npm run preview` | Serve the built site |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+CI (`.github/workflows/web.yml`) runs lint, test and build on every change to `apps/web/`. Vercel deploys from `main`.
 
-## Expanding the Oxlint configuration
+## Where things live
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+| Path | What |
+|---|---|
+| `src/main.tsx` | Picks the landing page (`App.tsx`) or the docs page (`Docs.tsx`) by pathname, and hydrates the prerendered HTML |
+| `src/App.tsx` | Landing page: hero, How it works, What it adds, skills, FAQ |
+| `src/Docs.tsx` | Docs page: eleven numbered sections with a side index and a table of contents |
+| `src/skills.ts` | Skill copy for both pages (`SKILLS` for the landing tiles, `SKILL_DOCS` for the docs cards) |
+| `src/Faq.tsx` | The FAQ, shared by both pages |
+| `src/site.ts` | The repo URL and install commands |
+| `src/Terminal.tsx` | Every command block |
+| `public/` | `llms.txt`, `sitemap.xml`, `robots.txt`, the Open Graph image, icons and diagrams |
+| `vercel.json` | Redirects `/docs` to `/docs/` |
+
+**Keep the copy in sync with the plugin.** If a skill, command, badge or file changes in the plugin, update the [README](../../README.md), `src/skills.ts`, `src/Docs.tsx` and `public/llms.txt` together.
+
+For design, motion and the responsive checklist, see [`docs/landing-site.md`](docs/landing-site.md).

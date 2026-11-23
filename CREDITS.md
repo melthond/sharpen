@@ -1,8 +1,9 @@
 # Credits
 
-Sharpen stands on other people's work. This file lists every guide, repository, paper, survey and article whose ideas or findings shaped its method and reference files, and what each one contributed. Ideas are rewritten in Sharpen's own words. Text is copied verbatim only from openly licensed sources (the MIT-licensed OpenAI Cookbook), with credit next to it. Each figure in the reference files links back to its source, and model-specific details in [`model-notes.md`](skills/sharpen/references/model-notes.md) carry the date they were checked.
+Every guide, repository, paper, survey and article that shaped Sharpen's method and reference files, and what each one contributed. Thank you to everyone below for publishing your work openly.
 
-Thank you to everyone below for publishing your work openly.
+- Ideas are rewritten in Sharpen's own words. Text is copied word for word only from openly licensed sources (the MIT-licensed OpenAI Cookbook), credited where it appears.
+- Each figure in the reference files links to its source, and the model details in [`model-notes.md`](skills/sharpen/references/model-notes.md) show the date they were checked.
 
 ## Open-source repositories
 

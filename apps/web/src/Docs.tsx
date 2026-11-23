@@ -60,14 +60,14 @@ export default function Docs() {
             <ol className="guide-steps">
               <li><strong>Restart Claude Code.</strong> Plugins load when a session starts.</li>
               <li><strong>Enable Sharpen:</strong> send <code>/sharpen on</code>.</li>
-              <li><strong>Try a real request.</strong> Sharpen starts off and remembers its setting across sessions.</li>
+              <li><strong>Try a real request.</strong> Sharpen is off by default, and the setting carries over between sessions.</li>
             </ol>
             <aside className="guide-callout"><strong>Use the official source.</strong> Install only from <a href={REPO}>melthond/sharpen</a>. It is plain JavaScript and Markdown, with no binaries.</aside>
           </section>
           <section className="docs-reveal" id="workflow">
             <span className="doc-index">02 / THE FLOW</span>
             <h2>From rough request to reviewed prompt</h2>
-            <p>Sharpen runs before Claude starts: it gates the request, gathers context, engineers the prompt, checks it, and asks you.</p>
+            <p>Sharpen runs before Claude starts. It gates the request, gathers context, engineers and checks the prompt, then asks you.</p>
             <ol className="workflow-list">
               <li><strong>Gate the request.</strong><span>Clear requests keep their wording. One obvious reading gets the gaps filled. If readings lead to different work, it asks which you mean.</span></li>
               <li><strong>Gather context.</strong><span>The conversation first, then a few code searches, then your tools and hook summary.</span></li>
@@ -154,7 +154,7 @@ export default function Docs() {
           </section>
           <section className="docs-reveal" id="status">
             <span className="doc-index">08 / STATUS</span><h2>Read the status badge</h2>
-            <p>With no status line, turning Sharpen on adds its badge. If you have one, Sharpen leaves it and offers to chain its badge after yours.</p>
+            <p>The badge shows in the terminal while Sharpen is on. With no status line, turning Sharpen on adds it. If you have one, Sharpen leaves it alone and offers to chain its badge after yours.</p>
             <div className="command-table badge-table">
               <div><code>[SHARPEN - CLEAR - READY]</code><span>A clear request’s card is waiting.</span></div>
               <div><code>[SHARPEN - FILL-IN - READY]</code><span>One likely reading was filled in; review it.</span></div>
@@ -162,6 +162,7 @@ export default function Docs() {
               <div><code>[SHARPEN - … - SENT]</code><span>You picked a card option; work has started.</span></div>
               <div><code>[SHARPEN - SENT]</code><span>You pasted and sent a sharpened prompt.</span></div>
               <div><code>[SHARPEN - RAW]</code><span>You bypassed it with the <code>raw:</code> prefix.</span></div>
+              <div><code>[SHARPEN]</code><span>Nothing to show yet, or the prompt was a slash command.</span></div>
             </div>
           </section>
           <section className="docs-reveal" id="privacy">
@@ -172,8 +173,14 @@ export default function Docs() {
               <li><strong>Hook settings, summarized safely.</strong> Only event and script names are kept, never arguments that might hold tokens. Settings are read, not rewritten.</li>
               <li><strong>The clipboard is used.</strong> The prompt is copied there when the card appears.</li>
             </ul>
-            <p>Local files: <code>~/.config/sharpen/state.json</code>, <code>~/.config/sharpen/last-sharpened.txt</code>, <code>~/.config/sharpen/stats.json</code> (two counts, no prompt text), and <code>~/.config/sharpen/sharpen-statusline.js</code>. Sharpen edits <code>~/.claude/settings.json</code> only to add its badge when you have no status line.</p>
-            <p>Zero dependencies: plain JavaScript and Markdown.</p>
+            <div className="command-table">
+              <div><code>~/.config/sharpen/state.json</code><span>On or off.</span></div>
+              <div><code>~/.config/sharpen/last-sharpened.txt</code><span>The last prompt, so a pasted copy isn’t sharpened twice.</span></div>
+              <div><code>~/.config/sharpen/stats.json</code><span>Two counts: cards shown and follow-ups that pushed back. No prompt text.</span></div>
+              <div><code>~/.config/sharpen/sharpen-statusline.js</code><span>The badge script, outside the plugin folder so updates don’t break it.</span></div>
+              <div><code>~/.claude/settings.json</code><span>Edited only to add the badge when you have no status line.</span></div>
+            </div>
+            <p className="guide-note">Zero dependencies: plain JavaScript and Markdown. Report security issues privately, as described in <a href={REPO + '/blob/main/SECURITY.md'}>SECURITY.md</a>.</p>
           </section>
           <section className="docs-reveal" id="updates">
             <span className="doc-index">10 / UPDATES AND TROUBLESHOOTING</span>
@@ -181,15 +188,15 @@ export default function Docs() {
             <p>Update both, then restart Claude Code. Run each as its own prompt:</p>
             <Terminal commands={'/plugin marketplace update sharpen\n/plugin update sharpen@sharpen'} ariaLabel="Terminal with Sharpen update commands" />
             <div className="trouble-grid">
-              <article><h3>No review card appears</h3><p>An older version may still be loaded. Restart Claude Code, check <code>/sharpen</code>, and try again.</p></article>
-              <article><h3>The status badge is missing</h3><p>Sharpen never replaces an existing status line. Add <code>node "~/.config/sharpen/sharpen-statusline.js"</code> to your status-line command to show both.</p></article>
+              <article><h3>No review card appears</h3><p>An older version is still loaded. Update, restart Claude Code, and check with <code>/sharpen:sharpen-help</code>.</p></article>
+              <article><h3>The status badge is missing</h3><p>Sharpen never replaces an existing status line. Add <code>node "~/.config/sharpen/sharpen-statusline.js"</code> after your status-line command to show both. The badge is terminal only.</p></article>
               <article><h3>Copying fails on Linux</h3><p>Install <code>wl-copy</code>, <code>xclip</code> or <code>xsel</code>. macOS uses <code>pbcopy</code>; Windows uses <code>clip</code>.</p></article>
             </div>
           </section>
           <section className="docs-reveal" id="faq">
             <span className="doc-index">11 / FAQ AND LIMITS</span><h2>Common questions</h2>
             <Faq />
-            <div className="doc-help"><p>For the full method, card screenshots, evaluations and sources:</p><a href="https://github.com/melthond/sharpen/blob/main/README.md">Read the complete plugin README ↗</a><a href="https://github.com/melthond/sharpen/issues">Ask a question or report an issue ↗</a></div>
+            <div className="doc-help"><p>For the full method, screenshots, evaluations and sources:</p><a href={REPO + '/blob/main/README.md'}>Read the plugin README ↗</a><a href={REPO + '/blob/main/CHANGELOG.md'}>See what changed in each release ↗</a><a href={REPO + '/issues'}>Ask a question or report an issue ↗</a></div>
           </section>
         </div>
       </article>
