@@ -10,7 +10,11 @@
   "homepage": "https://sharpen-web-psi.vercel.app",
   "repository": "https://github.com/melthond/sharpen",
   "license": "MIT",
-  "keywords": ["prompt-engineering", "clarification", "productivity"],
+  "keywords": [
+    "prompt-engineering",
+    "clarification",
+    "productivity"
+  ],
   "mcpServers": "./mcp.json",
   "skills": "./skills/"
 }
