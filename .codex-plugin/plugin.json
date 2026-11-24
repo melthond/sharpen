@@ -1,0 +1,31 @@
+{
+  "name": "sharpen",
+  "version": "2.3.0",
+  "description": "You type ‘fix the login thing.’ It knows which one.",
+  "author": {
+    "name": "melthond",
+    "url": "https://github.com/melthond"
+  },
+  "homepage": "https://sharpen-web-psi.vercel.app",
+  "repository": "https://github.com/melthond/sharpen",
+  "license": "MIT",
+  "keywords": ["prompt-engineering", "clarification", "productivity"],
+  "skills": "./skills/",
+  "hooks": "./hooks/codex-hooks.json",
+  "interface": {
+    "displayName": "Sharpen",
+    "shortDescription": "Sharpen vague prompts safely.",
+    "longDescription": "Sharpen engineers prompts from the conversation, repository and available Codex tools, then presents a native review choice before work begins.",
+    "developerName": "melthond",
+    "category": "Productivity",
+    "capabilities": ["Instructions", "Lifecycle hooks"],
+    "websiteURL": "https://sharpen-web-psi.vercel.app",
+    "defaultPrompt": [
+      "Use Sharpen to make my next prompt precise and grounded in this repository.",
+      "Sharpen: help me plan this feature before changing files."
+    ],
+    "brandColor": "#D93B32",
+    "composerIcon": "./assets/logo.svg",
+    "logo": "./assets/logo.svg"
+  }
+}

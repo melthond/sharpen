@@ -87,7 +87,7 @@ If you had no status line, `/sharpen on` added one. If you already had one, Shar
 
 Nothing leaves your machine: no network calls, no telemetry, and your prompts are never logged.
 
-More: https://github.com/ardfaiyaz/sharpen
+More: https://github.com/melthond/sharpen
 
 ---
 
