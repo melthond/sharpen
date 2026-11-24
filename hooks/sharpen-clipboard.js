@@ -7,7 +7,7 @@ const path = require('path');
 const { spawnSync } = require('child_process');
 const { readState, stateDir } = require('./sharpen-state');
 const { readStdinJson } = require('./sharpen-io');
-const { bump } = require('./sharpen-stats');
+const { markCard } = require('./sharpen-stats');
 
 const SHARPEN_QUESTION = /^(send this sharpened prompt\?|which did you mean\?)/i;
 
@@ -36,7 +36,7 @@ if (require.main === module || require.main === undefined) {
       if (!text) return;
       fs.mkdirSync(stateDir(), { recursive: true });
       fs.writeFileSync(path.join(stateDir(), 'last-sharpened.txt'), text);
-      try { bump('cards'); } catch {} // the counter is optional; never get in the way of the card
+      try { markCard(); } catch {} // the counter is optional; never get in the way of the card
       copy(text);
     })
     .catch(() => {}) // the clipboard is a convenience; never get in the way of the question

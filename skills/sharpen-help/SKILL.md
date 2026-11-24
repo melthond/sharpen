@@ -42,7 +42,7 @@ Every prompt is built from your conversation (`Decided:`), your code (real paths
 | `raw: <prompt>` | Skip Sharpen for this one prompt. |
 | `sharpen: <prompt>` | Always get options for this prompt, even if it's clear or Sharpen is off. |
 
-`/sharpen:sharpen on` and `/sharpen:sharpen off` work too. Other slash commands are never touched.
+`/sharpen:sharpen on` and `/sharpen:sharpen off` work too. Other slash commands are never touched, and a bare `continue`, `yes` or `ok` just carries on.
 
 **Companion skills** (these work whether Sharpen is on or off)
 
@@ -82,6 +82,7 @@ If you had no status line, `/sharpen on` added one. If you already had one, Shar
 | `~/.config/sharpen/state.json` | On or off |
 | `~/.config/sharpen/last-sharpened.txt` | The last engineered prompt, so a pasted copy isn't sharpened again |
 | `~/.config/sharpen/stats.json` | Two counts: cards shown and follow-ups that pushed back. No prompt text |
+| `~/.config/sharpen/card-pending` | Empty marker so only the prompt right after a card is checked for pushback |
 | `~/.config/sharpen/sharpen-statusline.js` | The badge script, kept outside the plugin folder so updates don't break it |
 | `~/.claude/settings.json` | Only edited to add the badge when you had no status line |
 

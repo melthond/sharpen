@@ -177,6 +177,7 @@ export default function Docs() {
               <div><code>~/.config/sharpen/state.json</code><span>On or off.</span></div>
               <div><code>~/.config/sharpen/last-sharpened.txt</code><span>The last prompt, so a pasted copy isn’t sharpened twice.</span></div>
               <div><code>~/.config/sharpen/stats.json</code><span>Two counts: cards shown and follow-ups that pushed back. No prompt text.</span></div>
+              <div><code>~/.config/sharpen/card-pending</code><span>Empty marker, so only the prompt right after a card is checked for pushback.</span></div>
               <div><code>~/.config/sharpen/sharpen-statusline.js</code><span>The badge script, outside the plugin folder so updates don’t break it.</span></div>
               <div><code>~/.claude/settings.json</code><span>Edited only to add the badge when you have no status line.</span></div>
             </div>

@@ -10,7 +10,11 @@ const ON_NOTE = 'SHARPEN ON. Confirm in one short line. From now on, follow this
 const OFF_NOTE = 'SHARPEN OFF. Confirm in one short line. Stop running the Sharpen step; act on prompts as typed.';
 const STATUS_ON = 'SHARPEN is on. Report that in one short line.';
 const STATUS_OFF = 'SHARPEN is off. Report that in one short line.';
+const REPLY_NOTE = 'SHARPEN: this is a short reply to the conversation (like "continue" or "yes"), not a new request. Do not run the Sharpen step; carry on with the current task.';
 const USAGE = 'SHARPEN: unknown option. Tell the user in one line: /sharpen on, /sharpen off, or /sharpen for status.';
+
+// A bare go-ahead or acknowledgement continues the current task; sharpening it only adds a card.
+const REPLY = /^(continue|go( on| ahead)?|keep going|carry on|proceed|yes|yep|yeah|y|ok(ay)?|sure|do it|go for it|next|thanks?( you)?|ty|lgtm|sounds good)[\s.!]*$/i;
 
 const none = () => ({ context: null, newState: null });
 
@@ -41,8 +45,9 @@ function decide(prompt, state, method, last = null, stats = null) {
   if (/^sharpen:/i.test(p)) return { context: `${FORCE_NOTE}\n\n${method}`, newState: null };
   if (p.startsWith('/') || !state.on) return none();
   if (/^raw:/i.test(p)) return { context: RAW_NOTE, newState: null };
+  if (REPLY.test(p)) return { context: REPLY_NOTE, newState: null };
   if (isPasted(p, last)) return { context: PASTED_NOTE, newState: null };
   return { context: NUDGE, newState: null };
 }
 
-module.exports = { decide, loadMethod, NUDGE, PASTED_NOTE, RAW_NOTE, FORCE_NOTE, ON_NOTE, OFF_NOTE, STATUS_ON, STATUS_OFF, USAGE };
+module.exports = { decide, loadMethod, NUDGE, PASTED_NOTE, RAW_NOTE, REPLY_NOTE, FORCE_NOTE, ON_NOTE, OFF_NOTE, STATUS_ON, STATUS_OFF, USAGE };

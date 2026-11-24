@@ -103,3 +103,13 @@ test('a pasted sharpened prompt runs without being sharpened again', () => {
   assert.deepStrictEqual(c.decide('Fix it.', ON, M, 'Fix it.'), { context: c.NUDGE, newState: null }, 'too short to be sure');
   assert.deepStrictEqual(c.decide(last, OFF, M, last), none, 'off');
 });
+
+test('a short go-ahead carries on instead of being sharpened', () => {
+  for (const p of ['continue', 'Continue.', 'yes', 'ok', 'okay!', 'go ahead', 'keep going', 'do it', 'lgtm', 'thanks']) {
+    assert.deepStrictEqual(c.decide(p, ON, M), { context: c.REPLY_NOTE, newState: null }, p);
+  }
+  for (const p of ['continue with the login fix', 'yes but rename it too', 'ok now add tests', 'next page layout is broken']) {
+    assert.strictEqual(c.decide(p, ON, M).context, c.NUDGE, p);
+  }
+  assert.deepStrictEqual(c.decide('continue', OFF, M), none, 'off');
+});

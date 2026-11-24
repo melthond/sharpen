@@ -7,6 +7,7 @@ const { stateDir } = require('./sharpen-state');
 
 const KEYS = ['cards', 'corrections'];
 const statsFile = () => path.join(stateDir(), 'stats.json');
+const pendingFile = () => path.join(stateDir(), 'card-pending');
 const count = (v) => (Number.isInteger(v) && v > 0 ? v : 0);
 
 function readStats() {
@@ -26,6 +27,17 @@ function bump(key) {
   fs.writeFileSync(statsFile(), JSON.stringify(s) + '\n');
 }
 
+// A card was just shown: count it and arm the next prompt to be checked for pushback.
+function markCard() {
+  bump('cards');
+  fs.writeFileSync(pendingFile(), '');
+}
+
+// True once, for the first prompt after a card; later prompts are not "right after" it.
+function takePending() {
+  try { fs.unlinkSync(pendingFile()); return true; } catch { return false; }
+}
+
 // shortcut: keyword match in English, French, Spanish, Portuguese and German only; other languages and
 // sarcasm are missed. Upgrade if the correction rate ever drives a decision.
 // Starters like "no" or "still" only count when they read as pushback, so "no need to…" or "still, add…" don't.
@@ -43,4 +55,4 @@ function statsLine(s) {
   return `Sharpened prompts: ${s.cards}. Follow-up corrections: ${s.corrections} (${Math.round((100 * s.corrections) / s.cards)}%).`;
 }
 
-module.exports = { readStats, bump, isCorrection, statsLine };
+module.exports = { readStats, bump, markCard, takePending, isCorrection, statsLine };

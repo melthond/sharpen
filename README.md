@@ -218,7 +218,7 @@ Ten companion skills. They work whether Sharpen is on or off.
 | `raw: <prompt>` | Skip Sharpen for one prompt. |
 | `sharpen: <prompt>` | Force a review card for one prompt, even when the prompt is clear or Sharpen is off. |
 
-`/sharpen:sharpen on` works too. Other slash commands are never touched.
+`/sharpen:sharpen on` works too. Other slash commands are never touched, and a bare go-ahead (`continue`, `yes`, `ok`) carries on with the current task without a card.
 
 ## Status badge
 
@@ -250,6 +250,7 @@ Files Sharpen writes:
 | `~/.config/sharpen/state.json` | On or off |
 | `~/.config/sharpen/last-sharpened.txt` | The last engineered prompt, so a pasted copy isn't sharpened twice |
 | `~/.config/sharpen/stats.json` | Two counts: cards shown, and follow-ups that pushed back ("still failing"). No prompt text |
+| `~/.config/sharpen/card-pending` | Empty marker: a card was just shown, so the next prompt is checked for pushback |
 | `~/.config/sharpen/sharpen-statusline.js` | The badge script, kept outside the plugin folder so updates don't break it |
 | `~/.claude/settings.json` | Edited only to add the badge when you have no status line |
 

@@ -4,6 +4,14 @@ Notable changes in each release, newest first. The format follows [Keep a Change
 
 ## [Unreleased]
 
+## [2.3.0] - 2026-11-24
+
+### Added
+- A bare go-ahead (`continue`, `yes`, `ok`, `go ahead`, `lgtm`…) carries on with the current task instead of getting its own review card.
+
+### Fixed
+- The follow-up correction count only checks the first prompt after a card. Before, any pushback counted once a single card had ever been shown, which inflated the rate.
+
 ### Changed
 - Website: redesigned "How it works" and "What it adds", put the ten skills in one grid, and tightened the copy.
 - Docs: rewrote the README, CONTRIBUTING and website docs, and added this changelog, SECURITY.md and a docs index.
@@ -106,7 +114,8 @@ Notable changes in each release, newest first. The format follows [Keep a Change
 ### Added
 - First release: the `/sharpen` toggle, the three-way gate, and engineered options for vague prompts.
 
-[Unreleased]: https://github.com/melthond/sharpen/compare/v2.2.3...HEAD
+[Unreleased]: https://github.com/melthond/sharpen/compare/v2.3.0...HEAD
+[2.3.0]: https://github.com/melthond/sharpen/compare/v2.2.3...v2.3.0
 [2.2.3]: https://github.com/melthond/sharpen/compare/v2.2.2...v2.2.3
 [2.2.2]: https://github.com/melthond/sharpen/compare/v2.2.1...v2.2.2
 [2.2.1]: https://github.com/melthond/sharpen/compare/v2.2.0...v2.2.1

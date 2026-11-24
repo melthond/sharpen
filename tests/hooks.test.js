@@ -38,6 +38,16 @@ test('card and correction counters: card counted by the clipboard hook, pushback
   assert.ok(status.includes('Sharpened prompts: 1. Follow-up corrections: 1 (100%).'), status);
 });
 
+test('only the first prompt after a card can count as a correction', () => {
+  const dir = home();
+  setOn(dir);
+  const card = JSON.stringify({ tool_name: 'AskUserQuestion', tool_input: { questions: [{ question: 'Send this sharpened prompt?', options: [{ label: 'Send it', preview: 'Fix the footer year in src/Footer.tsx' }] }] } });
+  spawnSync(process.execPath, [hook('sharpen-clipboard.js')], { input: card, env: { ...env(dir), SHARPEN_CLIPBOARD_FILE: path.join(dir, 'clip.txt') }, encoding: 'utf8' });
+  run('sharpen-prompt.js', '{"prompt":"now add a test"}', dir);
+  run('sharpen-prompt.js', '{"prompt":"no, wrong"}', dir); // two prompts after the card: not about the card
+  assert.deepStrictEqual(JSON.parse(fs.readFileSync(path.join(dir, 'stats.json'), 'utf8')), { cards: 1, corrections: 0 });
+});
+
 test('no correction is counted while Sharpen is off or before any card', () => {
   const dir = home();
   run('sharpen-prompt.js', '{"prompt":"no, wrong"}', dir); // off

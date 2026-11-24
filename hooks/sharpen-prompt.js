@@ -8,7 +8,7 @@ const { setupNote } = require('./sharpen-env');
 const fs = require('fs');
 const path = require('path');
 const { stateDir } = require('./sharpen-state');
-const { readStats, bump, isCorrection } = require('./sharpen-stats');
+const { readStats, bump, takePending, isCorrection } = require('./sharpen-stats');
 
 const lastSharpened = () => { try { return fs.readFileSync(path.join(stateDir(), 'last-sharpened.txt'), 'utf8'); } catch { return null; } };
 
@@ -24,8 +24,8 @@ readStdinJson()
     if (input && typeof input === 'object') {
       const state = readState();
       const last = lastSharpened();
-      // A pushback right after Sharpen has shown a card counts as a correction (counts only, local).
-      if (state.on && last && isCorrection(input.prompt)) { try { bump('corrections'); } catch {} }
+      // A pushback on the first prompt after a card counts as a correction (counts only, local).
+      try { if (takePending() && state.on && isCorrection(input.prompt)) bump('corrections'); } catch {}
       let { context, newState } = decide(input.prompt ?? '', state, loadMethod(METHOD_FILE), last, readStats());
       if (newState) writeState(newState);
       if (newState && newState.on) {
