@@ -16,14 +16,14 @@
   <img src="https://img.shields.io/github/stars/ardfaiyaz/sharpen?style=flat-square&color=111111&label=stars" alt="Stars">
   <img src="https://img.shields.io/github/v/release/ardfaiyaz/sharpen?style=flat-square&color=111111&label=release" alt="Release">
   <a href="https://github.com/ardfaiyaz/sharpen/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/ardfaiyaz/sharpen/test.yml?branch=main&style=flat-square&label=tests" alt="Tests"></a>
-  <img src="https://img.shields.io/badge/works%20with-Claude%20Code-111111?style=flat-square" alt="Works with Claude Code">
+  <img src="https://img.shields.io/badge/works%20with-Claude%20Code%20%2B%20Codex-111111?style=flat-square" alt="Works with Claude Code and Codex">
   <img src="https://img.shields.io/badge/dependencies-0-111111?style=flat-square" alt="Zero dependencies">
   <img src="https://img.shields.io/badge/telemetry-none-111111?style=flat-square" alt="No telemetry">
   <img src="https://img.shields.io/badge/license-MIT-111111?style=flat-square" alt="MIT license">
 </p>
 
 <p align="center">
-  A Claude Code plugin that rewrites your plain prompt into the prompt you meant, using your conversation, your code, and your installed skills, agents, MCP servers and hooks. It shows you that prompt before anything runs.
+  A Claude Code and Codex plugin that rewrites your plain prompt into the prompt you meant, using your conversation, your code, and your available skills, agents, MCP servers and hooks. It asks before anything runs.
 </p>
 
 <p align="center">
@@ -39,7 +39,7 @@ Sharpen puts her inside your AI agent.
 ## Highlights
 
 - **Every prompt gets engineered:** where to look, what's already decided, how to tell it's done.
-- **Built from your real setup.** It uses your conversation, your code, and the skills, agents, MCP servers and hooks you have installed. Hooks are read for Claude, which can't see them otherwise.
+- **Built from your real setup.** It uses your conversation, your code, and the skills, agents, MCP servers and hooks you have installed. Setup hooks summarize names only for Claude and Codex, which cannot see all hook configuration otherwise.
 - **Nothing runs until you send it.** A review card offers **Send it**, **Run my original**, or your changes, and the prompt is also copied to your clipboard.
 - **It asks only when it must.** "Which did you mean?" appears only when two readings would lead to different work.
 - **Ten companion skills:** sharpen a prompt for another AI, hand off to a fresh session, split a big task, plan a project in phases, coach your prompting, and more.
@@ -49,7 +49,20 @@ Sharpen puts her inside your AI agent.
 
 ## Install
 
-**Requires** Claude Code with plugin support, and Node.js 18 or later, which runs the hooks.
+**Requires** Claude Code or Codex desktop with plugin support, and Node.js 18 or later, which runs the hooks.
+
+### Codex desktop
+
+This branch includes a repo marketplace at `.agents/plugins/marketplace.json` for installing Sharpen from this checkout:
+
+1. Check out the `codex-plugin` branch and open the repository in Codex desktop.
+2. Restart Codex. Open **Plugins Directory**, choose **Sharpen (branch preview)**, and select **Install**.
+3. Review and trust Sharpen’s bundled hooks when prompted. Hooks require Node.js 18 or later.
+4. Send `sharpen on` to enable Sharpen. Send `sharpen off` to disable it, or `sharpen` to check its status.
+
+After changing the checkout, refresh or reinstall Sharpen from the repo marketplace, then restart Codex to load the updated plugin.
+
+Codex displays reviews through its native MCP form. Sharpen removes redundant blank lines to keep choices near view; longer reviews use the host’s scroll area. The form schema has no layout setting, so the plugin cannot request Claude-style side-by-side columns; Codex controls the card’s size and scrolling. If the host lacks MCP form elicitation, Sharpen falls back to numbered choices in the conversation. The prompt method and skills are shared with Claude Code; prompt statistics, clipboard copying and the status-line badge are Claude-only. Lifecycle-hook plugins are supported as manually installed Codex desktop plugins, but cannot be submitted to the public plugin directory in this form.
 
 In Claude Code, as two separate prompts:
 
@@ -138,7 +151,7 @@ Install:
 
 </details>
 
-Coming next: Codex, Gemini CLI and GitHub Copilot CLI. Each gets a dropdown here once Sharpen runs in it.
+Codex support is available as a local preview on the `codex-plugin` branch. Gemini CLI and GitHub Copilot CLI are still planned.
 
 ## How it works
 
@@ -199,7 +212,7 @@ Why a card and not your prompt swapped in place? Claude Code doesn't allow that.
 
 ## Skills
 
-Ten companion skills. They work whether Sharpen is on or off.
+Ten companion skills. They work whether Sharpen is on or off. In Codex, invoke one by its skill name, such as `$sharpen-plan`. In Claude Code, use the slash-command forms below.
 
 | Skill | What it does |
 |---|---|
@@ -208,7 +221,7 @@ Ten companion skills. They work whether Sharpen is on or off.
 | `/sharpen:sharpen-audit` | Finds what an agent can't see from your code (test commands, unwritten rules, which folder owns what), with paste-ready lines for `CLAUDE.md`. |
 | `/sharpen:sharpen-handoff` | Turns the whole conversation into **one starting prompt for a fresh session**, including what failed and why. |
 | `/sharpen:sharpen-split <request>` | Splits a big request into **small, ordered prompts**, grouped into waves you can run in parallel. |
-| `/sharpen:sharpen-save [name]` | Turns a prompt you keep typing into a **project slash command**. Shows you the file first; never overwrites. |
+| `/sharpen:sharpen-save [name]` | Turns a prompt you keep typing into a **reusable project skill**. Shows you the file first; never overwrites. |
 | `/sharpen:sharpen-interview <feature>` | Asks about a fuzzy feature **one question at a time**, then writes `SPEC.md`. |
 | `/sharpen:sharpen-plan <project or feature>` | Builds the **phase chain** (kickoff, spec, plan, tasks, build prompt), sized to the work, and writes the files **only after you approve**. |
 | `/sharpen:sharpen-decompile <prompt>` | Takes a prompt you already have and **breaks it down, adapts it for another tool, simplifies it, or splits it**, with each weakness named. |
@@ -362,9 +375,12 @@ Sharpen is one prompt: [`skills/sharpen/SKILL.md`](skills/sharpen/SKILL.md). Eve
 
 | File | Job |
 |---|---|
-| `hooks/sharpen-prompt.js` | `UserPromptSubmit`: handles `/sharpen on\|off`, recognizes pasted prompts, and reminds Claude of the step on every prompt |
+| `hooks/sharpen-prompt.js` | Claude `UserPromptSubmit`: handles `/sharpen on\|off`, recognizes pasted prompts, and reminds Claude of the step on every prompt |
 | `hooks/sharpen-session.js` | `SessionStart`: loads the method and your setup summary |
 | `hooks/sharpen-env.js` | The setup summary: your hooks (names only) and enabled plugins |
+| `hooks/codex-prompt.js`, `hooks/codex-session.js` | Codex hooks: preserve the same gate and review-first flow |
+| `hooks/sharpen-codex-env.js` | Codex setup summary: skills, MCP server names and configured hooks |
+| `hooks/sharpen-review-mcp.js`, `mcp.json` | Local MCP review tool: asks Codex to display the native choice form and returns the selected prompt |
 | `hooks/sharpen-clipboard.js` | `PreToolUse` on the review card: copies the engineered prompt to your clipboard |
 | `hooks/sharpen-core.js` | The decision table: pure functions, fully tested |
 | `hooks/sharpen-statusline.js` | The red badge, with the verdict read from the transcript |
