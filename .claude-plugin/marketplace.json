@@ -1,7 +1,7 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "sharpen",
-  "description": "You type “fix the login thing.” It knows which one.",
+  "description": "Turn vague prompts into specific, engineered ones. Reads your conversation, your codebase and your installed skills, agents and MCP tools, then offers 2-3 sharpened versions to pick from.",
   "owner": {
     "name": "melthond",
     "url": "https://github.com/melthond"
@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "sharpen",
-      "description": "You type “fix the login thing.” It knows which one.",
+      "description": "Turn vague prompts into specific, engineered ones. Reads your conversation, your codebase and your installed skills, agents and MCP tools, then offers 2-3 sharpened versions to pick from.",
       "source": "./",
       "category": "productivity"
     }

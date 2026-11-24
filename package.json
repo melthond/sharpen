@@ -2,7 +2,7 @@
   "name": "sharpen",
   "version": "2.3.0",
   "private": true,
-  "description": "You type “fix the login thing.” It knows which one.",
+  "description": "Turn vague prompts into specific, engineered ones. Reads your conversation, your codebase and your installed skills, agents and MCP tools, then offers 2-3 sharpened versions to pick from.",
   "license": "MIT",
   "scripts": {
     "test": "node --test"
