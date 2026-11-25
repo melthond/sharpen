@@ -4,6 +4,11 @@ Notable changes in each release, newest first. The format follows [Keep a Change
 
 ## [Unreleased]
 
+## [2.3.1] - 2026-11-25
+
+### Added
+- A step-by-step Codex guide covering installation from the Plugins Directory, included skills, and use across local projects.
+
 ## [2.3.0] - 2026-11-24
 
 ### Added
@@ -114,7 +119,8 @@ Notable changes in each release, newest first. The format follows [Keep a Change
 ### Added
 - First release: the `/sharpen` toggle, the three-way gate, and engineered options for vague prompts.
 
-[Unreleased]: https://github.com/melthond/sharpen/compare/v2.3.0...HEAD
+[Unreleased]: https://github.com/melthond/sharpen/compare/v2.3.1...HEAD
+[2.3.1]: https://github.com/melthond/sharpen/compare/v2.3.0...v2.3.1
 [2.3.0]: https://github.com/melthond/sharpen/compare/v2.2.3...v2.3.0
 [2.2.3]: https://github.com/melthond/sharpen/compare/v2.2.2...v2.2.3
 [2.2.2]: https://github.com/melthond/sharpen/compare/v2.2.1...v2.2.2

@@ -1,6 +1,6 @@
 {
   "name": "sharpen",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "private": true,
   "description": "Turn vague prompts into specific, engineered ones. Reads your conversation, your codebase and your installed skills, agents and MCP tools, then offers 2-3 sharpened versions to pick from.",
   "license": "MIT",
