@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "sharpen",
+  "version": "2.3.0",
+  "description": "You type ‘fix the login thing.’ It knows which one.",
+  "author": {
+    "name": "melthond",
+    "url": "https://github.com/melthond"
+  },
+  "homepage": "https://sharpen-web-psi.vercel.app",
+  "repository": "https://github.com/melthond/sharpen",
+  "license": "MIT",
+  "keywords": [
+    "prompt-engineering",
+    "clarification",
+    "productivity"
+  ],
+  "mcpServers": "./mcp.json",
+  "skills": "./skills/"
+}

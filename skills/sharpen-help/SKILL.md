@@ -1,9 +1,9 @@
 ---
 name: sharpen-help
 description: >
-  Quick reference for Sharpen: what it does, the three outcomes, every command
-  and prefix, the companion skills, the status badge, and where its files live.
-  One-shot display. Use for /sharpen:sharpen-help, "sharpen help", "how do I
+  Quick reference for Sharpen: what it does, the three outcomes, commands and
+  prefixes, companion skills, status details, and where its files live.
+  One-shot display. Use for /sharpen:sharpen-help, $sharpen-help, "sharpen help", "how do I
   use sharpen", "what can sharpen do", "sharpen commands".
 ---
 
@@ -29,6 +29,8 @@ If the user asked about one thing ("how do I turn it off?"), answer that in one 
 - **Type your changes:** you get an updated card.
 
 The engineered prompt is also **on your clipboard**. Press Esc, paste it with Ctrl+V (⌘V on a Mac), edit it and send it. A pasted prompt isn't sharpened again.
+
+In Codex, the local review tool presents the prompt and choices through Codex's native input UI when the host supports MCP form elicitation. If it is unavailable, Sharpen falls back to numbered choices in the conversation. Choose **Send it** or an interpretation to continue, **Run my original** to continue unchanged, or select **Edit the prompt** and enter a correction. Codex companion skills are invoked as `$sharpen-prompt`, `$sharpen-plan`, and so on. Clipboard copying, prompt statistics, and the status badge are Claude-only.
 
 Every prompt is built from your conversation (`Decided:`), your code (real paths only), the skills, agents and MCP tools you have installed (`Tools:`), and the hooks that will run during the work (`Hooks:`).
 

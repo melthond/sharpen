@@ -1,39 +1,37 @@
 ---
 name: sharpen-save
 description: >
-  Save a prompt you keep typing as a reusable project skill (a slash command):
+  Save a prompt you keep typing as a reusable project skill or slash command:
   sharpen it, generalize the parts that change into arguments, show the exact
   file, and write it only after you approve. Can also find repeated prompts in
   this conversation and suggest which to save. Use for /sharpen:sharpen-save,
-  "save this prompt", "make this a command", "I keep typing this",
-  "turn this into a slash command".
+  $sharpen-save, "save this prompt", or "I keep typing this".
 ---
 
-Turn a prompt the user repeats into a project skill they can call with one slash command. Their teammates get it too, once it's committed.
+Turn a prompt the user repeats into a reusable skill their team can invoke. In Claude Code, that is also a slash command. In Codex, invoke it as `$<name>`.
 This is the only Sharpen skill that writes a file, so it **shows the file and asks first**. It never writes without a yes.
 
 ## 1. Find the prompt to save
 
-- **Given:** the text after `/sharpen:sharpen-save`. If it's only a name (`/sharpen:sharpen-save fix-tests`), use the user's previous prompt as the content and that word as the name.
+- **Given:** the text after `/sharpen:sharpen-save` or `$sharpen-save`. If it's only a name, use the user's previous prompt as the content and that word as the name.
 - **Not given:** look through this conversation for prompts the user typed more than once with the same intent ("run the tests and fix what fails", "check the build before you finish"). Offer the top 1–3 with `AskUserQuestion`. If none repeat, ask in one line which prompt to save, and stop.
 - Never save a one-off. A prompt is worth saving when it's a *routine*: the same job, done again on different targets.
 
 ## 2. Sharpen and generalize it
 
 1. Sharpen it with the method in `../sharpen/SKILL.md` (intent slots, `Tools:` and `Hooks:` lines, finish line). Run its gate silently. A saved skill always gets the full engineered version.
-2. **Find the parts that change** between uses (the file, the feature, the test name) and turn each into an argument:
-   - one free-form argument: `$ARGUMENTS`;
-   - several positional arguments: `$1`, `$2`, …, with each one explained in `argument-hint`.
+2. **Find the parts that change** between uses (the file, the feature, the test name) and explain what the user supplies when invoking the saved skill. For Claude Code slash commands, use `$ARGUMENTS` or positional arguments such as `$1`, `$2`, …, with each one explained in `argument-hint`. For Codex skills, treat the text the user provides with `$<name>` as the arguments; do not write Claude-only substitution tokens into the skill body.
 3. **Keep the parts that never change** literal: the real test command, the folder conventions, "don't touch migrations".
 4. Say what to do when an argument is missing, so the skill never guesses: "If no file is given, use the files changed since the last commit."
 5. Saved prompts are fragile: small edits or a model change can shift what they do. In the closing message, suggest trying the skill on one or two real targets after it's written, and again after a model change.
 
 ## 3. Pick the name and place
 
-- **Name:** short, lowercase, hyphenated, verb first: `fix-tests`, `check-build`, `review-auth`. It must not clash with an existing skill, command or built-in, so check `.claude/skills/`, `.claude/commands/`, and the skills listed in your context. On a clash, suggest another name.
+- **Name:** short, lowercase, hyphenated, verb first: `fix-tests`, `check-build`, `review-auth`. It must not clash with an existing skill, command or built-in, so check `.agents/skills/`, `.claude/skills/`, `.claude/commands/`, and the skills listed in your context. On a clash, suggest another name.
 - **Place:**
-  - project, shared with the team: `.claude/skills/<name>/SKILL.md` (default; commit it);
-  - personal, every project: `~/.claude/skills/<name>/SKILL.md`, but only if the user says it's just for them.
+  - Codex project: `.agents/skills/<name>/SKILL.md` (default; commit it);
+  - Claude Code project: `.claude/skills/<name>/SKILL.md`;
+  - personal, every project: use `~/.agents/skills/<name>/SKILL.md` in Codex or `~/.claude/skills/<name>/SKILL.md` in Claude Code, but only if the user says it's just for them.
 - Never overwrite an existing file. If one exists, stop and offer a new name or to show the difference.
 
 ## 4. Write the file content
@@ -41,18 +39,18 @@ This is the only Sharpen skill that writes a file, so it **shows the file and as
 ```
 ---
 name: fix-tests
-description: Run the test suite, fix what fails, and re-run until green. Use for /fix-tests, "fix the failing tests".
-argument-hint: [test file or folder, optional]
+description: Run the test suite, fix what fails, and re-run until green. Use when the user invokes this skill with the project test target.
+argument-hint: [test file or folder, optional] # Claude Code only
 ---
 
-Run `npm test -- $ARGUMENTS` (the whole suite if no argument is given).
+Run `npm test -- <test file or folder supplied by the user>` (the whole suite if no target is given).
 For each failure: read the test and the code under test, find the cause, and fix the code, not the test, unless the test itself is wrong (say so).
 Don't touch db/migrations/.
 Re-run until everything passes, then report each fix in one line, with the final test output.
 ```
 
 Rules for the content:
-- The `description` says what it does **and** when to use it, with the slash trigger, so Claude can also pick it automatically.
+- The `description` says what it does **and** when to use it, with the host's invocation form (`$name` in Codex, `/name` in Claude Code), so the host can also pick it automatically.
 - The body is the engineered prompt, written as instructions. It isn't a conversation, and it doesn't mention Sharpen.
 - Keep it under about 40 lines. A saved skill is loaded every time it runs.
 - Use only real commands and paths from this project.
@@ -60,9 +58,9 @@ Rules for the content:
 ## 5. Show, ask, then write
 
 1. Show the full path and the full file content in a code block.
-2. Ask with `AskUserQuestion`: "Save this as `/fix-tests`?". The options are **Save** (Recommended), **Change the name**, **Make it personal (~/.claude)**, and **Don't save**.
+2. Ask with `AskUserQuestion`: "Save this as `<host invocation>`?". The options are **Save** (Recommended), **Change the name**, **Make it personal**, and **Don't save**.
 3. Only on **Save**: create the folder and write the file, exactly as shown.
-4. After writing, reply in two lines: `Saved: .claude/skills/fix-tests/SKILL.md`, then `Use it: /fix-tests <file>. Commit it to share it with your team. It shows up in new sessions.`
+4. After writing, reply in two lines with the actual path and host invocation. For example, Codex: `Saved: .agents/skills/fix-tests/SKILL.md` / `Use it: $fix-tests <file>. Commit it to share it with your team. It shows up in new sessions.` Claude Code: `Saved: .claude/skills/fix-tests/SKILL.md` / `Use it: /fix-tests <file>. Commit it to share it with your team.`
 
 ## Never
 

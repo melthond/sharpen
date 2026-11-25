@@ -60,22 +60,22 @@ Then add the lines that fit *this* setup:
 
 ## 4. Show the review card
 
-**Clear and Fill-in:** start your reply with `Sharpened prompt (clear):` or `Sharpened prompt (fill-in):`, then the engineered prompt in one fenced code block, then call `AskUserQuestion` once:
-- question: `Send this sharpened prompt?`, header: `Sharpen`
-- option 1: `Send it (Recommended)`, description `Run exactly this prompt`, preview = the engineered prompt as plain text
-- option 2: `Run my original`, description `Run what you typed, unchanged`, preview = the user's original prompt
+**Clear and Fill-in:** begin with `Sharpened prompt (clear):` or `Sharpened prompt (fill-in):`. In Claude Code, show one fenced prompt, then call `AskUserQuestion` once: `Send this sharpened prompt?`, with **Send it (Recommended)** and **Run my original** previews.
 
-If the prompt holds an `[ASK: …]` blank, say so in one line above the card. Sharpen copies option 1's preview to the clipboard, so the user can press Esc, paste, edit and send.
+Mention `[ASK: …]` blanks above the card. Claude Code copies the engineered prompt for editing and pasting.
 
-**Ambiguous:** call `AskUserQuestion` once with the question `Which did you mean?` and 2–3 options, one per interpretation, most likely first, each with label = the meaning (5 words or fewer), description = one line, preview = its full engineered prompt. The last option is always `Run as typed`, for 4 choices at most. Each option is a different action, not a rewording. For a big fuzzy feature, one option can be `Interview me first`.
+**Codex:** call `request_review_choice` and wait. Put each complete prompt in its preview; use unique IDs and short labels. Clear/fill-in: **Send it (Recommended)**, **Run my original**, **Edit the prompt** (`allowEdit: true`). Ambiguous: 2–3 options, **Run as typed**, **Edit the options**. If native elicitation is unavailable, number choices and wait.
 
-**Hosts without a question tool:** show the prompt or numbered options and wait for `send`, a number, or changes.
+**Ambiguous in Claude Code:** ask `Which did you mean?` once with 2–3 distinct options, full previews and labels of 5 words or fewer. End with **Run as typed** (4 choices max). For big fuzzy features, offer **Interview me first**.
+
+If Codex review is dismissed, stop and wait for the next message. Without a question tool, show numbered choices and wait.
 
 ## 5. After they answer
 
 - `Send it` or an option: carry out that prompt exactly, using the tools it names.
 - `Run my original` / `Run as typed`: carry out what they typed, unchanged.
 - Their own text: apply it to the engineered prompt (and fill any `[ASK:]`), then show the updated card once more.
+- If a Codex review is closed without a choice, stop without doing the task or reopening the review; wait for the user's next message.
 - Don't sharpen the same request twice, including the answer to the card.
 
 ## Never

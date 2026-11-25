@@ -90,8 +90,8 @@ test('there are no modes: full and lite are not commands', () => {
   assert.deepStrictEqual(c.decide('/sharpen on full', OFF, M), none, 'two arguments is not a toggle');
 });
 
-test('nudge spells out the required first line', () => {
-  for (const s of ['Sharpened prompt (clear):', 'Sharpened prompt (fill-in):', 'code block', 'Send this sharpened prompt?', 'Which did you mean?', 'Do not start the work']) assert.ok(c.NUDGE.includes(s), s);
+test('nudge uses the host review UI and stops after cancellation', () => {
+  for (const s of ['Sharpened prompt (clear):', 'Sharpened prompt (fill-in):', 'AskUserQuestion', 'request_review_choice', 'Which did you mean?', 'Do not start the work', 'review is cancelled']) assert.ok(c.NUDGE.includes(s), s);
 });
 
 test('a pasted sharpened prompt runs without being sharpened again', () => {
