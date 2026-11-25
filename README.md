@@ -51,15 +51,22 @@ Think of the colleague who never starts the wrong task. When you say "fix the lo
 
 ### Codex desktop
 
-This repository includes a local marketplace at `.agents/plugins/marketplace.json`. The project config at `.codex/config.toml` enables `sharpen@sharpen-project` in this checkout. Codex reads project configuration only after you trust the project.
+This repository includes a local marketplace at `.agents/plugins/marketplace.json` so you can discover and install Sharpen from this checkout. The repository does not enable it for contributors automatically; each person chooses whether to install and enable it in Codex.
 
-1. Open this repository folder in Codex desktop. Trust the project if Codex asks; the project-level plugin setting will not load until the project is trusted.
+1. Open this repository folder in Codex desktop and trust it if Codex asks.
 2. Restart Codex so it discovers the repository marketplace. Open **Plugins Directory**, select **Sharpen project**, choose **Sharpen**, then select **Install**.
 3. Review and trust Sharpen's bundled hooks when Codex asks. The hooks run locally and require Node.js 18 or later.
-4. Open a new local chat for this repository and send `sharpen on`. This turns on Sharpen's prompt handling; installing the plugin alone leaves that setting off.
+4. Open a new local chat and send `sharpen on` to turn on Sharpen's prompt handling. This is a user-level setting that persists across sessions wherever the plugin is enabled; installing the plugin alone leaves it off.
 5. Send `sharpen` and confirm Codex reports that Sharpen is on. Then send a harmless request such as `summarize the purpose of this repository`; the Sharpen review should appear before the task runs. Choose **Run my original** to finish the smoke check without changing files.
 
-To use the plugin in another repository, install it from its marketplace and enable it for that project too. To update this local install after changing plugin files, refresh or reinstall **Sharpen** from **Sharpen project**, then restart Codex. Codex installs local marketplace plugins into a cache, so it does not read later checkout edits until refreshed. See OpenAI's [local plugin and marketplace guide](https://developers.openai.com/plugins/build/plugins) for the current marketplace and project-enable behavior.
+To enable Sharpen only for this checkout, create a local `.codex/config.toml` and do not commit it:
+
+```toml
+[plugins."sharpen@sharpen-project"]
+enabled = true
+```
+
+Codex reads project settings only for trusted projects. To use the plugin in another repository, install it from a marketplace available to that project and choose whether to enable it there. To update this local install after changing plugin files, refresh or reinstall **Sharpen** from **Sharpen project**, then restart Codex. Codex installs local marketplace plugins into a cache, so it does not read later checkout edits until refreshed. See OpenAI's [local plugin and marketplace guide](https://developers.openai.com/plugins/build/plugins) for the current marketplace and project-enable behavior.
 
 Codex uses its native review form when available. If the host cannot show MCP form elicitation, Sharpen presents numbered choices in the conversation instead. Closing the review without choosing leaves the request unstarted; send a new message to continue.
 
@@ -272,7 +279,6 @@ Files Sharpen writes:
 | `~/.config/sharpen/sharpen-statusline.js` | The badge script, kept outside the plugin folder so updates don't break it |
 | `~/.claude/settings.json` | Edited only to add the badge when you have no status line |
 | `~/.codex/plugins/cache/` | Codex's installed plugin copy; refresh it from the local marketplace after checkout changes |
-| `.codex/config.toml` | Enables this repository's local-marketplace plugin when the project is trusted |
 
 To report a security issue, see [SECURITY.md](SECURITY.md).
 
@@ -375,7 +381,7 @@ All of Sharpen is one prompt: [`skills/sharpen/SKILL.md`](skills/sharpen/SKILL.m
 | `hooks/sharpen-codex-env.js` | The Codex setup summary: skill, MCP server, and hook names only |
 | `hooks/sharpen-review-mcp.js`, `mcp.json` | Native Codex review choices and numbered fallback when native elicitation is unavailable |
 | `.codex-plugin/plugin.json`, `hooks/codex-hooks.json` | Codex desktop plugin metadata and bundled lifecycle hooks |
-| `.agents/plugins/marketplace.json`, `.codex/config.toml` | Local marketplace discovery and this repository's plugin enable setting |
+| `.agents/plugins/marketplace.json` | Local marketplace discovery for the Codex plugin |
 | `hooks/sharpen-state.js`, `sharpen-stats.js` | The on/off flag and the local counts |
 | `hooks/sharpen-statusline.js`, `sharpen-statusline-setup.js` | The badge, and installing it without overwriting yours |
 | `hooks/sharpen-io.js` | Shared stdin/stdout helpers |
